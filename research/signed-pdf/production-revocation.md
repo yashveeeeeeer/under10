@@ -23,7 +23,7 @@ These are generated PDFs with an explicit test CA. No licensed DSC credentials o
 | RSA, OCSP and VRI | 19,994 | 19,963 | 31 |
 | ECDSA, CRLs and OCSP, with VRI | 1,307,945 | 179,073 | 1,128,872 |
 
-Node and actual browser-worker downloads produced identical outputs. Independent verification uses OpenSSL CMS, pyHanko signature and modification-policy checks, and validation with revocation evidence required against the explicit test root. All signed prefixes, CMS values, ByteRanges, decoded DSS records, VRI links and Info/ID values matched. Every page's Poppler pixels matched. Browser tests run offline after loading the app and check for document network requests and storage writes.
+Node, local browser-worker downloads and live GitHub Pages downloads produced identical outputs. The release passed 60 Node checks, 48 local browser scenarios, four live revocation scenarios and the 11 existing DSC compatibility cases. The downloaded site assets matched the locally tested build. Independent verification uses OpenSSL CMS, pyHanko signature and modification-policy checks, and validation with revocation evidence required against the explicit test root. All signed prefixes, CMS values, ByteRanges, decoded DSS records, VRI links and Info/ID values matched. Every page's Poppler pixels matched. Browser tests run offline after loading the app and check for document network requests and storage writes.
 
 The regression suite includes malformed evidence, CRL/OCSP decompression bombs, deeply nested ASN.1, cycles, VRI mismatches, page changes, unrelated objects, exact target boundaries and unsupported signatures. These checks demonstrate the supported method, not freedom from every possible bug.
 

@@ -140,6 +140,75 @@
       }
     },
     {
+      "name": "revocation-rsa-crl-ocsp",
+      "engine": "live",
+      "input_bytes": 10508164,
+      "output_bytes": 9379292,
+      "signed_bytes": 9214501,
+      "saved_bytes": 1128872,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 10508164,
+        "sha256": "28ea1203b329e767c26186a9e90825cd0abba2e26265c45c96cd22763adab3c6",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              9204041,
+              9213949,
+              552
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "7f88b13c1d4c26853aa6d74cbb9433152bc619126546815f0f8d728deb9ca149",
+            "signed_bytes_sha256": "1a40651168d6ed7377c681639fe1ae0ff0911b975524145dd185820fcae2add0",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 9379292,
+        "sha256": "4909eb0c88ae168caa2749f6866d9256f306756cbf72547b341c027dcec85029",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              9204041,
+              9213949,
+              552
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "7f88b13c1d4c26853aa6d74cbb9433152bc619126546815f0f8d728deb9ca149",
+            "signed_bytes_sha256": "1a40651168d6ed7377c681639fe1ae0ff0911b975524145dd185820fcae2add0",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    },
+    {
       "name": "revocation-rsa-ocsp",
       "engine": "node",
       "input_bytes": 19994,
@@ -211,6 +280,75 @@
     {
       "name": "revocation-rsa-ocsp",
       "engine": "browser",
+      "input_bytes": 19994,
+      "output_bytes": 19963,
+      "signed_bytes": 14487,
+      "saved_bytes": 31,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 19994,
+        "sha256": "3aa631266f7b20901d8c13bda2f3cb6cd9d7fcce2dfa72af428849a00b755cd1",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13940,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "4435441d339727ae5e610f0b8f5366d7297a99a0fd341c673cf11da5566c784b",
+            "signed_bytes_sha256": "07d87bcd86ab9e3c84c5cbe8a8d1403b45aa7815ee1a7e49eacdd696138ad943",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 19963,
+        "sha256": "b9ca900baab133003ef4a7cd97c3f222875f1c40c239e74ab3e4100a1472dbe8",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13940,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "4435441d339727ae5e610f0b8f5366d7297a99a0fd341c673cf11da5566c784b",
+            "signed_bytes_sha256": "07d87bcd86ab9e3c84c5cbe8a8d1403b45aa7815ee1a7e49eacdd696138ad943",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "revocation-rsa-ocsp",
+      "engine": "live",
       "input_bytes": 19994,
       "output_bytes": 19963,
       "signed_bytes": 14487,
@@ -349,6 +487,75 @@
     {
       "name": "revocation-ecdsa-crl-ocsp",
       "engine": "browser",
+      "input_bytes": 1307945,
+      "output_bytes": 179073,
+      "signed_bytes": 14084,
+      "saved_bytes": 1128872,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 1307945,
+        "sha256": "d5f9af861f40b9e55ab8bd83f43622c53475f41bd3ebe7296ee8a6bdb9774af0",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4235,
+              12967,
+              1117
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "cfbac68c630252f5db42e65b49b5104a24b8ac597879d23db9f065ca64668f1c",
+            "signed_bytes_sha256": "57da2b538631e6d04f71583e3470bee2015538a24ada55f374dcef84bc7ea26b",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 179073,
+        "sha256": "13fe1e0e276a5b872e2dd06a03ffc8e7bdce851e7f42d1a439ea46990221f9ef",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4235,
+              12967,
+              1117
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "cfbac68c630252f5db42e65b49b5104a24b8ac597879d23db9f065ca64668f1c",
+            "signed_bytes_sha256": "57da2b538631e6d04f71583e3470bee2015538a24ada55f374dcef84bc7ea26b",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "revocation-ecdsa-crl-ocsp",
+      "engine": "live",
       "input_bytes": 1307945,
       "output_bytes": 179073,
       "signed_bytes": 14084,
@@ -478,7 +685,7 @@
         "method": "qpdf-rewrite",
         "meets_preservation_and_size_requirements": false,
         "bytes": 25472,
-        "sha256": "aded8e616470ede136a959c36a2ef548f307a4846d9b4a83cfba1dfc7b150715",
+        "sha256": "2d44a75a01d159f26e1799fa4f7d182522d1d64c51149bca8f9664a0f766f8e1",
         "revisions": 1,
         "signatures": [
           {
@@ -507,7 +714,7 @@
         "method": "incremental-page-compression",
         "meets_preservation_and_size_requirements": false,
         "bytes": 10127909,
-        "sha256": "58a4cef0d77efd54c935365ed18dca68c4e8c1e32d7e7ac2ea7b9d4244143563",
+        "sha256": "ea60e10c978b7b2cb67c10472adfd274cf53770174ae7198d6415b49dc8f46bd",
         "revisions": 3,
         "signatures": [
           {
@@ -534,7 +741,9 @@
       }
     ]
   },
-  "checked_at": "2026-10-12T15:10:25.850215+00:00",
+  "checked_at": "2026-10-12T15:14:37.914584+00:00",
+  "implementation_commit": "5782db13bc71fef5e423ac15a8084db00ea28a73",
+  "tested_live_url": "https://yashveeeeeeer.github.io/under10/?v=5782db1",
   "source_text_lf_sha256": {
     "src\\signed.js": "586a16cef63d8eb047b4819093ba73a81fc627f8f180874e800969ccd3a5eea6",
     "src\\signed.worker.js": "07d6a7372c4b6c65b37629c8f6740212be226ef9c6f9583df5871462244bac36",
@@ -543,5 +752,636 @@
   "deployed_assets_sha256": {
     "docs\\assets\\signed.worker.js": "5e239b1b43cffc4194ca8ec42442981afc2ebc5cbc4754005a25b03983c6450a",
     "docs\\assets\\app.js": "537caeb8089d76d013db569370af3833adbb618229195d58c7b405910ee6a864"
+  },
+  "release_checks": {
+    "node_tests_passed": 60,
+    "local_browser_tests_passed": 48,
+    "live_revocation_browser_tests_passed": 4,
+    "document_network_requests_in_revocation_cases": 0,
+    "page_storage_write_attempts_in_revocation_cases": 0,
+    "live_assets_equal_local_build": true,
+    "npm_audit_reported_vulnerabilities": 0
+  },
+  "live_dsc_regression": {
+    "url": "https://yashveeeeeeer.github.io/under10/?v=5782db1",
+    "document_network_requests": 0,
+    "storage_writes": 0,
+    "page_errors": 0,
+    "scope": "Test CA chains plus 1 public signed PDF(s). No USB token, private DSC, fresh revocation or MCA submission was tested.",
+    "cases": [
+      {
+        "name": "rsa2048-cms",
+        "input_bytes": 14988,
+        "outcome": "unchanged",
+        "output_bytes": 14988,
+        "saved": 0,
+        "output_sha256": "0c21683b2a44a5eaa933f367523c6f7f5eef02248207e49654a51599344e7097",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+            "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+            "byte_range": [
+              0,
+              3932,
+              14400,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+            "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+            "byte_range": [
+              0,
+              3932,
+              14400,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "signature_identities_preserved": true,
+        "byte_identical": true
+      },
+      {
+        "name": "rsa2048-cms-certs",
+        "input_bytes": 18325,
+        "outcome": "compressed",
+        "output_bytes": 18210,
+        "saved": 115,
+        "output_sha256": "461231adeb4bf9915ea160978e61df32cff7fae44723e33fffee927ac3987c22",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+            "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+            "byte_range": [
+              0,
+              3932,
+              14400,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "LTA_UPDATES",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+            "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+            "byte_range": [
+              0,
+              3932,
+              14400,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "LTA_UPDATES",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "signature_identities_preserved": true,
+        "signed_prefix_identical": true,
+        "visible_signature_pixels_identical": true,
+        "certificate_chain_and_metadata_preserved": true
+      },
+      {
+        "name": "rsa2048-oversized",
+        "input_bytes": 10115017,
+        "outcome": "blocked",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "d07a090dab358eb37b818132811e4fc1a145cf775c41a4411e52e4c95d68071e",
+            "signed_bytes_sha256": "713ea8c1ddfb83f063f5129cb01cbdb2c83b1d6257b64e2e2f4425faba5edec8",
+            "byte_range": [
+              0,
+              10103954,
+              10114422,
+              595
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ]
+      },
+      {
+        "name": "rsa2048-certified",
+        "input_bytes": 15135,
+        "outcome": "unchanged",
+        "output_bytes": 15135,
+        "saved": 0,
+        "output_sha256": "500a08a2eef550cfed7e702b91f4ea4fffab68f23c9ce6d86223eb05f7103fc5",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "42e54afbd76129c2974c93928ba83179e7441cdee207d1f8cb4498d856da6fe7",
+            "signed_bytes_sha256": "2099bec9e5a649f7e9995bd41a0444dfa16eff5f05dad87b63a72be6bb8abf97",
+            "byte_range": [
+              0,
+              3960,
+              14428,
+              707
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "42e54afbd76129c2974c93928ba83179e7441cdee207d1f8cb4498d856da6fe7",
+            "signed_bytes_sha256": "2099bec9e5a649f7e9995bd41a0444dfa16eff5f05dad87b63a72be6bb8abf97",
+            "byte_range": [
+              0,
+              3960,
+              14428,
+              707
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "signature_identities_preserved": true,
+        "byte_identical": true
+      },
+      {
+        "name": "rsa2048-two-signatures",
+        "input_bytes": 28361,
+        "outcome": "unchanged",
+        "output_bytes": 28361,
+        "saved": 0,
+        "output_sha256": "64b7bafa2133f4e14840cda008fb628b38ade07390ebc2a60fd4d1292d4b8250",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+            "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+            "byte_range": [
+              0,
+              3932,
+              14400,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "FORM_FILLING",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          },
+          {
+            "cms_sha256": "c703e511e5a43bea525652342c24f519b78a69d526ccd00f98d1c75ea9f85273",
+            "signed_bytes_sha256": "0e6e113f4860826402a897335df136438dc7173ebcbf0a38fef6f1339e8f587e",
+            "byte_range": [
+              0,
+              17315,
+              27783,
+              578
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+            "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+            "byte_range": [
+              0,
+              3932,
+              14400,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "FORM_FILLING",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          },
+          {
+            "cms_sha256": "c703e511e5a43bea525652342c24f519b78a69d526ccd00f98d1c75ea9f85273",
+            "signed_bytes_sha256": "0e6e113f4860826402a897335df136438dc7173ebcbf0a38fef6f1339e8f587e",
+            "byte_range": [
+              0,
+              17315,
+              27783,
+              578
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "signature_identities_preserved": true,
+        "byte_identical": true
+      },
+      {
+        "name": "rsa3072-pades",
+        "input_bytes": 15623,
+        "outcome": "unchanged",
+        "output_bytes": 15623,
+        "saved": 0,
+        "output_sha256": "f017ca3e4bda90881f27801de49da42288dd96790548854a81706afbc337847a",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "baf7e994d01f447161d5477d4a473ddcb23073ab8070684401171732841cc3ed",
+            "signed_bytes_sha256": "c189f04302f28f6cc2d2c96b16b62db947cca7589b1714b8728f6d264c315751",
+            "byte_range": [
+              0,
+              4027,
+              15035,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 3072
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "baf7e994d01f447161d5477d4a473ddcb23073ab8070684401171732841cc3ed",
+            "signed_bytes_sha256": "c189f04302f28f6cc2d2c96b16b62db947cca7589b1714b8728f6d264c315751",
+            "byte_range": [
+              0,
+              4027,
+              15035,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 3072
+          }
+        ],
+        "signature_identities_preserved": true,
+        "byte_identical": true
+      },
+      {
+        "name": "rsa3072-pades-certs",
+        "input_bytes": 19184,
+        "outcome": "compressed",
+        "output_bytes": 19078,
+        "saved": 106,
+        "output_sha256": "573a37f957ddda3025979646bf2d3803eeb939de24733fd9138578c19272aae0",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "baf7e994d01f447161d5477d4a473ddcb23073ab8070684401171732841cc3ed",
+            "signed_bytes_sha256": "c189f04302f28f6cc2d2c96b16b62db947cca7589b1714b8728f6d264c315751",
+            "byte_range": [
+              0,
+              4027,
+              15035,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "LTA_UPDATES",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 3072
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "baf7e994d01f447161d5477d4a473ddcb23073ab8070684401171732841cc3ed",
+            "signed_bytes_sha256": "c189f04302f28f6cc2d2c96b16b62db947cca7589b1714b8728f6d264c315751",
+            "byte_range": [
+              0,
+              4027,
+              15035,
+              588
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "LTA_UPDATES",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 3072
+          }
+        ],
+        "signature_identities_preserved": true,
+        "signed_prefix_identical": true,
+        "visible_signature_pixels_identical": true,
+        "certificate_chain_and_metadata_preserved": true
+      },
+      {
+        "name": "ecdsa-p256-pades",
+        "input_bytes": 14466,
+        "outcome": "unchanged",
+        "output_bytes": 14466,
+        "saved": 0,
+        "output_sha256": "e819d15f2f14f5ac769cb9621f56cfac7ce5a25b6d9cc16b6669426b1e68558a",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+            "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+            "byte_range": [
+              0,
+              4234,
+              13308,
+              1158
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "ec",
+            "public_key_bits": 256
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+            "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+            "byte_range": [
+              0,
+              4234,
+              13308,
+              1158
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "ec",
+            "public_key_bits": 256
+          }
+        ],
+        "signature_identities_preserved": true,
+        "byte_identical": true
+      },
+      {
+        "name": "ecdsa-p256-pades-certs",
+        "input_bytes": 17899,
+        "outcome": "compressed",
+        "output_bytes": 17786,
+        "saved": 113,
+        "output_sha256": "a43a4bd68db9c9acb323db106ac8b02f1a5e571922b8524359ff4223182f4ea1",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+            "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+            "byte_range": [
+              0,
+              4234,
+              13308,
+              1158
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "LTA_UPDATES",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "ec",
+            "public_key_bits": 256
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+            "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+            "byte_range": [
+              0,
+              4234,
+              13308,
+              1158
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "LTA_UPDATES",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "ec",
+            "public_key_bits": 256
+          }
+        ],
+        "signature_identities_preserved": true,
+        "signed_prefix_identical": true,
+        "visible_signature_pixels_identical": true,
+        "certificate_chain_and_metadata_preserved": true
+      },
+      {
+        "name": "ecdsa-p256-pades-certs-and-xmp",
+        "input_bytes": 18844,
+        "outcome": "unchanged",
+        "output_bytes": 18844,
+        "saved": 0,
+        "output_sha256": "b5083fc1b64439875f8cc07ff15e6c9720fa6dd18db01463c16703eb9a6ff560",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+            "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+            "byte_range": [
+              0,
+              4234,
+              13308,
+              1158
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "LTA_UPDATES",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "ec",
+            "public_key_bits": 256
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+            "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+            "byte_range": [
+              0,
+              4234,
+              13308,
+              1158
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": true,
+            "public_certificate_trust_checked": false,
+            "modification_level": "LTA_UPDATES",
+            "issuer": "Under10 TEST ISSUING CA",
+            "subfilter": "/ETSI.CAdES.detached",
+            "public_key_algorithm": "ec",
+            "public_key_bits": 256
+          }
+        ],
+        "signature_identities_preserved": true,
+        "byte_identical": true
+      },
+      {
+        "name": "emudhra-public-cps",
+        "input_bytes": 1688159,
+        "outcome": "unchanged",
+        "output_bytes": 1688159,
+        "saved": 0,
+        "output_sha256": "2051506f400fc6ad5aeee5f7fe1ee7738769e2bd715c502fb6687fc4b4784d46",
+        "input_signature_checks": [
+          {
+            "cms_sha256": "b46fcb415f9d346c8fcde9b0622b39f8a00eb966b4fa87ce13d3f9f9accb3db5",
+            "signed_bytes_sha256": "001ab1743a79670f13d2a34658c3ce571dc5f164236ba5bd326d0a5ac9a59c30",
+            "byte_range": [
+              0,
+              245540,
+              1163734,
+              524425
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": null,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Common Name: Capricorn Sub CA for Organisation DSC 2022, Organizational Unit: Certifying Authority, Organization: Capricorn Identity Services Pvt Ltd., Country: IN",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "output_signature_checks": [
+          {
+            "cms_sha256": "b46fcb415f9d346c8fcde9b0622b39f8a00eb966b4fa87ce13d3f9f9accb3db5",
+            "signed_bytes_sha256": "001ab1743a79670f13d2a34658c3ce571dc5f164236ba5bd326d0a5ac9a59c30",
+            "byte_range": [
+              0,
+              245540,
+              1163734,
+              524425
+            ],
+            "openssl_verified": true,
+            "intact": true,
+            "valid": true,
+            "test_root_chain_valid": null,
+            "public_certificate_trust_checked": false,
+            "modification_level": "NONE",
+            "issuer": "Common Name: Capricorn Sub CA for Organisation DSC 2022, Organizational Unit: Certifying Authority, Organization: Capricorn Identity Services Pvt Ltd., Country: IN",
+            "subfilter": "/adbe.pkcs7.detached",
+            "public_key_algorithm": "rsa",
+            "public_key_bits": 2048
+          }
+        ],
+        "signature_identities_preserved": true,
+        "byte_identical": true
+      }
+    ]
   }
 }
