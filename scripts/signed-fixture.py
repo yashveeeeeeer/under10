@@ -3,6 +3,9 @@ import sys
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 import io
+import gzip
+
+over_limit = '--over-limit' in sys.argv
 
 sys.path.insert(0, str(Path('tmp/qa-python').resolve()))
 from cryptography import x509
@@ -34,15 +37,27 @@ asn_cert = asn1_x509.Certificate.load(cert.public_bytes(serialization.Encoding.D
 signer = signers.SimpleSigner(signing_cert=asn_cert,
     signing_key=keys.PrivateKeyInfo.load(key.private_bytes(serialization.Encoding.DER, serialization.PrivateFormat.PKCS8, serialization.NoEncryption())),
     cert_registry=SimpleCertificateStore())
-buf = io.BytesIO(); c = canvas.Canvas(buf); c.drawString(55, 780, 'SYNTHETIC SIGNATURE REGRESSION TEST'); c.drawString(55, 750, 'Not a legal document. No personal data.'); c.save(); buf.seek(0)
-with open(root / 'signed-synthetic.pdf', 'wb') as out:
-    signers.sign_pdf(IncrementalPdfFileWriter(buf), signature_meta=signers.PdfSignatureMetadata(field_name='TestSignature'), signer=signer, output=out)
-(root / 'synthetic-certificate.der').write_bytes(cert.public_bytes(serialization.Encoding.DER))
-with open(root / 'signed-synthetic.pdf', 'rb') as stream:
+buf = io.BytesIO(); c = canvas.Canvas(buf, pageCompression=0 if over_limit else 1)
+c.drawString(55, 780, 'SYNTHETIC SIGNATURE REGRESSION TEST'); c.drawString(55, 750, 'Not a legal document. No personal data.')
+# A compressible PDF comment is added BEFORE signing. It is covered by the genuine signature.
+if over_limit: c._code.append('%' + 'size-test ' * 1_010_000)
+c.save(); buf.seek(0)
+out = io.BytesIO()
+signers.sign_pdf(IncrementalPdfFileWriter(buf), signature_meta=signers.PdfSignatureMetadata(field_name='TestSignature'), signer=signer, output=out)
+if over_limit:
+    assert len(out.getvalue()) > 10_000_000
+    (root / 'signed-over-limit-synthetic.pdf.gz').write_bytes(gzip.compress(out.getvalue(), mtime=0))
+else:
+    (root / 'signed-synthetic.pdf').write_bytes(out.getvalue())
+    (root / 'synthetic-certificate.der').write_bytes(cert.public_bytes(serialization.Encoding.DER))
+with io.BytesIO(out.getvalue()) as stream:
     sig = PdfFileReader(stream).embedded_signatures[0]
     status = validate_pdf_signature(sig, signer_validation_context=ValidationContext(trust_roots=[asn_cert], allow_fetching=False))
     assert status.intact and status.valid and status.trusted, status.summary()
     print('Synthetic input signature: intact, valid and trusted against the test-only root.')
+if over_limit:
+    print(f'Oversized signed fixture: {len(out.getvalue())} bytes; gzip is for test-repository storage only.')
+    raise SystemExit(0)
 buf.seek(0); writer = PdfWriter(); writer.append(PdfReader(buf)); writer.encrypt('synthetic-test-password')
 with open(root / 'encrypted-synthetic.pdf', 'wb') as stream: writer.write(stream)
 # Private key exists in this process only. Only the public certificate and synthetic PDFs are saved.

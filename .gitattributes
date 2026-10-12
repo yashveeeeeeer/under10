@@ -1,6 +1,7 @@
 * text=auto eol=lf
 *.pdf binary
 *.der binary
+*.gz binary
 *.png binary
 *.jpg binary
 docs/assets/* linguist-generated=true -whitespace

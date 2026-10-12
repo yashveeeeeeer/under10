@@ -5,13 +5,19 @@ Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edg
 ## Automated checks
 
 - 17 core tests: strict decimal-byte boundary; invalid limits; file magic; malformed/oversized image headers; static PDF parsing; signature dictionaries in ordinary and compressed object streams; blank fields; escaped historical markers; forms; actions; attachments; annotations; corrupt/truncated/encrypted PDFs; page count/order; signed merge refusal; 200-page cap.
-- 11 browser scenarios: desktop/mobile layout and keyboard skip link; actual output page count/order/selectable text; all-page review gate; marker-based signature protection and SHA-256 equality; a genuinely signed synthetic PDF; an actually encrypted PDF; offline mixed-image/PDF preparation; absence of document network requests and storage writes; hostile filenames; invalid files; protected PDF features; over-limit checks; invalidation after settings changes; opt-in rasterization; impossible targets; cancellation and recovery.
+- 12 browser scenarios: desktop/mobile layout and keyboard skip link; actual output page count/order/selectable text; all-page review gate; marker-based signature protection and SHA-256 equality; genuinely signed synthetic PDFs, including one over 10 MB; an actually encrypted PDF; offline mixed-image/PDF preparation; absence of document network requests and storage writes; hostile filenames; invalid files; protected PDF features; over-limit checks; invalidation after settings changes; opt-in rasterization; impossible targets; cancellation and recovery.
 - Generated a test-only RSA certificate and signed PDF with pyHanko 0.37.0. Confirmed signature integrity, cryptographic validity and trust against the explicitly supplied synthetic test root. Downloaded through check mode and confirmed byte equality and the same cryptographic results independently with pyHanko. This does not establish real-world certificate trust.
 - Reopened exported PDFs with pdf-lib and independently rendered with Poppler. Inspected the desktop, mobile and result screenshots plus rendered output for clipping and missing text.
 - Production dependency audit: zero reported vulnerabilities at test time. This is not a comprehensive security audit.
 - Live GitHub Pages smoke test: HTTP 200; assets load correctly under `/under10/`; signed input is blocked from merging; unchanged download is byte-identical; unsigned preparation works; zero document-time network requests and zero JavaScript page errors. Reproduce with `node scripts/smoke-live.mjs https://yashveeeeeeer.github.io/under10/`.
 
 `npm run check` runs the reproducible Node and browser suite. Committed synthetic signed/encrypted fixtures remove Python from the normal test dependency chain. `scripts/signed-fixture.py` documents generation; its private test key is generated in process memory and is never written to disk.
+
+## Focused signed-PDF recheck
+
+Three signature-focused browser tests passed after the README update. Scan compression remained blocked for a genuinely signed PDF, including when mixed with an unsigned PDF. Check mode returned an eligible original byte for byte. A second genuinely signed fixture of 10,107,250 bytes was blocked from compression and from an oversized download. Its signature was independently verified before testing. The large fixture is stored as gzip in the test repository and restored to ordinary PDF bytes before the browser test; gzip is not offered as a PDF compression feature.
+
+Run `npx playwright test --grep 'signature|signed'` to repeat these checks. The application code was unchanged; the unrelated scenarios were not rerun for this documentation and regression-test update.
 
 ## Explicit limits
 

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { gunzipSync } from 'node:zlib';
 import { PDFDocument, PDFArray, decodePDFRawStream } from 'pdf-lib';
 import { pdfFixture } from '../fixtures.mjs';
 
@@ -64,10 +65,33 @@ test('signature markers block merge and unchanged mode preserves SHA-256', async
 });
 test('a genuine synthetic digital signature survives unchanged download', async ({ page }) => {
   await ready(page); const bytes = await readFile('tests/data/signed-synthetic.pdf');
+  await page.locator('#raster').check();
   await upload(page, bytes, 'signed-synthetic.pdf'); await expect(page.locator('.file-issue')).toContainText('check-only'); await expect(page.locator('#process')).toBeDisabled();
   await page.locator('#check-mode').click(); await prepare(page); const d = await download(page); await d.saveAs('tmp/qa/signed-returned.pdf');
   const returned = await readFile(await d.path()); expect(Buffer.compare(returned, bytes)).toBe(0);
   expect(await page.locator('#hash').textContent()).toBe(createHash('sha256').update(bytes).digest('hex'));
+  await page.locator('#build-mode').click();
+  await upload(page, await pdfFixture(), 'unsigned.pdf');
+  await expect(page.locator('#file-count')).toContainText('2 files');
+  await expect(page.locator('#raster')).toBeChecked();
+  await expect(page.locator('#process')).toBeDisabled();
+  await expect(page.locator('#result')).toBeHidden();
+});
+test('over-10-MB genuinely signed PDF stays blocked with compression enabled', async ({ page }) => {
+  await ready(page);
+  const bytes = gunzipSync(await readFile('tests/data/signed-over-limit-synthetic.pdf.gz'));
+  expect(bytes.length).toBeGreaterThan(10_000_000);
+  await page.locator('#raster').check();
+  await upload(page, bytes, 'signed-over-10mb.pdf');
+  await expect(page.locator('.file-issue')).toContainText('check-only');
+  await expect(page.locator('#process')).toBeDisabled();
+  await page.locator('#check-mode').click();
+  await expect(page.locator('#process')).toBeEnabled();
+  await page.locator('#process').click();
+  await expect(page.locator('#status')).toContainText('not strictly below');
+  await expect(page.locator('#status')).toContainText('It was not changed');
+  await expect(page.locator('#result')).toBeHidden();
+  await expect(page.locator('#download')).toBeDisabled();
 });
 test('a genuinely encrypted PDF is rejected', async ({ page }) => {
   await ready(page); await upload(page, await readFile('tests/data/encrypted-synthetic.pdf'));
