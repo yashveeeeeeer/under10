@@ -6,7 +6,7 @@ A free, browser-only workspace for preparing unsigned PDFs and images under a ch
 
 **Live site:** https://yashveeeeeeer.github.io/under10/
 
-**Status:** tested beta. This is not an MCA acceptance checker, signature validator, signing service or legal tool.
+This is not an MCA acceptance checker, signature validator, signing service or legal tool.
 
 ## Two workflows
 
@@ -78,7 +78,7 @@ For an immediate existing option on Windows, [PDF24 Creator](https://tools.pdf24
 
 ## Development plan
 
-1. **Current beta:** browser-only merge, bounded compression, exact size gate, unchanged-file checks, page review, conservative signature blocks and reproducible regression tests.
+1. **Current version:** browser-only merge, bounded compression, exact size gate, unchanged-file checks, page review, conservative signature blocks and reproducible regression tests.
 2. **Before recommending for sensitive production work:** independent security review; an authorised, sanitised corpus including Indian-script fonts, JPEG2000/JBIG2, rotations/crop boxes, multiple and timestamped signatures, damaged PDFs and large scans; visual comparisons against trusted renderers; browser/low-memory testing; accessibility review; live MCA field confirmation by a filing professional.
 3. **Robustness work:** isolate all parsing/merging in a dedicated terminable worker with hard time and memory budgets, tighten PDF feature support, add loss-aware content checks, broaden offline font/CMap support, add performance budgets and fuzzing. Current parsing/merging can temporarily block the main thread; resource caps are not a sandbox against all malicious PDFs.
 4. **Release operations:** run checks for each change, review dependency updates, use protected branches and CI, verify built assets match source, retain a rollback commit. `ci/check.yml.example` is a ready-to-install GitHub Actions check; publishing it as a workflow requires appropriate GitHub permissions.

@@ -12,7 +12,7 @@ Choose **Already signed** for an unchanged size check. Signed PDFs cannot be com
 
 Files stay in browser memory with no uploads or tracking. Download saves a copy. Clear releases the session. Browser and operating system storage are outside the app’s control.
 
-This is an independent beta. Use the limit on your upload form.
+Use the limit on your upload form.
 
 [Technical details and setup](TECHNICAL.md)
 

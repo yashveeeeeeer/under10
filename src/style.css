@@ -53,7 +53,6 @@ button, a, input, select, summary, [tabindex] { scroll-margin-block: 6rem; }
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: 1rem; }
 .brand { display: inline-flex; align-items: baseline; min-block-size: 44px; font-size: 1.55rem; font-weight: 650; letter-spacing: -.07em; text-decoration: none; }
 .brand > span:first-child { font-weight: 400; }
-.beta { margin-inline-start: .6rem; font-size: .7rem; font-weight: 450; letter-spacing: 0; color: var(--muted); }
 .topbar nav { display: flex; flex-wrap: wrap; gap: clamp(.5rem, 2vw, 1.75rem); }
 .topbar nav a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: .25rem; font-size: .8125rem; text-decoration: none; }
 .topbar nav a:hover { text-decoration: underline; }
