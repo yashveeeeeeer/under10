@@ -63,7 +63,7 @@ test('merge preserves all pages, order, extracted text and requires review', asy
 test('signature markers block merge and unchanged mode preserves SHA-256', async ({ page }) => {
   await ready(page); const bytes = await pdfFixture({ signature: true });
   await upload(page, bytes, 'signed-marker-test.pdf');
-  await expect(page.locator('.file-issue')).toContainText('check-only'); await expect(page.locator('#process')).toBeDisabled();
+  await expect(page.locator('.file-issue')).toContainText('Choose Signed'); await expect(page.locator('#process')).toBeDisabled();
   await page.locator('#check-mode').click(); await prepare(page);
   await expect(page.locator('#result-warning')).toContainText('have not been verified');
   const d = await download(page); const returned = await readFile(await d.path());
@@ -72,7 +72,7 @@ test('signature markers block merge and unchanged mode preserves SHA-256', async
 test('a genuine synthetic digital signature survives unchanged download', async ({ page }) => {
   await ready(page); const bytes = await readFile('tests/data/signed-synthetic.pdf');
   await allowScans(page);
-  await upload(page, bytes, 'signed-synthetic.pdf'); await expect(page.locator('.file-issue')).toContainText('check-only'); await expect(page.locator('#process')).toBeDisabled();
+  await upload(page, bytes, 'signed-synthetic.pdf'); await expect(page.locator('.file-issue')).toContainText('Choose Signed'); await expect(page.locator('#process')).toBeDisabled();
   await page.locator('#check-mode').click(); await prepare(page); const d = await download(page); await d.saveAs('tmp/qa/signed-returned.pdf');
   const returned = await readFile(await d.path()); expect(Buffer.compare(returned, bytes)).toBe(0);
   expect(await page.locator('#hash').textContent()).toBe(createHash('sha256').update(bytes).digest('hex'));
@@ -90,7 +90,7 @@ test('signed PDFs obey the chosen limit and remain protected from compression', 
   expect(bytes.length).toBeGreaterThan(10_000_000);
   await allowScans(page);
   await upload(page, bytes, 'signed-over-10mb.pdf');
-  await expect(page.locator('.file-issue')).toContainText('check-only');
+  await expect(page.locator('.file-issue')).toContainText('Choose Signed');
   await expect(page.locator('#process')).toBeDisabled();
   await page.locator('#check-mode').click();
   await expect(page.locator('#process')).toBeEnabled();
@@ -132,7 +132,7 @@ test('unsigned signing choice follows the size limit and invalidates old results
   await page.locator('#check-mode').click();
   await expect(page.locator('#signing-option')).toBeHidden();
   await expect(page.locator('#target')).toHaveText('25 MB');
-  await expect(page.locator('#process')).toHaveText('Check PDF →');
+  await expect(page.locator('#process')).toHaveText('Prepare PDF →');
   await page.locator('#build-mode').click();
   await expect(page.locator('#reserve')).toBeChecked();
   await expect(page.locator('#target')).toHaveText('22.5 MB');

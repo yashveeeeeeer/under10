@@ -7,11 +7,21 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "start": "node scripts/serve.mjs",
-    "test": "node --test tests/core.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/signed.test.mjs",
     "test:browser": "playwright test",
     "check": "npm test && npm run build && npm run test:browser"
   },
-  "dependencies": {"pdf-lib": "1.17.1", "pdfjs-dist": "6.4.299"},
-  "devDependencies": {"esbuild": "0.28.2", "@playwright/test": "1.64.0"},
-  "engines": {"node": ">=22"}
+  "dependencies": {
+    "asn1js": "3.0.10",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.4.299",
+    "pkijs": "3.4.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "esbuild": "0.28.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
 }

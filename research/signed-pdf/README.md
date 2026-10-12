@@ -6,7 +6,7 @@ Research and local tests: 12 October 2026.
 
 The local prototype reduced a deliberately bloated validation-data case from **12,095,873 bytes to 106,814 bytes**. Its original signature passed pyHanko validation and independent OpenSSL content verification before and after. The signed prefix was identical. Every decoded certificate entry remained in the same order. Page pixels were identical in Poppler.
 
-This is a feasibility result, not a production feature or an estimate of typical savings. The input deliberately repeats the same public certificate 14,000 times in an unsigned update. We have not established how often real filing documents contain reducible unsigned updates. The public website still leaves signed originals unchanged.
+This table records the Python feasibility result, not an estimate of typical savings. The input deliberately repeats the same public certificate 14,000 times in an unsigned update. We have not established how often real filing documents contain reducible unsigned updates. The app now implements a narrower browser profile for certificate-only updates; see the implementation record below. Other signed originals stay unchanged.
 
 ## What can actually change
 
@@ -103,8 +103,16 @@ The best browser implementation path is:
 4. Keep the complete signed prefix unchanged, deduplicate only byte-identical eligible streams, and encode the supported suffix compactly. Never rasterize, merge, remove evidence or re-sign automatically.
 5. Reopen the candidate and independently compare every signature, byte range, protected-byte hash, decoded validation-data value and page. Require an identical original signature set and acceptable revision policy. Download only if it is smaller and strictly below the selected limit.
 
-[LibPDF](https://github.com/libpdf-js/core) is an MIT-licensed browser-capable parser/writer candidate. Its [current documentation](https://libpdf.documenso.com/docs) says signature verification is not implemented, so it cannot supply the whole safety check. [PKI.js](https://pkijs.org/docs/examples/other/) offers browser CMS/PDF verification building blocks, but revision-policy validation remains additional work. These are candidates for evaluation, not dependencies added to the app today. A free static GitHub Pages frontend remains feasible; a paid compression server does not change the signed-byte restrictions.
+[LibPDF](https://github.com/libpdf-js/core) is an MIT-licensed browser-capable parser/writer candidate. Its [current documentation](https://libpdf.documenso.com/docs) says signature verification is not implemented, so it cannot supply the whole safety check. [PKI.js](https://pkijs.org/docs/examples/other/) offers browser CMS/PDF verification building blocks, but revision-policy validation remains additional work. The implementation now uses PKI.js with a strict subset reader; LibPDF was not added. A free static GitHub Pages frontend remains feasible; a paid compression server does not change the signed-byte restrictions.
 
-Before enabling the feature on the public site, the prototype needs a browser port, strict-parser and decompression limits, multiple-signature and timestamp fixtures, full DSS/OCSP/CRL preservation checks, malformed-file tests, independent Acrobat/DSS validation, and an authorised representative corpus. MCA upload acceptance has not been tested. No result here establishes legal validity or portal compatibility.
+The restricted browser implementation now has parser/decompression limits, malformed-file tests, and genuine multiple-signature and timestamp rejection fixtures. General DSS/OCSP/CRL support, independent Acrobat/DSS validation, and an authorised representative corpus remain future work. Those unsupported formats are rejected, not rewritten. MCA upload acceptance has not been tested. No result here establishes legal validity or portal compatibility.
 
 **Current status: researched, implemented and verified for a constructed eligible case locally. General signed-PDF compression and public deployment remain unresolved.**
+
+## Browser implementation
+
+The browser port is in `src/signed.js`, with a dedicated terminable worker and PKI.js/WebCrypto integrity checks. The exact eligibility rules and resource bounds are in [TECHNICAL.md](../../TECHNICAL.md#signed-compression-profile). It accepts only the documented certificate-only subset and preserves the signed prefix verbatim. Ordinary page compression, merging, timestamps, certification permissions and multiple signatures remain blocked.
+
+Both Node and the browser produced a 106,820-byte output from the 12,095,873-byte certificate fixture. All 14,000 decoded certificate entries, Info metadata, ID, signature CMS and signed bytes matched. Independent pyHanko validation reported `LTA_UPDATES`, valid cryptographic integrity and permitted modifications; OpenSSL verified the original CMS against the retained signed content. Poppler renders matched pixel for pixel. Certificate trust in the local test uses an explicitly supplied test root, not a claim about real-world trust.
+
+Run `npm run check`, then `python scripts/verify-signed-output.py` with the research Python dependencies, OpenSSL and Poppler installed. `scripts/signed-compression-fixtures.py` regenerates the extra-revision, genuine second-signature and genuine document-timestamp rejection fixtures. No private key is persisted. The committed [browser validation evidence](browser-validation.json) records the independently checked output.

@@ -1,6 +1,7 @@
 import { chromium } from '@playwright/test';
 import assert from 'node:assert/strict';
 import { readFile, mkdir } from 'node:fs/promises';
+import { gunzipSync } from 'node:zlib';
 import { pdfFixture } from '../tests/fixtures.mjs';
 
 const url = process.argv[2];
@@ -22,13 +23,25 @@ try {
   page.on('request', r => requests.push({ method: r.method(), url: r.url() }));
   const signed = await readFile('tests/data/signed-synthetic.pdf');
   await page.locator('#files').setInputFiles({ name: 'synthetic-signed-test.pdf', mimeType: 'application/pdf', buffer: signed });
-  await page.locator('.file-issue').filter({ hasText: 'check-only' }).waitFor();
+  await page.locator('.file-issue').filter({ hasText: 'Choose Signed' }).waitFor();
   assert.equal(await page.locator('#process').isDisabled(), true);
   await page.locator('#check-mode').click(); await page.locator('#process').click();
   await page.locator('#result').waitFor();
   const waiting = page.waitForEvent('download'); await page.locator('#download').click();
   const download = await waiting;
   assert.deepEqual(await readFile(await download.path()), signed);
+  await page.locator('#back-to-files').click();
+  await page.locator('#clear').click();
+  const certificateInput = gunzipSync(await readFile('tests/data/signed-certificates.pdf.gz'));
+  await page.locator('#files').setInputFiles({ name: 'signed-certificate-test.pdf', mimeType: 'application/pdf', buffer: certificateInput });
+  await page.locator('#process:not(:disabled)').waitFor(); await page.locator('#process').click();
+  await page.locator('#result-warning').filter({ hasText: 'Signature integrity checked.' }).waitFor();
+  await page.locator('#reviewed:not(:disabled)').waitFor(); await page.locator('#reviewed').check();
+  const compactWaiting = page.waitForEvent('download'); await page.locator('#download').click();
+  const compactDownload = await compactWaiting, compact = await readFile(await compactDownload.path());
+  assert.ok(compact.length < 10_000_000 && compact.length < certificateInput.length);
+  assert.deepEqual(compact.subarray(0, signed.length), signed);
+  await compactDownload.saveAs('tmp/qa/signed-compressed-live.pdf');
   await page.locator('#back-to-files').click();
   await page.locator('#clear').click(); await page.locator('#build-mode').click();
   await page.locator('#size-limit').fill('25');
@@ -40,5 +53,5 @@ try {
   assert.equal(await page.locator('#download').isDisabled(), false);
   assert.deepEqual(requests, []);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ url, status: 200, signatureBlockedFromMerge: true, signedDownloadByteIdentical: true, chosenLimitAndSigningIntent: true, unsignedPreparation: true, documentNetworkRequests: 0, pageErrors: 0 }, null, 2));
+  console.log(JSON.stringify({ url, status: 200, signatureBlockedFromMerge: true, signedDownloadByteIdentical: true, signedCompression: { input: certificateInput.length, output: compact.length, signedPrefixIdentical: true }, chosenLimitAndSigningIntent: true, unsignedPreparation: true, documentNetworkRequests: 0, pageErrors: 0 }, null, 2));
 } finally { await browser.close(); }

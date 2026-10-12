@@ -38,7 +38,7 @@ test('ordinary static PDF can be prepared', async () => {
 });
 for (const compressed of [false, true]) test(`signature dictionaries are blocked with object streams ${compressed}`, async () => {
   const info = await inspectPDF(await pdfFixture({ signature: true, compressed }));
-  assert.equal(info.signature, true); assert.match(transformIssue(info), /check-only/);
+  assert.equal(info.signature, true); assert.match(transformIssue(info), /Choose Signed/);
 });
 test('blank signature fields are conservatively blocked', async () => {
   assert.equal((await inspectPDF(await pdfFixture({ blankSignature: true }))).signature, true);

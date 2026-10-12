@@ -66,12 +66,13 @@ main { display: grid; grid-template-rows: auto minmax(0, 1fr); min-block-size: 0
 .intro { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .25rem 1rem; padding-block: .35rem .7rem; }
 .intro p { color: var(--muted); font-size: .75rem; }
 .workspace { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-inline-size: 0; min-block-size: 0; }
-.workspace-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: .25rem; border-block-end: 1px solid var(--line); }
-.signature-choice { display: flex; flex-direction: column; align-items: flex-start; gap: .1rem; min-inline-size: 0; }
+.workspace-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: .25rem; padding-block-end: .5rem; border-block-end: 1px solid var(--line); }
+.signature-choice { display: flex; flex-direction: column; align-items: flex-start; gap: .3rem; min-inline-size: 0; inline-size: min(100%, 13rem); }
 .signature-choice > span { font-size: .75rem; color: var(--muted); }
-.mode-tabs { display: flex; flex-wrap: wrap; gap: clamp(1rem, 3vw, 2rem); }
-.mode-tabs button { border: 0; border-block-end: 2px solid transparent; background: none; color: var(--muted); padding: .6rem 0; min-block-size: 44px; font-size: .875rem; }
-.mode-tabs button[aria-pressed="true"] { color: var(--ink); border-color: var(--green); font-weight: 600; }
+.mode-tabs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); inline-size: 100%; gap: .2rem; padding: .2rem; border: 1px solid var(--line); border-radius: .7rem; background: #f0f3f1; }
+.mode-tabs button { border: 1px solid transparent; border-radius: .5rem; background: transparent; color: var(--muted); padding: .45rem 10px; min-block-size: 44px; min-inline-size: 0; font-size: .875rem; font-weight: 550; }
+.mode-tabs button[aria-pressed="true"] { color: var(--green); background: #fff; border-color: #ccd8d0; box-shadow: 0 1px 3px rgb(25 50 35 / 7%); }
+.mode-tabs button:not([aria-pressed="true"]):not(:disabled):hover { color: var(--ink); background: #e6ece8; }
 .text-button { border: 0; background: none; color: var(--muted); font-size: .8125rem; min-block-size: 44px; min-inline-size: 44px; padding: .4rem; }
 .text-button:hover { color: var(--ink); text-decoration: underline; }
 .work-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(6rem, 1fr) auto; gap: .6rem; min-block-size: 0; min-inline-size: 0; padding-block: .6rem; overflow: auto; }
@@ -204,6 +205,10 @@ canvas { display: block; margin-inline: auto; background: white; }
   .result[open]:not(.original) { display: flex; flex-direction: column; overflow: auto; }
   #preview-area { min-block-size: 8rem; flex: 1 0 8rem; }
   .work-grid { grid-template-rows: minmax(6rem, 1fr) auto; }
+}
+@media (min-width: 31.25rem) and (max-width: 49.999rem) and (max-height: 460px) {
+  .work-grid { grid-template-columns: minmax(0, 1fr) minmax(14rem, .6fr); grid-template-rows: minmax(0, 1fr); gap: .75rem; }
+  .settings-panel { border: 0; padding-block: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }

@@ -1,10 +1,12 @@
 import { PDFWorker, GlobalWorkerOptions, getDocument } from 'pdfjs-dist/build/pdf.mjs';
 import { LIMITS, PROFILES, mb, byteLimit, targetBytes, fits, sniff, imageDimensions, inspectPDF, transformIssue, assemble } from './core.js';
+import { SignedCompressor } from './signed-client.js';
 
 GlobalWorkerOptions.workerSrc = new URL('./pdf.worker.mjs', import.meta.url).href;
 const $ = id => document.getElementById(id);
 let items = [], mode = 'build', busy = false, engineReady = false, generation = 0, result = null, previewDoc = null, previewPage = 1, renderTask = null;
 let worker;
+const signedCompressor = new SignedCompressor();
 const tasks = new Set();
 const urls = new Set();
 const nextTick = () => new Promise(resolve => setTimeout(resolve, 0));
@@ -29,7 +31,7 @@ function updateControls() {
   const target = limit && (mode === 'check' ? limit : targetBytes(limit, $('reserve').checked));
   $('target').textContent = limit ? sizeLabel(target) : 'Choose a limit';
   $('target-label').textContent = mode === 'check' ? 'Must be under' : 'Target';
-  $('action-hint').textContent = !limit ? `Choose a limit from 0.1 to ${LIMITS.outputMB} MB.` : mode === 'check' ? 'Signed PDFs are checked without compression.' : $('reserve').checked ? `We’re aiming for ${sizeLabel(target)} to leave room for signing.` : `We’re aiming for ${sizeLabel(target)} to stay below your ${sizeLabel(limit)} limit.`;
+  $('action-hint').textContent = !limit ? `Choose a limit from 0.1 to ${LIMITS.outputMB} MB.` : mode === 'check' ? 'Compression depends on how the PDF was signed.' : $('reserve').checked ? `We’re aiming for ${sizeLabel(target)} to leave room for signing.` : `We’re aiming for ${sizeLabel(target)} to stay below your ${sizeLabel(limit)} limit.`;
   $('file-count').textContent = `${items.length} ${items.length === 1 ? 'file' : 'files'}${pages ? `, ${pages} ${pages === 1 ? 'page' : 'pages'}` : ''}`;
   $('workspace').classList.toggle('has-files', items.length > 0);
   $('workspace').classList.toggle('has-result', Boolean(result));
@@ -80,6 +82,7 @@ async function clearResult() {
 }
 async function reset() {
   generation++;
+  signedCompressor.cancel();
   setBusy(true);
   items = [];
   $('files').value = '';
@@ -100,10 +103,10 @@ function setMode(next) {
   $('files').setAttribute('aria-label', check ? 'Choose one PDF' : 'Choose PDFs and images');
   $('build-settings').hidden = check;
   $('signing-option').hidden = check;
-  $('settings-title').textContent = check ? 'Size check settings' : 'PDF settings';
-  $('process').textContent = check ? 'Check PDF →' : 'Prepare PDF →';
+  $('settings-title').textContent = 'PDF settings';
+  $('process').textContent = 'Prepare PDF →';
   renderList();
-  status(check ? 'Choose one PDF to check its size.' : 'Choose files to begin.');
+  status(check ? 'Choose one signed PDF.' : 'Choose files to begin.');
 }
 async function addFiles(list) {
   if (busy || !engineReady || !list.length) return;
@@ -195,13 +198,26 @@ async function processFiles() {
   const g = ++generation; setBusy(true);
   try {
     const limit = byteLimit($('size-limit').value);
-    let bytes, detail, warning, unchanged = mode === 'check';
+    let bytes, detail, warning, signedCompression = false, unchanged = mode === 'check';
     const pages = items.reduce((n, i) => n + i.info.pages, 0);
     if (unchanged) {
       bytes = new Uint8Array(await items[0].file.arrayBuffer());
-      if (!fits(bytes.length, limit)) throw new Error(`This original is ${mb(bytes.length)} (${bytes.length.toLocaleString()} bytes), so it is not strictly below ${mb(limit)}. It was not changed. Obtain a smaller unsigned source before signing.`);
-      detail = `${pages} ${pages === 1 ? 'page' : 'pages'} (${bytes.length.toLocaleString()} bytes). Original unchanged.`;
-      warning = items[0].info.signature ? 'Signature marker or field detected. The file is unchanged; signature validity and trust have not been verified.' : 'No signature markers detected. This is a size check, not signature validation.';
+      checkGeneration(g);
+      let reason = 'No signature markers detected.';
+      if (items[0].info.signature) {
+        try {
+          const compact = await signedCompressor.run(bytes, limit, text => { if (g === generation) status(text); });
+          checkGeneration(g); bytes = compact.bytes; unchanged = false; signedCompression = true;
+          await validateRendering(bytes, pages, g);
+          detail = `${pages} ${pages === 1 ? 'page' : 'pages'} (${bytes.length.toLocaleString()} bytes). Saved ${mb(compact.saved)} by compressing extra certificate data. All ${compact.signedBytes.toLocaleString()} bytes through the signed revision are identical to the original.`;
+          warning = 'Signature integrity checked. Certificate trust, expiry and revocation have not been verified.';
+        } catch (e) { checkGeneration(g); if (signedCompression) throw e; reason = e.message; }
+      }
+      if (unchanged) {
+        if (!fits(bytes.length, limit)) throw new Error(`This original is ${mb(bytes.length)}, so it is not strictly below ${mb(limit)}. It was not changed. ${reason}`);
+        detail = `${pages} ${pages === 1 ? 'page' : 'pages'} (${bytes.length.toLocaleString()} bytes). Original unchanged. ${reason}`;
+        warning = `${reason} Original unchanged; signature validity and trust have not been verified.`;
+      }
     } else {
       const target = targetBytes(limit, $('reserve').checked);
       let used, raster = false;
@@ -225,7 +241,7 @@ async function processFiles() {
     }
     checkGeneration(g);
     const hashBytes = await crypto.subtle.digest('SHA-256', bytes); checkGeneration(g);
-    result = { bytes, limit, pages, unchanged, hash: Array.from(new Uint8Array(hashBytes), b => b.toString(16).padStart(2, '0')).join(''), name: unchanged ? items[0].file.name : 'prepared-document.pdf', visited: new Set() };
+    result = { bytes, limit, pages, unchanged, hash: Array.from(new Uint8Array(hashBytes), b => b.toString(16).padStart(2, '0')).join(''), name: unchanged ? items[0].file.name : signedCompression ? 'compressed-signed-document.pdf' : 'prepared-document.pdf', visited: new Set() };
     $('result-title').textContent = unchanged ? 'The original fits.' : 'Review your PDF';
     $('result-kicker').textContent = unchanged ? 'SIZE CHECK' : 'PREPARED';
     $('result-size').textContent = mb(bytes.length); $('result-detail').textContent = detail; $('result-warning').textContent = warning; $('hash').textContent = result.hash;
@@ -318,8 +334,10 @@ screenObserver.observe(document.querySelector('.topbar'));
 screenObserver.observe(document.querySelector('.action-bar'));
 window.addEventListener('resize', fitScreen);
 fitScreen();
-window.addEventListener('pagehide', () => { generation++; items = []; clearResult(); for (const task of tasks) task.destroy().catch(() => {}); tasks.clear(); });
+window.addEventListener('pagehide', () => { generation++; signedCompressor.cancel('Session closed.', false); items = []; clearResult(); for (const task of tasks) task.destroy().catch(() => {}); tasks.clear(); });
+window.addEventListener('pageshow', event => { if (event.persisted) { signedCompressor.start(); renderList(); status('Ready.', 'idle'); } });
 try {
   worker = new PDFWorker(); await worker.promise;
+  await signedCompressor.ready;
   engineReady = true; status('Ready.', 'idle'); updateControls();
 } catch { status('The PDF engine could not load. Use a current Chromium browser, allow this site’s scripts, and reload.', 'error'); }

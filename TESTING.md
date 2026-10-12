@@ -4,8 +4,8 @@ Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edg
 
 ## Automated checks
 
-- 17 core tests: strict decimal-byte boundary; invalid limits; file magic; malformed/oversized image headers; static PDF parsing; signature dictionaries in ordinary and compressed object streams; blank fields; escaped historical markers; forms; actions; attachments; annotations; corrupt/truncated/encrypted PDFs; page count/order; signed merge refusal; 200-page cap.
-- 37 browser scenarios: responsive layout and keyboard skip link; actual output page count/order/selectable text; all-page review gate; marker-based signature protection and SHA-256 equality; genuinely signed synthetic PDFs, including one over 10 MB; an actually encrypted PDF; offline mixed-image/PDF preparation; absence of document network requests and storage writes; hostile filenames; invalid files; protected PDF features; chosen limits above and below 10 MB; signing intent and invalidation after settings changes; opt-in rasterization; impossible targets; cancellation and recovery.
+- 17 unsigned/core tests: strict decimal-byte boundary; invalid limits; file magic; malformed/oversized image headers; static PDF parsing; signature dictionaries in ordinary and compressed object streams; blank fields; escaped historical markers; forms; actions; attachments; annotations; corrupt/truncated/encrypted PDFs; page count/order; signed merge refusal; 200-page cap.
+- 44 browser scenarios: responsive layout and keyboard skip link; actual output page count/order/selectable text; all-page review gate; marker-based signature protection and SHA-256 equality; genuinely signed synthetic PDFs, including one over 10 MB; an actually encrypted PDF; offline mixed-image/PDF preparation; absence of document network requests and storage writes; hostile filenames; invalid files; protected PDF features; chosen limits above and below 10 MB; signing intent and invalidation after settings changes; opt-in rasterization; impossible targets; cancellation and recovery.
 - Generated a test-only RSA certificate and signed PDF with pyHanko 0.37.0. Confirmed signature integrity, cryptographic validity and trust against the explicitly supplied synthetic test root. Downloaded through check mode and confirmed byte equality and the same cryptographic results independently with pyHanko. This does not establish real-world certificate trust.
 - Reopened exported PDFs with pdf-lib and independently rendered with Poppler. Inspected the desktop, mobile and result screenshots plus rendered output for clipping and missing text.
 - Production dependency audit: zero reported vulnerabilities at test time. This is not a comprehensive security audit.
@@ -13,15 +13,25 @@ Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edg
 
 `npm run check` runs the reproducible Node and browser suite. Committed synthetic signed/encrypted fixtures remove Python from the normal test dependency chain. `scripts/signed-fixture.py` documents generation; its private test key is generated in process memory and is never written to disk.
 
-## Focused signed-PDF recheck
+## Earlier signed-file guardrail check
 
 Three signature-focused browser tests passed. Scan compression remained blocked for a genuinely signed PDF, including when mixed with an unsigned PDF. Signed mode returned an eligible original byte for byte. A second genuinely signed fixture of 10,107,250 bytes was blocked at a 10 MB limit, returned unchanged at a 12 MB limit, and remained blocked from compression when switching to Unsigned. Its signature was independently verified before testing. The large fixture is stored as gzip in the test repository and restored to ordinary PDF bytes before the browser test; gzip is not offered as a PDF compression feature.
 
 Run `npx playwright test --grep 'signature|signed'` to repeat these checks.
 
+## Signed compression implementation
+
+Twenty additional Node cases cover the eligible certificate suffix, preservation of all decoded certificates and metadata, the strict output byte boundary, fully signed/oversized prefixes, tampered signed content, catalog changes, duplicate dictionary keys, extra DSS fields, page/object updates, invalid certificates, unindexed content, malformed xrefs, unsupported permission/timestamp structures, repeated compression, resource bounds, oversized certificate decompression, and independently generated multiple-signature/timestamp/extra-revision fixtures.
+
+Seven new browser scenarios cover actual signed compression and download offline, zero document-time requests/storage writes, preserved signed prefix, the review gate, compression when the original already fits, a tampered signature, an impossible target, cancellation with recovery, keyboard selection, and the result on a phone-sized viewport.
+
+The exaggerated certificate fixture is 12,095,873 bytes before and 106,820 after. This is not representative savings. Both the actual Node output and browser download were independently checked with pyHanko and OpenSSL. Signed bytes and CMS hashes, all 14,000 certificate entries, Info and ID matched. pyHanko classified the update as `LTA_UPDATES`, with integrity and modification-policy checks passing against the explicit test root. Poppler page pixels matched exactly. Reproduce with `python scripts/verify-signed-output.py` after the standard checks; this independent check additionally needs the research Python dependencies, OpenSSL and Poppler.
+
+A strict subset parser rejects unsupported structure rather than repairing it. This is not a general PAdES validator or proof of acceptance by Acrobat, DSS or MCA. OCSP/CRL/VRI, multiple signatures, document timestamps and certification permissions are deliberately outside the compression profile. Their presence prevents compression. No certificate trust, expiry or fresh revocation check is claimed by the app.
+
 ## Responsive layout
 
-The full suite passed after the screen-fitting layout and signing-choice changes: 17 core tests and 37 browser scenarios. Layout checks cover widths from 320 to 2560 CSS pixels, enlarged text at 200%, long filenames, and preview resizing between portrait and landscape. An emulated touch workflow chooses two files through the picker, reorders them, prepares the PDF, reviews both pages and downloads a verified two-page output. Phone and desktop screenshots were inspected for clipping and overlap. These are automated browser checks, not tests on physical phones.
+The full suite passed after the screen-fitting layout and signing-choice changes: 37 Node tests and 44 browser scenarios. Layout checks cover widths from 320 to 2560 CSS pixels, enlarged text at 200%, long filenames, and preview resizing between portrait and landscape. An emulated touch workflow chooses two files through the picker, reorders them, prepares the PDF, reviews both pages and downloads a verified two-page output. Phone and desktop screenshots were inspected for clipping and overlap. These are automated browser checks, not tests on physical phones.
 
 The workspace and review controls fit viewport sizes from 320 by 480 to 2560 by 1440, including phone landscape. File lists and zoomed previews scroll within their own panels. Help, options and file details use dialogs with Escape handling and focus restoration. Enlarged text and shortened viewports keep controls reachable. Fit page uses both dimensions; 150% and 200% use explicit magnification.
 
@@ -40,6 +50,6 @@ The signing option updates the target at 3, 10 and 25 MB, invalidates an earlier
 
 ## Release gate
 
-Run `npm ci`, `npm run check`, and `npm audit`. Review source and `docs/` together. Publish only static assets and synthetic tests. Do not attach client documents to GitHub issues or test reports. After deployment, verify asset loading under the repository path and the unchanged signature workflow using the synthetic fixture.
+Run `npm ci`, `npm run check`, and `npm audit`. Review source and `docs/` together. Publish only static assets and synthetic tests. Do not attach client documents to GitHub issues or test reports. After deployment, verify asset loading under the repository path and both the unchanged signature and eligible signed-compression workflows using the synthetic fixture.
 
 The GitHub Actions CI file is supplied as a template rather than installed: the authenticated publishing credential has repository permission but does not have the `workflow` scope. Current publication uses GitHub Pages' built-in `main /docs` deployment. Local checks and the deployed-site smoke test were run; future pushes are not automatically gated by the template until it is installed as `.github/workflows/check.yml` with suitable permissions.

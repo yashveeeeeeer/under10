@@ -1,0 +1,68 @@
+{
+  "input": {
+    "bytes": 12095873,
+    "sha256": "d01226e0fb246d4b3a4366dafe12a1cbe7aff987659e3239d7944916218906ba",
+    "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+    "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+    "byte_range": [
+      0,
+      2256,
+      6760,
+      506
+    ],
+    "openssl_content_verified": true,
+    "pyhanko_intact": true,
+    "pyhanko_valid": true,
+    "trusted_test_root_only": true,
+    "docmdp_ok": true,
+    "coverage": "ENTIRE_REVISION",
+    "modification_level": "LTA_UPDATES",
+    "pixel_sha256": "ef97fd80de17a7e8e4736da768622b733a165650f15990e67bce95a714aa2936"
+  },
+  "signed-compressed-node": {
+    "bytes": 106820,
+    "sha256": "255f6da387e91f5af98f2e4e482e7f7a4eb77be6a0e94badfedfc72c4ca7c1af",
+    "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+    "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+    "byte_range": [
+      0,
+      2256,
+      6760,
+      506
+    ],
+    "openssl_content_verified": true,
+    "pyhanko_intact": true,
+    "pyhanko_valid": true,
+    "trusted_test_root_only": true,
+    "docmdp_ok": true,
+    "coverage": "ENTIRE_REVISION",
+    "modification_level": "LTA_UPDATES",
+    "pixel_sha256": "ef97fd80de17a7e8e4736da768622b733a165650f15990e67bce95a714aa2936",
+    "signed_prefix_identical": true,
+    "certificate_entries_preserved": 14000,
+    "info_and_id_preserved": true
+  },
+  "signed-compressed-browser": {
+    "bytes": 106820,
+    "sha256": "255f6da387e91f5af98f2e4e482e7f7a4eb77be6a0e94badfedfc72c4ca7c1af",
+    "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+    "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+    "byte_range": [
+      0,
+      2256,
+      6760,
+      506
+    ],
+    "openssl_content_verified": true,
+    "pyhanko_intact": true,
+    "pyhanko_valid": true,
+    "trusted_test_root_only": true,
+    "docmdp_ok": true,
+    "coverage": "ENTIRE_REVISION",
+    "modification_level": "LTA_UPDATES",
+    "pixel_sha256": "ef97fd80de17a7e8e4736da768622b733a165650f15990e67bce95a714aa2936",
+    "signed_prefix_identical": true,
+    "certificate_entries_preserved": 14000,
+    "info_and_id_preserved": true
+  }
+}
