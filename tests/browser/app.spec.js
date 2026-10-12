@@ -10,8 +10,9 @@ async function ready(page) { await page.goto('/'); await expect(page.locator('#s
 async function prepare(page) { await expect(page.locator('#process')).toBeEnabled(); await page.locator('#process').click(); await expect(page.locator('#result')).toBeVisible(); }
 async function download(page) { const waiting = page.waitForEvent('download'); await page.locator('#download').click(); return waiting; }
 async function allowScans(page) {
-  if (await page.locator('#build-settings').getAttribute('open') === null) await page.locator('#build-settings > summary').click();
+  await page.locator('#options-open').click();
   await page.locator('#raster').check();
+  await page.locator('#options-close').click();
 }
 async function image(page, noisy = false) {
   const data = await page.evaluate(noisy => {
@@ -56,6 +57,7 @@ test('merge preserves all pages, order, extracted text and requires review', asy
   });
   expect(texts[0]).toContain('SECOND DOCUMENT'); expect(texts[1]).toContain('FIRST DOCUMENT'); expect(texts[2]).toContain('page 2');
   await d.saveAs('tmp/qa/merged.pdf'); await page.screenshot({ path: 'tmp/qa/result.png', fullPage: true });
+  await page.locator('#back-to-files').click();
   await page.locator('#clear').click(); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#file-list')).toBeEmpty();
 });
 test('signature markers block merge and unchanged mode preserves SHA-256', async ({ page }) => {
@@ -74,6 +76,7 @@ test('a genuine synthetic digital signature survives unchanged download', async 
   await page.locator('#check-mode').click(); await prepare(page); const d = await download(page); await d.saveAs('tmp/qa/signed-returned.pdf');
   const returned = await readFile(await d.path()); expect(Buffer.compare(returned, bytes)).toBe(0);
   expect(await page.locator('#hash').textContent()).toBe(createHash('sha256').update(bytes).digest('hex'));
+  await page.locator('#back-to-files').click();
   await page.locator('#build-mode').click();
   await upload(page, await pdfFixture(), 'unsigned.pdf');
   await expect(page.locator('#file-count')).toContainText('2 files');
@@ -101,6 +104,7 @@ test('signed PDFs obey the chosen limit and remain protected from compression', 
   await prepare(page);
   const d = await download(page);
   expect(Buffer.compare(await readFile(await d.path()), bytes)).toBe(0);
+  await page.locator('#back-to-files').click();
   await page.locator('#build-mode').click();
   await expect(page.locator('#process')).toBeDisabled();
   await expect(page.locator('#result')).toBeHidden();
@@ -121,6 +125,7 @@ test('unsigned signing choice follows the size limit and invalidates old results
   await prepare(page);
   await expect(page.locator('#target')).toHaveText('24.5 MB');
   await expect(page.locator('#result-warning')).not.toContainText('after signing');
+  await page.locator('#back-to-files').click();
   await page.locator('#reserve').check();
   await expect(page.locator('#result')).toBeHidden();
   await expect(page.locator('#target')).toHaveText('22.5 MB');
@@ -165,7 +170,7 @@ test('annotations, forms and embedded attachments are protected', async ({ page 
   }
 });
 test('over-limit original cannot be downloaded; changing settings invalidates output', async ({ page }) => {
-  await ready(page); await upload(page, await pdfFixture()); await prepare(page); await page.locator('#size-limit').fill('0'); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#process')).toBeDisabled();
+  await ready(page); await upload(page, await pdfFixture()); await prepare(page); await page.locator('#back-to-files').click(); await page.locator('#size-limit').fill('0'); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#process')).toBeDisabled();
   await page.locator('#clear').click(); await page.locator('#size-limit').fill('0.1'); await page.locator('#check-mode').click();
   const small = await pdfFixture({ compressed: false }); const body = Buffer.from(small).toString('latin1'); const big = Buffer.from(body.replace('%%EOF', '% ' + 'x'.repeat(120000) + '\n%%EOF'), 'latin1');
   await upload(page, big); await page.locator('#process').click(); await expect(page.locator('#status')).toContainText('not strictly below'); await expect(page.locator('#result')).toBeHidden();
@@ -175,6 +180,7 @@ test('scan compression is explicit and stops at quality floor', async ({ page })
   await upload(page, await pdf.save()); await page.locator('#size-limit').fill('3'); await page.locator('#process').click(); await expect(page.locator('#status')).toContainText('Cannot meet'); await expect(page.locator('#result')).toBeHidden();
   await allowScans(page); await prepare(page); await expect(page.locator('#result-detail')).toContainText('converted to colour images');
   await page.locator('#reviewed').check(); const d = await download(page); expect((await readFile(await d.path())).length).toBeLessThanOrEqual(2700000);
+  await page.locator('#back-to-files').click();
   await page.locator('#size-limit').fill('0.1'); await page.locator('#process').click(); await expect(page.locator('#status')).toContainText('Cannot meet'); await expect(page.locator('#result')).toBeHidden();
 });
 test('clear while processing prevents stale output', async ({ page }) => {

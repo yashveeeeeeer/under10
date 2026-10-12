@@ -14,7 +14,7 @@ function checkGeneration(g) { if (g !== generation) throw new Error('Cancelled. 
 function setBusy(value) {
   busy = value;
   document.querySelector('.work-grid').setAttribute('aria-busy', String(value));
-  for (const id of ['files', 'size-limit', 'reserve', 'raster', 'build-mode', 'check-mode']) $(id).disabled = value;
+  for (const id of ['files', 'size-limit', 'reserve', 'raster', 'options-open', 'build-mode', 'check-mode']) $(id).disabled = value;
   document.querySelectorAll('.file-actions button').forEach(el => el.disabled = value);
   $('cancel').hidden = !value;
   updateControls();
@@ -33,6 +33,7 @@ function updateControls() {
   $('file-count').textContent = `${items.length} ${items.length === 1 ? 'file' : 'files'}${pages ? `, ${pages} ${pages === 1 ? 'page' : 'pages'}` : ''}`;
   $('workspace').classList.toggle('has-files', items.length > 0);
   $('workspace').classList.toggle('has-result', Boolean(result));
+  $('choose-label').textContent = items.length ? 'Add files' : 'Choose files';
 }
 function renderList() {
   const list = $('file-list'); list.replaceChildren();
@@ -66,6 +67,8 @@ async function clearResult() {
   previewSerial++;
   result = null;
   $('workspace').classList.remove('has-result');
+  $('file-details-dialog').close();
+  $('result').close();
   $('result').hidden = true; $('reviewed').checked = false; $('download').disabled = true;
   $('hash').textContent = ''; $('result-detail').textContent = ''; $('result-warning').textContent = '';
   if (renderTask) { renderTask.cancel(); renderTask = null; }
@@ -227,11 +230,12 @@ async function processFiles() {
     $('result-kicker').textContent = unchanged ? 'SIZE CHECK' : 'PREPARED';
     $('result-size').textContent = mb(bytes.length); $('result-detail').textContent = detail; $('result-warning').textContent = warning; $('hash').textContent = result.hash;
     $('preview-area').hidden = unchanged; $('review-row').hidden = unchanged; $('download').textContent = unchanged ? 'Download unchanged original ↓' : 'Download PDF ↓';
+    $('result').classList.toggle('original', unchanged);
     $('result').hidden = false;
+    $('result').showModal();
     if (!unchanged) { previewDoc = await loadPDF(bytes); checkGeneration(g); previewPage = 1; $('zoom').value = '1'; await showPage(g); }
     refreshDownload();
     status(unchanged ? 'Size check passed. Original unchanged.' : 'Size and page count checked. Review before downloading.', 'success');
-    $('result').scrollIntoView({ behavior: 'instant', block: 'start' });
   } catch (e) { if (g === generation) { await clearResult(); status(e.message || 'The file could not be safely prepared. No download created.', 'error'); } }
   finally { if (g === generation) { setBusy(false); renderList(); } }
 }
@@ -246,7 +250,10 @@ async function showPage(g = generation) {
   const container = document.querySelector('.canvas-wrap');
   const style = getComputedStyle(container);
   const available = Math.max(1, container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
-  const desiredScale = Math.min(1.1, available / base.width) * Number($('zoom').value);
+  const availableHeight = Math.max(1, container.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom));
+  const fitScale = Math.min(1.5, available / base.width, availableHeight / base.height);
+  const zoom = Number($('zoom').value);
+  const desiredScale = zoom === 1 ? fitScale : zoom;
   const scale = Math.min(desiredScale, Math.sqrt(LIMITS.renderPixels / (base.width * base.height)), 16000 / Math.max(base.width, base.height));
   const viewport = page.getViewport({ scale });
   const canvas = $('preview'); canvas.width = Math.ceil(viewport.width); canvas.height = Math.ceil(viewport.height);
@@ -280,23 +287,39 @@ $('clear').addEventListener('click', reset);
 $('cancel').addEventListener('click', reset);
 $('build-mode').addEventListener('click', () => setMode('build'));
 $('check-mode').addEventListener('click', () => setMode('check'));
-$('privacy-link').addEventListener('click', () => { $('privacy').open = true; });
+$('privacy-link').addEventListener('click', () => { $('privacy').open = true; $('help-dialog').showModal(); });
+$('help-close').addEventListener('click', () => $('help-dialog').close());
+$('options-open').addEventListener('click', () => $('options-dialog').showModal());
+$('options-close').addEventListener('click', () => $('options-dialog').close());
+$('back-to-files').addEventListener('click', () => $('result').close());
+$('details-open').addEventListener('click', () => $('file-details-dialog').showModal());
+$('details-close').addEventListener('click', () => $('file-details-dialog').close());
 for (const id of ['size-limit', 'reserve', 'raster']) $(id).addEventListener('input', () => { generation++; clearResult(); updateControls(); });
 $('reviewed').addEventListener('change', refreshDownload); $('download').addEventListener('click', download);
 for (const [id, delta] of [['previous', -1], ['next', 1]]) $(id).addEventListener('click', () => { if (!result) return; previewPage = Math.min(result.pages, Math.max(1, previewPage + delta)); showPage().catch(() => { clearResult(); status('Preview failed. Download blocked; prepare the document again.', 'error'); }); });
 $('zoom').addEventListener('change', () => showPage().catch(() => { clearResult(); status('Preview failed. Download blocked.', 'error'); }));
-let resizeTimer, previewWidth = 0;
+let resizeTimer, previewSize = '';
 new ResizeObserver(([entry]) => {
-  const width = Math.round(entry.contentRect.width);
-  if (width === previewWidth) return;
-  previewWidth = width;
+  const width = Math.round(entry.contentRect.width), height = Math.round(entry.contentRect.height);
+  const size = `${width}x${height}`;
+  if (size === previewSize) return;
+  previewSize = size;
   clearTimeout(resizeTimer);
-  if (width > 0 && previewDoc && result && !busy) resizeTimer = setTimeout(() => {
+  if (width > 0 && height > 0 && previewDoc && result && $('result').open && !busy) resizeTimer = setTimeout(() => {
     showPage().catch(() => { clearResult(); status('Preview failed. Download blocked.', 'error'); });
   }, 100);
 }).observe(document.querySelector('.canvas-wrap'));
+function fitScreen() {
+  const textSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  document.body.classList.toggle('cramped', innerHeight / textSize < 32);
+}
+const screenObserver = new ResizeObserver(fitScreen);
+screenObserver.observe(document.querySelector('.topbar'));
+screenObserver.observe(document.querySelector('.action-bar'));
+window.addEventListener('resize', fitScreen);
+fitScreen();
 window.addEventListener('pagehide', () => { generation++; items = []; clearResult(); for (const task of tasks) task.destroy().catch(() => {}); tasks.clear(); });
 try {
   worker = new PDFWorker(); await worker.promise;
-  engineReady = true; status('Ready.'); updateControls();
+  engineReady = true; status('Ready.', 'idle'); updateControls();
 } catch { status('The PDF engine could not load. Use a current Chromium browser, allow this site’s scripts, and reload.', 'error'); }

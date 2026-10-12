@@ -2,29 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'none'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="Combine unsigned PDFs and images under a chosen size limit. Process files in your browser, without uploads.">
   <title>Under10: Prepare a PDF</title>
-  <link rel="stylesheet" href="./assets/style.css">
-  <script type="module" src="./assets/app.js"></script>
+  <link rel="stylesheet" href="./assets/style.css?v=d4445313c4cc">
+  <script type="module" src="./assets/app.js?v=75b593ec795b"></script>
 </head>
 <body>
   <a class="skip" href="#workspace">Skip to PDF tool</a>
   <header class="topbar wrap">
     <a class="brand" href="./" aria-label="Under10 home">under<span>10</span></a>
     <nav aria-label="Main navigation">
-      <a id="privacy-link" href="#privacy">Privacy</a>
+      <button id="privacy-link" class="text-button" aria-haspopup="dialog">Help &amp; privacy</button>
       <a href="https://github.com/yashveeeeeeer/under10" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
     </nav>
   </header>
   <main class="wrap">
     <section class="intro" aria-labelledby="page-title">
       <h1 id="page-title">Prepare a PDF</h1>
-      <p>Choose your size limit. Your files stay in your browser.</p>
+      <p>Your files stay in your browser.</p>
     </section>
-    <section id="workspace" class="workspace" aria-label="PDF preparation tool">
+    <section id="workspace" class="workspace" aria-label="PDF preparation tool" tabindex="-1">
       <div class="workspace-head">
         <div class="signature-choice">
           <span id="signature-choice-label">Digital signature</span>
@@ -41,12 +41,12 @@
           <p id="input-help" class="muted" hidden>Signature validity is not verified.</p>
           <label id="dropzone" class="dropzone" for="files">
             <svg class="file-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M11 4h12l8 8v22a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M23 4v9h8M20 20v10m-5-5h10"/></svg>
-            <strong>Choose files <span aria-hidden="true">+</span></strong>
+            <strong><span id="choose-label">Choose files</span> <span aria-hidden="true">+</span></strong>
             <span class="drop-hint">or drop them here</span>
             <small id="formats">PDF, JPG or PNG</small>
             <input id="files" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple aria-label="Choose PDFs and images">
           </label>
-          <div id="file-list" class="file-list" aria-label="Selected documents"></div>
+          <div id="file-list" class="file-list" role="region" tabindex="0" aria-label="Selected documents"></div>
         </div>
         <aside class="settings-panel" aria-label="Output settings">
           <h2 id="settings-title" class="sr-only">PDF settings</h2>
@@ -55,38 +55,49 @@
             <div class="limit-input"><input id="size-limit" type="number" min="0.1" max="100" step="0.1" value="10" inputmode="decimal" aria-describedby="limit-help"><span>MB</span></div>
           </div>
           <span id="limit-help" class="sr-only">Between 0.1 and 100 decimal megabytes.</span>
-          <label id="signing-option" class="check-row signing-option"><input id="reserve" type="checkbox" checked><span>I’ll sign this PDF later</span></label>
-          <details id="build-settings" class="options">
-            <summary>Options</summary>
-            <label class="check-row"><input id="raster" type="checkbox"><span>Allow scan compression<small>If needed, turns unsigned PDF pages into images. Removes selectable text, tags and bookmarks.</small></span></label>
-          </details>
+          <div class="settings-extra">
+            <label id="signing-option" class="check-row"><input id="reserve" type="checkbox" checked><span>I’ll sign this PDF later</span></label>
+            <div id="build-settings"><button id="options-open" class="text-button" aria-haspopup="dialog">Options</button></div>
+          </div>
         </aside>
-        <div class="action-bar">
-          <div class="action-main"><div class="target"><span id="target-label">Target</span><strong id="target">9.00 MB</strong></div><button id="process" class="primary" disabled>Prepare PDF <span aria-hidden="true">→</span></button></div>
-          <p id="action-hint" class="hint">We’re aiming for 9 MB to leave room for signing.</p>
-          <button id="cancel" class="text-button cancel" hidden>Cancel</button>
-        </div>
       </div>
-      <div id="status" class="status" role="status" aria-live="polite">Loading PDF tools…</div>
-      <section id="result" class="result" hidden aria-labelledby="result-title">
-        <div class="result-heading"><div><p id="result-kicker" class="eyebrow">PREPARED</p><h2 id="result-title">Review your PDF</h2></div><strong id="result-size"></strong></div>
-        <p id="result-detail"></p><p id="result-warning" class="notice"></p>
-        <div id="preview-area">
-          <div class="preview-controls"><span>Check text, stamps and seals.</span><div><button id="previous" class="small-button" aria-label="Previous page">←</button><span id="page-label"></span><button id="next" class="small-button" aria-label="Next page">→</button><select id="zoom" aria-label="Preview zoom"><option value="1">Fit page</option><option value="1.5">150%</option><option value="2">200%</option></select></div></div>
-          <div class="canvas-wrap" tabindex="0" role="region" aria-label="PDF preview; scroll to view a zoomed page"><canvas id="preview" aria-label="PDF page preview"></canvas></div>
-        </div>
-        <label id="review-row" class="check-row"><input id="reviewed" type="checkbox"><span>Every page is complete and readable.</span></label>
-        <div class="download-row"><button id="download" class="primary" disabled>Download PDF ↓</button><span id="download-note">Review all pages first.</span></div>
-        <details id="hash-details"><summary>File fingerprint</summary><code id="hash"></code><p class="hint">SHA-256 identifies these bytes. It does not verify a signature.</p></details>
-      </section>
+      <div class="action-bar">
+        <div id="status" class="status" role="status" aria-live="polite">Loading PDF tools…</div>
+        <div class="action-main"><div class="target"><span id="target-label">Target</span><strong id="target">9 MB</strong></div><button id="process" class="primary" disabled>Prepare PDF <span aria-hidden="true">→</span></button><button id="cancel" class="text-button cancel" hidden>Cancel</button></div>
+        <p id="action-hint" class="hint">We’re aiming for 9 MB to leave room for signing.</p>
+      </div>
     </section>
+  </main>
+  <dialog id="options-dialog" class="sheet" aria-labelledby="options-title">
+    <div class="dialog-head"><h2 id="options-title">PDF options</h2><button id="options-close" class="small-button" autofocus aria-label="Close options">×</button></div>
+    <label class="check-row"><input id="raster" type="checkbox"><span>Allow scan compression<small>If needed, turns unsigned PDF pages into images. Removes selectable text, tags and bookmarks.</small></span></label>
+  </dialog>
+  <dialog id="result" class="result" hidden aria-labelledby="result-title">
+    <div class="result-heading"><button id="back-to-files" class="text-button" autofocus aria-label="Back to files">← Back</button><h2 id="result-title">Review your PDF</h2><strong id="result-size"></strong><p id="result-kicker" class="sr-only">PREPARED</p></div>
+    <p id="result-warning" class="notice"></p>
+    <div id="preview-area">
+      <div class="preview-controls"><span>Check text, stamps and seals.</span><div><button id="previous" class="small-button" aria-label="Previous page">←</button><span id="page-label"></span><button id="next" class="small-button" aria-label="Next page">→</button><select id="zoom" aria-label="Preview zoom"><option value="1">Fit page</option><option value="1.5">150%</option><option value="2">200%</option></select></div></div>
+      <div class="canvas-wrap" tabindex="0" role="region" aria-label="PDF preview; scroll to view a zoomed page"><canvas id="preview" aria-label="PDF page preview"></canvas></div>
+    </div>
+    <div class="review-footer">
+      <div class="review-confirm"><label id="review-row" class="check-row"><input id="reviewed" type="checkbox"><span>Every page is complete and readable.</span></label><button id="details-open" class="text-button" aria-haspopup="dialog">File details</button></div>
+      <div class="download-row"><button id="download" class="primary" disabled>Download PDF ↓</button><span id="download-note">Review all pages first.</span></div>
+    </div>
+  </dialog>
+  <dialog id="file-details-dialog" class="sheet" aria-labelledby="file-details-title">
+    <div class="dialog-head"><h2 id="file-details-title">File details</h2><button id="details-close" class="small-button" autofocus aria-label="Close file details">×</button></div>
+    <p id="result-detail"></p>
+    <details id="hash-details"><summary>File fingerprint</summary><code id="hash"></code><p class="hint">SHA-256 identifies these bytes. It does not verify a signature.</p></details>
+  </dialog>
+  <dialog id="help-dialog" class="sheet" aria-labelledby="help-title">
+    <div class="dialog-head"><h2 id="help-title">Help &amp; privacy</h2><button id="help-close" class="small-button" autofocus aria-label="Close help">×</button></div>
     <section class="help" aria-label="Help">
       <details id="privacy"><summary>Privacy</summary><p>Files stay in browser memory. No uploads, tracking or document storage. Clear the session to release them; Download saves a copy. The site host may keep visit logs. Your browser and operating system control memory, caches and downloads.</p></details>
       <details><summary>Signed PDFs</summary><p>Signed files are check-only. Compressing or merging can break a digital signature. Use unsigned originals to prepare a new PDF, then sign it. This tool does not verify signatures.</p></details>
       <details><summary>Choosing a size</summary><p>Use the limit shown on your upload form. If you plan to sign the PDF later, we aim for 90% of that limit. Check its size again after signing. This tool is not affiliated with MCA.</p></details>
       <details><summary>Supported files</summary><p>Static unsigned PDFs, JPGs and PNGs. Up to 40 files, 40 MB each, 100 MB total and 200 pages. Forms, annotations, portfolios and embedded attachments are check-only. New PDFs do not retain document-level bookmarks, tags or metadata.</p><a href="https://github.com/yashveeeeeeer/under10/blob/main/TECHNICAL.md" target="_blank" rel="noopener noreferrer">Full technical details ↗</a></details>
     </section>
-  </main>
+  </dialog>
   <noscript><p class="notice">Enable JavaScript to process files on your device.</p></noscript>
 </body>
 </html>

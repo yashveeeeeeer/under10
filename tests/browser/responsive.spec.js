@@ -14,7 +14,8 @@ async function outputFits(page) {
   await expect.poll(() => page.locator('.canvas-wrap').evaluate(el => {
     const style = getComputedStyle(el);
     const usable = el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
-    return el.querySelector('canvas').width <= usable + 1;
+    const height = el.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+    return el.querySelector('canvas').width <= usable + 1 && el.querySelector('canvas').height <= height + 1;
   })).toBe(true);
 }
 
@@ -23,7 +24,7 @@ for (const width of [320, 360, 390, 430, 768, 1024, 1440, 2560]) {
     await page.setViewportSize({ width, height: 900 });
     await ready(page);
     await noOverflow(page);
-    await expect(page.locator('#build-settings')).not.toHaveAttribute('open', '');
+    await expect(page.locator('#options-dialog')).not.toBeVisible();
     expect(await page.locator('#dropzone').evaluate(el => el.getBoundingClientRect().bottom)).toBeLessThan(900);
     for (const id of ['build-mode', 'check-mode', 'clear', 'process']) {
       expect((await page.locator(`#${id}`).boundingBox()).height).toBeGreaterThanOrEqual(44);
@@ -39,8 +40,9 @@ test('200 percent text remains usable at a narrow width', async ({ page }) => {
   await ready(page);
   await page.evaluate(() => { document.documentElement.style.fontSize = '32px'; });
   await noOverflow(page);
-  await page.locator('#build-settings > summary').click();
+  await page.locator('#options-open').click();
   await page.locator('#raster').check();
+  await page.locator('#options-close').click();
   await noOverflow(page);
   await page.locator('#check-mode').click();
   await expect(page.locator('#input-title')).toHaveText('Original PDF');
@@ -62,6 +64,7 @@ test('fit-page preview adapts after resizing and contains explicit zoom', async 
   await outputFits(page);
   await page.locator('#zoom').selectOption('2');
   await expect.poll(() => page.locator('.canvas-wrap').evaluate(el => el.scrollWidth > el.clientWidth)).toBe(true);
+  await expect.poll(() => page.locator('#preview').evaluate(el => el.width)).toBeGreaterThan(1100);
   await noOverflow(page);
   await page.locator('#zoom').selectOption('1');
   await outputFits(page);

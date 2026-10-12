@@ -29,6 +29,7 @@ try {
   const waiting = page.waitForEvent('download'); await page.locator('#download').click();
   const download = await waiting;
   assert.deepEqual(await readFile(await download.path()), signed);
+  await page.locator('#back-to-files').click();
   await page.locator('#clear').click(); await page.locator('#build-mode').click();
   await page.locator('#size-limit').fill('25');
   await page.locator('#reserve').uncheck();
