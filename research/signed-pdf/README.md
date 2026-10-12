@@ -1,14 +1,17 @@
 # Signed PDF compression: findings and prototype
 
+**Production update:** The one-signature CRL/OCSP/VRI subset is now implemented in the browser worker. See [the current method and proof](production-revocation.md). The results below describe the earlier research version.
+
+
 Research and local tests: 12 October 2026.
 
-Follow-up: [revocation-data compression and the offline size inspector](revocation-findings.md). The expanded research prototype handles unsigned CRL/OCSP/VRI additions and passed 19 local checks. It is not deployed.
+Follow-up: [revocation-data compression and the offline size inspector](revocation-findings.md). The expanded research prototype handles unsigned CRL/OCSP/VRI additions and passed 19 local checks. The broader multiple-signature prototype remains offline; its one-signature subset has since been ported to the browser.
 
 **There is a working method for a limited class of signed PDFs: reduce an unsigned validation-data update after the last signature while preserving the complete signed prefix. There is still no demonstrated way to shrink arbitrary already-signed page content while preserving its original certificate signature.**
 
 The local prototype reduced a deliberately bloated validation-data case from **12,095,873 bytes to 106,814 bytes**. Its original signature passed pyHanko validation and independent OpenSSL content verification before and after. The signed prefix was identical. Every decoded certificate entry remained in the same order. Page pixels were identical in Poppler.
 
-This table records the Python feasibility result, not an estimate of typical savings. The input deliberately repeats the same public certificate 14,000 times in an unsigned update. We have not established how often real filing documents contain reducible unsigned updates. The app now implements a narrower browser profile for certificate-only updates; see the implementation record below. Other signed originals stay unchanged.
+This table records the Python feasibility result, not an estimate of typical savings. The input deliberately repeats the same public certificate 14,000 times in an unsigned update. We have not established how often real filing documents contain reducible unsigned updates. The original browser release supported certificate-only updates; the production update linked above adds revocation records. Other signed originals stay unchanged.
 
 ## What can actually change
 
@@ -109,11 +112,11 @@ The best browser implementation path is:
 
 The restricted browser implementation now has parser/decompression limits, malformed-file tests, and genuine multiple-signature and timestamp rejection fixtures. General DSS/OCSP/CRL support, independent Acrobat/DSS validation, and an authorised representative corpus remain future work. Those unsupported formats are rejected, not rewritten. MCA upload acceptance has not been tested. No result here establishes legal validity or portal compatibility.
 
-**Current status: the restricted certificate-only implementation is deployed and tested on GitHub Pages. General signed-PDF compression remains unresolved.**
+**Earlier release: the restricted certificate-only implementation was deployed and tested on GitHub Pages. The production update linked above supersedes that profile. General signed-PDF compression remains unresolved.**
 
 ## Browser implementation
 
-The browser port is in `src/signed.js`, with a dedicated terminable worker and PKI.js/WebCrypto integrity checks. The exact eligibility rules and resource bounds are in [TECHNICAL.md](../../TECHNICAL.md#signed-compression-profile). It accepts only the documented certificate-only subset and preserves the signed prefix verbatim. Ordinary page compression, merging, timestamps, certification permissions and multiple signatures remain blocked.
+The browser port is in `src/signed.js`, with a dedicated terminable worker and PKI.js/WebCrypto integrity checks. The exact eligibility rules and resource bounds are in [TECHNICAL.md](../../TECHNICAL.md#signed-compression-profile). That earlier release accepted only the documented certificate-only subset and preserves the signed prefix verbatim. Ordinary page compression, merging, timestamps, certification permissions and multiple signatures remain blocked.
 
 Both Node and the browser produced a 106,820-byte output from the 12,095,873-byte certificate fixture. All 14,000 decoded certificate entries, Info metadata, ID, signature CMS and signed bytes matched. Independent pyHanko validation reported `LTA_UPDATES`, valid cryptographic integrity and permitted modifications; OpenSSL verified the original CMS against the retained signed content. Poppler renders matched pixel for pixel. Certificate trust in the local test uses an explicitly supplied test root, not a claim about real-world trust.
 

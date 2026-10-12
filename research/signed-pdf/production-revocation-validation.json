@@ -1,0 +1,547 @@
+{
+  "scope": "Production code, generated test CA. No real DSC credentials or MCA submission.",
+  "cases": [
+    {
+      "name": "revocation-rsa-crl-ocsp",
+      "engine": "node",
+      "input_bytes": 10508164,
+      "output_bytes": 9379292,
+      "signed_bytes": 9214501,
+      "saved_bytes": 1128872,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 10508164,
+        "sha256": "28ea1203b329e767c26186a9e90825cd0abba2e26265c45c96cd22763adab3c6",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              9204041,
+              9213949,
+              552
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "7f88b13c1d4c26853aa6d74cbb9433152bc619126546815f0f8d728deb9ca149",
+            "signed_bytes_sha256": "1a40651168d6ed7377c681639fe1ae0ff0911b975524145dd185820fcae2add0",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 9379292,
+        "sha256": "4909eb0c88ae168caa2749f6866d9256f306756cbf72547b341c027dcec85029",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              9204041,
+              9213949,
+              552
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "7f88b13c1d4c26853aa6d74cbb9433152bc619126546815f0f8d728deb9ca149",
+            "signed_bytes_sha256": "1a40651168d6ed7377c681639fe1ae0ff0911b975524145dd185820fcae2add0",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "revocation-rsa-crl-ocsp",
+      "engine": "browser",
+      "input_bytes": 10508164,
+      "output_bytes": 9379292,
+      "signed_bytes": 9214501,
+      "saved_bytes": 1128872,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 10508164,
+        "sha256": "28ea1203b329e767c26186a9e90825cd0abba2e26265c45c96cd22763adab3c6",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              9204041,
+              9213949,
+              552
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "7f88b13c1d4c26853aa6d74cbb9433152bc619126546815f0f8d728deb9ca149",
+            "signed_bytes_sha256": "1a40651168d6ed7377c681639fe1ae0ff0911b975524145dd185820fcae2add0",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 9379292,
+        "sha256": "4909eb0c88ae168caa2749f6866d9256f306756cbf72547b341c027dcec85029",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              9204041,
+              9213949,
+              552
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "7f88b13c1d4c26853aa6d74cbb9433152bc619126546815f0f8d728deb9ca149",
+            "signed_bytes_sha256": "1a40651168d6ed7377c681639fe1ae0ff0911b975524145dd185820fcae2add0",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "revocation-rsa-ocsp",
+      "engine": "node",
+      "input_bytes": 19994,
+      "output_bytes": 19963,
+      "signed_bytes": 14487,
+      "saved_bytes": 31,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 19994,
+        "sha256": "3aa631266f7b20901d8c13bda2f3cb6cd9d7fcce2dfa72af428849a00b755cd1",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13940,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "4435441d339727ae5e610f0b8f5366d7297a99a0fd341c673cf11da5566c784b",
+            "signed_bytes_sha256": "07d87bcd86ab9e3c84c5cbe8a8d1403b45aa7815ee1a7e49eacdd696138ad943",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 19963,
+        "sha256": "b9ca900baab133003ef4a7cd97c3f222875f1c40c239e74ab3e4100a1472dbe8",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13940,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "4435441d339727ae5e610f0b8f5366d7297a99a0fd341c673cf11da5566c784b",
+            "signed_bytes_sha256": "07d87bcd86ab9e3c84c5cbe8a8d1403b45aa7815ee1a7e49eacdd696138ad943",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "revocation-rsa-ocsp",
+      "engine": "browser",
+      "input_bytes": 19994,
+      "output_bytes": 19963,
+      "signed_bytes": 14487,
+      "saved_bytes": 31,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 19994,
+        "sha256": "3aa631266f7b20901d8c13bda2f3cb6cd9d7fcce2dfa72af428849a00b755cd1",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13940,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "4435441d339727ae5e610f0b8f5366d7297a99a0fd341c673cf11da5566c784b",
+            "signed_bytes_sha256": "07d87bcd86ab9e3c84c5cbe8a8d1403b45aa7815ee1a7e49eacdd696138ad943",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 19963,
+        "sha256": "b9ca900baab133003ef4a7cd97c3f222875f1c40c239e74ab3e4100a1472dbe8",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13940,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "4435441d339727ae5e610f0b8f5366d7297a99a0fd341c673cf11da5566c784b",
+            "signed_bytes_sha256": "07d87bcd86ab9e3c84c5cbe8a8d1403b45aa7815ee1a7e49eacdd696138ad943",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "revocation-ecdsa-crl-ocsp",
+      "engine": "node",
+      "input_bytes": 1307945,
+      "output_bytes": 179073,
+      "signed_bytes": 14084,
+      "saved_bytes": 1128872,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 1307945,
+        "sha256": "d5f9af861f40b9e55ab8bd83f43622c53475f41bd3ebe7296ee8a6bdb9774af0",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4235,
+              12967,
+              1117
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "cfbac68c630252f5db42e65b49b5104a24b8ac597879d23db9f065ca64668f1c",
+            "signed_bytes_sha256": "57da2b538631e6d04f71583e3470bee2015538a24ada55f374dcef84bc7ea26b",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 179073,
+        "sha256": "13fe1e0e276a5b872e2dd06a03ffc8e7bdce851e7f42d1a439ea46990221f9ef",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4235,
+              12967,
+              1117
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "cfbac68c630252f5db42e65b49b5104a24b8ac597879d23db9f065ca64668f1c",
+            "signed_bytes_sha256": "57da2b538631e6d04f71583e3470bee2015538a24ada55f374dcef84bc7ea26b",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "revocation-ecdsa-crl-ocsp",
+      "engine": "browser",
+      "input_bytes": 1307945,
+      "output_bytes": 179073,
+      "signed_bytes": 14084,
+      "saved_bytes": 1128872,
+      "signed_prefix_identical": true,
+      "cms_and_ranges_identical": true,
+      "all_dss_records_and_links_identical": true,
+      "metadata_identical": true,
+      "all_page_pixels_identical": true,
+      "test_chain_with_required_revocation_valid": true,
+      "validation_moment": "2026-10-12T14:58:51+00:00",
+      "input": {
+        "bytes": 1307945,
+        "sha256": "d5f9af861f40b9e55ab8bd83f43622c53475f41bd3ebe7296ee8a6bdb9774af0",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4235,
+              12967,
+              1117
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "cfbac68c630252f5db42e65b49b5104a24b8ac597879d23db9f065ca64668f1c",
+            "signed_bytes_sha256": "57da2b538631e6d04f71583e3470bee2015538a24ada55f374dcef84bc7ea26b",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 179073,
+        "sha256": "13fe1e0e276a5b872e2dd06a03ffc8e7bdce851e7f42d1a439ea46990221f9ef",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4235,
+              12967,
+              1117
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "cfbac68c630252f5db42e65b49b5104a24b8ac597879d23db9f065ca64668f1c",
+            "signed_bytes_sha256": "57da2b538631e6d04f71583e3470bee2015538a24ada55f374dcef84bc7ea26b",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      }
+    }
+  ],
+  "fully_signed_counterexample": {
+    "original": {
+      "bytes": 10107250,
+      "sha256": "799433678d0e20ee40a8fe6d58a84f081d4f845e4ba42828a64cd2e8ac21626c",
+      "revisions": 2,
+      "signatures": [
+        {
+          "field": "TestSignature",
+          "byte_range": [
+            0,
+            10102232,
+            10106736,
+            514
+          ],
+          "ranges_in_bounds": true,
+          "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+          "signed_bytes_sha256": "eca6d2e871b278de576b72164832e13de5c1a82c2bc1861364048f38becb55aa",
+          "openssl_content_verified": true,
+          "intact": true,
+          "cms_valid": true,
+          "trusted_test_certificate": true,
+          "coverage": "ENTIRE_FILE",
+          "modification_level": "NONE",
+          "docmdp_ok": true,
+          "accepted_by_validator": true
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "method": "pypdf-rewrite",
+        "meets_preservation_and_size_requirements": false,
+        "bytes": 25927,
+        "sha256": "ab037eaa006106995b1fe8adbcb989522ff2a98d86720780caf712086d2ba9da",
+        "revisions": 1,
+        "signatures": [
+          {
+            "field": "TestSignature",
+            "byte_range": [
+              0,
+              10102232,
+              10106736,
+              514
+            ],
+            "ranges_in_bounds": false,
+            "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+            "signed_bytes_sha256": null,
+            "openssl_content_verified": false,
+            "intact": false,
+            "cms_valid": true,
+            "trusted_test_certificate": false,
+            "coverage": "CONTIGUOUS_BLOCK_FROM_START",
+            "modification_level": "OTHER",
+            "docmdp_ok": false,
+            "accepted_by_validator": false
+          }
+        ]
+      },
+      {
+        "method": "qpdf-rewrite",
+        "meets_preservation_and_size_requirements": false,
+        "bytes": 25472,
+        "sha256": "aded8e616470ede136a959c36a2ef548f307a4846d9b4a83cfba1dfc7b150715",
+        "revisions": 1,
+        "signatures": [
+          {
+            "field": "TestSignature",
+            "byte_range": [
+              0,
+              10102232,
+              10106736,
+              514
+            ],
+            "ranges_in_bounds": false,
+            "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+            "signed_bytes_sha256": null,
+            "openssl_content_verified": false,
+            "intact": false,
+            "cms_valid": true,
+            "trusted_test_certificate": false,
+            "coverage": "CONTIGUOUS_BLOCK_FROM_START",
+            "modification_level": "OTHER",
+            "docmdp_ok": false,
+            "accepted_by_validator": false
+          }
+        ]
+      },
+      {
+        "method": "incremental-page-compression",
+        "meets_preservation_and_size_requirements": false,
+        "bytes": 10127909,
+        "sha256": "58a4cef0d77efd54c935365ed18dca68c4e8c1e32d7e7ac2ea7b9d4244143563",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "TestSignature",
+            "byte_range": [
+              0,
+              10102232,
+              10106736,
+              514
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+            "signed_bytes_sha256": "eca6d2e871b278de576b72164832e13de5c1a82c2bc1861364048f38becb55aa",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "OTHER",
+            "docmdp_ok": false,
+            "accepted_by_validator": false
+          }
+        ]
+      }
+    ]
+  },
+  "checked_at": "2026-10-12T15:10:25.850215+00:00",
+  "source_text_lf_sha256": {
+    "src\\signed.js": "586a16cef63d8eb047b4819093ba73a81fc627f8f180874e800969ccd3a5eea6",
+    "src\\signed.worker.js": "07d6a7372c4b6c65b37629c8f6740212be226ef9c6f9583df5871462244bac36",
+    "src\\signed-client.js": "9c1b5d3e556621d249fb15976ee37b4686f51cb26c405fbefcadfd8101bf8a72"
+  },
+  "deployed_assets_sha256": {
+    "docs\\assets\\signed.worker.js": "5e239b1b43cffc4194ca8ec42442981afc2ebc5cbc4754005a25b03983c6450a",
+    "docs\\assets\\app.js": "537caeb8089d76d013db569370af3833adbb618229195d58c7b405910ee6a864"
+  }
+}

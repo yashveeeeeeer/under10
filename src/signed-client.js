@@ -13,7 +13,7 @@ export class SignedCompressor {
       if (!this.pending) return;
       if (data.progress) { this.pending.progress(data.progress); return; }
       const pending = this.pending; this.pending = null; clearTimeout(this.timer);
-      if (data.error) pending.reject(new Error(data.error)); else pending.resolve(data.result);
+      if (data.error) pending.reject(Object.assign(new Error(data.error), { code: data.code, diagnosis: data.diagnosis })); else pending.resolve(data.result);
     };
     this.worker.onerror = event => {
       event.preventDefault(); clearTimeout(this.loadTimer); this.available = false; this.resolveReady(false);

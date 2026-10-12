@@ -8,7 +8,7 @@ Add PDFs, JPGs or PNGs, put them in order and choose a limit from 0.1 to 100 MB.
 
 If you’ll sign it later, leave that option checked. A 10 MB limit then targets 9 MB to leave space for signing. Recheck the size afterwards.
 
-Choose **Signed** to try compression without changing signed bytes. This works only when extra certificate data was added after signing. Other signed files stay unchanged. Certificate trust is not verified.
+Choose **Signed** to try compression without changing signed bytes. This works only when supported validation records were added after signing. Other signed files stay unchanged. Certificate trust is not verified.
 
 Files stay in browser memory with no uploads or tracking. Download saves a copy. Clear releases the session. Browser and operating system storage are outside the app’s control.
 

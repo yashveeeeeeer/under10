@@ -38,7 +38,7 @@
       <div class="work-grid">
         <div class="files-panel">
           <div class="section-label"><h2 id="input-title">Files</h2><span id="file-count">0 files</span></div>
-          <p id="input-help" class="muted" hidden>Only extra certificate data can shrink. Signed pages stay intact.</p>
+          <p id="input-help" class="muted" hidden>We can shrink some validation records added after signing.</p>
           <label id="dropzone" class="dropzone" for="files">
             <svg class="file-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M11 4h12l8 8v22a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M23 4v9h8M20 20v10m-5-5h10"/></svg>
             <strong><span id="choose-label">Choose files</span> <span aria-hidden="true">+</span></strong>
@@ -93,7 +93,7 @@
     <div class="dialog-head"><h2 id="help-title">Help &amp; privacy</h2><button id="help-close" class="small-button" autofocus aria-label="Close help">×</button></div>
     <section class="help" aria-label="Help">
       <details id="privacy"><summary>Privacy</summary><p>Files stay in browser memory. No uploads, tracking or document storage. Clear the session to release them; Download saves a copy. The site host may keep visit logs. Your browser and operating system control memory, caches and downloads.</p></details>
-      <details><summary>Signed PDFs</summary><p>Some signed PDFs contain extra certificate data added after signing. We can compress that data while keeping every signed byte. If your file does not support this, it stays unchanged. Signed pages cannot be compressed or merged here. We check signature integrity before compression, but not certificate trust, expiry or revocation.</p></details>
+      <details><summary>Signed PDFs</summary><p>We can compress some certificates and revocation records added after signing. Signed bytes and validation records are preserved. If the protected part already exceeds your limit, prepare the unsigned original and sign it again. We check signature integrity, but not certificate trust, expiry or revocation status.</p></details>
       <details><summary>Choosing a size</summary><p>Use the limit shown on your upload form. If you plan to sign the PDF later, we aim for 90% of that limit. Check its size again after signing. This tool is not affiliated with MCA.</p></details>
       <details><summary>Supported files</summary><p>Static unsigned PDFs, JPGs and PNGs. Up to 40 files, 40 MB each, 100 MB total and 200 pages. Forms, annotations, portfolios and embedded attachments are check-only. New PDFs do not retain document-level bookmarks, tags or metadata.</p><a href="https://github.com/yashveeeeeeer/under10/blob/main/TECHNICAL.md" target="_blank" rel="noopener noreferrer">Full technical details ↗</a></details>
     </section>

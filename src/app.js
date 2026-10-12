@@ -209,7 +209,7 @@ async function processFiles() {
           const compact = await signedCompressor.run(bytes, limit, text => { if (g === generation) status(text); });
           checkGeneration(g); bytes = compact.bytes; unchanged = false; signedCompression = true;
           await validateRendering(bytes, pages, g);
-          detail = `${pages} ${pages === 1 ? 'page' : 'pages'} (${bytes.length.toLocaleString()} bytes). Saved ${mb(compact.saved)} by compressing extra certificate data. All ${compact.signedBytes.toLocaleString()} bytes through the signed revision are identical to the original.`;
+          detail = `${pages} ${pages === 1 ? 'page' : 'pages'} (${bytes.length.toLocaleString()} bytes). Saved ${mb(compact.saved)} by compressing validation records added after signing. All ${compact.signedBytes.toLocaleString()} bytes through the signed revision are identical to the original. Certificates, revocation records and their signature links are retained.`;
           warning = 'Signature integrity checked. Certificate trust, expiry and revocation have not been verified.';
         } catch (e) { checkGeneration(g); if (signedCompression) throw e; reason = e.message; }
       }

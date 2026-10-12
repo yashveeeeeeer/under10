@@ -27,7 +27,7 @@ Seven new browser scenarios cover actual signed compression and download offline
 
 The exaggerated certificate fixture is 12,095,873 bytes before and 106,820 after. This is not representative savings. Both the actual Node output and browser download were independently checked with pyHanko and OpenSSL. Signed bytes and CMS hashes, all 14,000 certificate entries, Info and ID matched. pyHanko classified the update as `LTA_UPDATES`, with integrity and modification-policy checks passing against the explicit test root. Poppler page pixels matched exactly. Reproduce with `python scripts/verify-signed-output.py` after the standard checks; this independent check additionally needs the research Python dependencies, OpenSSL and Poppler.
 
-A strict subset parser rejects unsupported structure rather than repairing it. This is not a general PAdES validator or proof of acceptance by Acrobat, DSS or MCA. OCSP/CRL/VRI, multiple signatures, document timestamps and certification permissions are deliberately outside the compression profile. Their presence prevents compression. No certificate trust, expiry or fresh revocation check is claimed by the app.
+A strict subset parser rejects unsupported structure rather than repairing it. This is not a general PAdES validator or proof of acceptance by Acrobat, DSS or MCA. In that earlier version, OCSP/CRL/VRI, multiple signatures, document timestamps and certification permissions were outside the compression profile. The production expansion below now supports the stated OCSP/CRL/VRI subset. Their presence prevents compression. No certificate trust, expiry or fresh revocation check is claimed by the app.
 
 ## DSC compatibility check
 
@@ -61,7 +61,20 @@ python scripts/verify-dsc-results.py
 
 Without the optional public sample there are ten cases. Generated files and verification buffers stay in ignored `tmp/qa/dsc/`. Certificate keys and timestamps change on regeneration, so byte counts can vary. The live site and public sample may also change; the committed report records the tested URL and output hashes.
 
-Additional research, separate from the production suite: the [revocation-data lab](research/signed-pdf/revocation-findings.md) passed three compression cases, ten rejection cases and six offline size diagnoses. One generated signed file with a large unsigned CRL shrank from 10,508,159 to 9,378,697 bytes. The original signatures, decoded validation records and page pixels were preserved. This is an offline prototype, not production support for CRL/OCSP/VRI or multiple-signature compression.
+Additional research, separate from the production suite: the [revocation-data lab](research/signed-pdf/revocation-findings.md) passed three compression cases, ten rejection cases and six offline size diagnoses. One generated signed file with a large unsigned CRL shrank from 10,508,159 to 9,378,697 bytes. The original signatures, decoded validation records and page pixels were preserved. That was an offline prototype. The one-signature CRL/OCSP/VRI subset has now been ported into the browser worker; multiple-signature compression remains research-only.
+
+## Production revocation-record compression
+
+The current suite has 60 Node tests and 48 browser scenarios. The 23 new Node checks cover RSA/ECDSA revocation fixtures, independent graph and metadata comparisons, strict byte boundaries, verified protected-prefix diagnosis, conflicting references, VRI hash/global-array mismatches, cycles, invalid CRL/OCSP encodings, decompression bombs, deep ASN.1, indefinite lengths, filters, duplicate keys, unrelated changes and multiple-signature refusal. The four new browser scenarios exercise three real worker downloads offline and the fully signed oversized refusal/retry path.
+
+The production output is additionally verified with OpenSSL CMS, pyHanko modification analysis and revocation-required validation against an explicit test root. Every decoded DSS record and VRI mapping, Info/ID, signature identity and signed prefix is compared. Poppler renders every page before and after and compares all pixels. The test validation moment comes from fixture generation, not a claim about current certificate status.
+
+```sh
+npm run check
+python scripts/verify-revocation-output.py
+```
+
+Recreate the committed fixtures with `python scripts/revocation-fixtures.py` only when needed. This requires the research dependencies and generates disposable keys solely in memory. Ordinary regression runs use the committed fixtures without generating keys or requiring Python. Results and limitations are in the [production method and proof](research/signed-pdf/production-revocation.md).
 
 ## Responsive layout
 

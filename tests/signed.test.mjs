@@ -46,10 +46,10 @@ test('signed compression enforces the exact output boundary', async () => {
 });
 
 test('a fully signed file and an oversized signed prefix cannot be compressed', async () => {
-  await assert.rejects(compactSignedPDF(original, LIMIT), /no unsigned certificate/);
-  await assert.rejects(compactSignedPDF(fixture, original.length), /signed portion/);
+  await assert.rejects(compactSignedPDF(original, LIMIT), /no unsigned validation/);
+  await assert.rejects(compactSignedPDF(fixture, original.length), /signature protects/);
   const large = new Uint8Array(gunzipSync(await readFile('tests/data/signed-over-limit-synthetic.pdf.gz')));
-  await assert.rejects(compactSignedPDF(large, LIMIT), /no unsigned certificate/);
+  await assert.rejects(compactSignedPDF(large, LIMIT), /signature protects/);
 });
 
 test('tampering with a signed byte is rejected by cryptographic verification', async () => {
@@ -58,12 +58,12 @@ test('tampering with a signed byte is rejected by cryptographic verification', a
 });
 
 for (const [label, change, message] of [
-  ['other catalog changes', s => s.replace('/Type /Catalog', '/Type /Catalog /Lang (en)'), /catalog|document|certificate store/i],
-  ['extra DSS keys', s => s.replace('/Certs [', '/VRI << >> /Certs ['), /OCSP, CRL and VRI/],
+  ['other catalog changes', s => s.replace('/Type /Catalog', '/Type /Catalog /Lang (en)'), /catalog|document|validation store/i],
+  ['extra DSS keys', s => s.replace('/Certs [', '/VRI << >> /Certs ['), /VRI does not match/],
   ['duplicate keys', s => s.replace('/Certs [', '/Certs [] /Certs ['), /Duplicate/],
   ['signed page update', s => s + '\n3 0 obj\n<< /Type /Page >>\nendobj\n', /other document objects/],
   ['unknown new object', s => s + '\n8 0 obj\n<< /Anything (else) >>\nendobj\n', /other document objects/],
-  ['new DSS alias to signed object', s => s.replace(/\/DSS \d+ 0 R/, '/DSS 7 0 R'), /not supported/],
+  ['new DSS alias to signed object', s => s.replace(/\/DSS \d+ 0 R/, '/DSS 7 0 R'), /references a signed object/],
   ['invalid certificate', s => s.replace('stream\n0', 'stream\n1'), /certificate|schema|ASN|Object/i],
   ['extra bytes outside objects', s => s + 'garbage\n', /Unindexed/],
 ]) test(`rejects ${label}`, async () => { await assert.rejects(compactSignedPDF(mutateSuffix(change), LIMIT), message); });
@@ -101,7 +101,7 @@ test('input and size limits fail closed', async () => {
 });
 
 for (const [file, reason] of [
-  ['signed-extra-revision', /Only one certificate update/],
+  ['signed-extra-revision', /Only one validation update/],
   ['signed-multiple', /exactly one/],
   ['signed-timestamp', /Timestamped documents/],
 ]) test(`refuses the independently generated ${file} fixture`, async () => {

@@ -1,5 +1,8 @@
 # DSC compression: the next method
 
+**Production update:** The one-signature CRL/OCSP/VRI subset is now implemented in the browser worker. See [the current method and proof](production-revocation.md). The results below describe the earlier research version.
+
+
 Research and local experiments, 12 October 2026.
 
 **An expanded prototype reduced a generated signed PDF from 10,508,159 bytes to 9,378,697 bytes, preserving the original signature.** It compressed a large unsigned revocation-data update. It did not compress the signed pages. This is a working research result, not a feature deployed on the website or proof that ordinary DSC-signed files can all shrink.

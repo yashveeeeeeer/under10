@@ -1,0 +1,26 @@
+[
+  {
+    "name": "revocation-rsa-crl-ocsp",
+    "input_bytes": 10508164,
+    "signed_bytes": 9214501,
+    "certificates": 4,
+    "crls": 2,
+    "ocsps": 2
+  },
+  {
+    "name": "revocation-rsa-ocsp",
+    "input_bytes": 19994,
+    "signed_bytes": 14487,
+    "certificates": 4,
+    "crls": 0,
+    "ocsps": 2
+  },
+  {
+    "name": "revocation-ecdsa-crl-ocsp",
+    "input_bytes": 1307945,
+    "signed_bytes": 14084,
+    "certificates": 4,
+    "crls": 2,
+    "ocsps": 2
+  }
+]

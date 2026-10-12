@@ -1,8 +1,8 @@
 import { fromBER } from 'asn1js';
-import { Certificate, ContentInfo, SignedData } from 'pkijs';
+import { Certificate, CertificateRevocationList, OCSPResponse, BasicOCSPResponse, ContentInfo, SignedData } from 'pkijs';
 
 // Deliberately a subset reader, not a repairing/general PDF optimizer. Signed
-// bytes are never serialized. Only a proven certificate-only suffix is rebuilt.
+// bytes are never serialized. Only a proven unsigned validation suffix is rebuilt.
 const WS = /[\x00\t\n\f\r ]/;
 const DELIM = /[\x00\t\n\f\r ()<>\[\]{}/%]/;
 const MAX_OBJECTS = 30_000;
@@ -178,6 +178,7 @@ function signatureIn(document) {
 }
 
 async function verifySignature(bytes, signature) {
+  boundedDER(signature.cms, true);
   const cms = fromBER(signature.cms);
   require(cms.offset > 0 && signature.cms.subarray(cms.offset).every(b => b === 0), 'The signature data could not be read.');
   const info = new ContentInfo({ schema: cms.result }); require(info.contentType === ContentInfo.SIGNED_DATA);
@@ -195,32 +196,157 @@ async function verifySignature(bytes, signature) {
   catch { throw new Error('Signature integrity check failed.'); }
 }
 
-async function flate(bytes, decompress) {
+// Streaming limits apply before retaining decompressed bytes. The worker also
+// has a hard deadline and is terminated on cancellation.
+async function flate(bytes, decompress, cap, label = 'Validation') {
   const stream = new Blob([bytes]).stream().pipeThrough(decompress ? new DecompressionStream('deflate') : new CompressionStream('deflate'));
   const reader = stream.getReader(); const chunks = []; let total = 0;
   try {
-    while (true) { const { value, done } = await reader.read(); if (done) break; total += value.length; require(total <= 65_536, 'Certificate data exceeds the processing limit.'); chunks.push(value); }
+    while (true) { const { value, done } = await reader.read(); if (done) break; total += value.length; require(total <= cap, `${label} data exceeds the processing limit.`); chunks.push(value); }
   } finally { await reader.cancel().catch(() => {}); }
   return join(chunks);
 }
-function certificate(bytes) {
-  try { const parsed = fromBER(bytes); require(parsed.offset === bytes.length); new Certificate({ schema: parsed.result }); }
-  catch { throw new Error('Invalid certificate data.'); }
-}
-function serializeDict(entries) { return `<<\n${[...entries].map(([k, v]) => `/${k.replace(/[^a-z\d]/gi, c => '#' + c.charCodeAt(0).toString(16).padStart(2, '0'))} ${v.raw}`).join('\n')}\n>>`; }
-const rawNode = raw => ({ raw });
 
-// Throws on any unsupported feature. Callers may offer the exact unchanged
-// original if it fits, but must never substitute an ordinary rewrite.
+// Reject indefinite lengths, deep nesting and excessive ASN.1 objects before
+// invoking the schema parser. This is a bounded encoding check, not CA trust.
+function boundedDER(bytes, padded = false) {
+  let count = 0;
+  function item(at, end, depth) {
+    require(depth < 24 && ++count <= 350_000 && at + 2 <= end, 'Validation ASN.1 exceeds the processing limit.');
+    const tag = bytes[at++]; require(tag !== 0 && (tag & 31) !== 31, 'Unsupported validation ASN.1 tag.');
+    let length = bytes[at++];
+    if (length & 128) {
+      const n = length & 127; require(n > 0 && n <= 4 && at + n <= end && bytes[at] !== 0, 'Invalid DER length.');
+      length = 0; for (let i = 0; i < n; i++) length = length * 256 + bytes[at++];
+      require(length >= 128, 'Nonminimal DER length.');
+    }
+    const stop = at + length; require(stop <= end, 'Truncated validation data.');
+    if (tag & 32) { while (at < stop) at = item(at, stop, depth + 1); }
+    return stop;
+  }
+  require(bytes.length > 0, 'Empty validation data.');
+  const end = item(0, bytes.length, 0);
+  require(end === bytes.length || (padded && bytes.subarray(end).every(b => b === 0)), 'Invalid validation data length.');
+}
+function evidenceSchema(bytes, kind) {
+  try {
+    boundedDER(bytes);
+    const parsed = fromBER(bytes, { maxDepth: 24, maxNodes: 350_000 }); require(parsed.offset === bytes.length, parsed.result.error || 'Invalid DER data.');
+    if (kind === 'Certs') new Certificate({ schema: parsed.result });
+    else if (kind === 'CRLs') new CertificateRevocationList({ schema: parsed.result });
+    else {
+      const response = new OCSPResponse({ schema: parsed.result });
+      require(response.responseStatus.valueBlock.valueDec === 0 && response.responseBytes?.responseType === '1.3.6.1.5.5.7.48.1.1');
+      const basic = new Uint8Array(response.responseBytes.response.valueBlock.valueHexView);
+      boundedDER(basic); const decoded = fromBER(basic); require(decoded.offset === basic.length);
+      new BasicOCSPResponse({ schema: decoded.result });
+    }
+  } catch (e) { throw new Error(`Invalid ${kind === 'Certs' ? 'certificate' : kind === 'CRLs' ? 'CRL' : 'OCSP'} data. ${e.message}`); }
+}
+const pdfName = key => '/' + key.replace(/[^a-z\d]/gi, c => '#' + c.charCodeAt(0).toString(16).padStart(2, '0'));
+function serializeDict(entries) { return `<<\n${[...entries].map(([k, v]) => `${pdfName(k)} ${v.raw}`).join('\n')}\n>>`; }
+const rawNode = raw => ({ raw });
+const hex = bytes => [...new Uint8Array(bytes)].map(b => b.toString(16).padStart(2, '0')).join('');
+const CAPS = { Certs: 65_536, CRLs: 4_000_000, OCSPs: 1_000_000 };
+
+// Validate an entire DSS graph against a closed schema. Every reference must be
+// newly allocated in this one unsigned revision; aliases cannot change roles.
+async function evidenceGraph(document, revision, first, dssRef, signature) {
+  const roles = new Map(), streams = new Map(), checked = new Map(), arrays = { Certs: 0, CRLs: 0, OCSPs: 0 };
+  let total = 0, references = 0;
+  function resolve(node, role) {
+    if (node?.t !== 'ref') return node;
+    const id = ref(node); require(id >= first, 'Validation data references a signed object.');
+    require(!roles.has(id) || roles.get(id) === role, 'Validation object is used with conflicting types.');
+    roles.set(id, role);
+    const obj = revision.objects.get(id); require(obj, 'Missing validation object.');
+    if (!(role in CAPS)) require(!obj.stream, 'Validation dictionary cannot be a stream.');
+    return obj.node;
+  }
+  function fields(node, role, keys) {
+    const values = dict(resolve(node, role));
+    require([...values.keys()].every(k => keys.includes(k)), `Unknown ${role} key.`);
+    if (values.has('Type')) require(name(values.get('Type')) === role, `Invalid ${role} type.`);
+    return values;
+  }
+  async function array(node, kind, top = false) {
+    require(node?.t === 'array' && node.v.length > 0 && node.v.length <= (kind === 'Certs' ? 20_000 : 1000), 'Unsupported validation array.');
+    references += node.v.length; require(references <= 24_000, 'Too many validation references.');
+    if (top) arrays[kind] = node.v.length;
+    for (const entry of node.v) {
+      const id = ref(entry); resolve(entry, kind);
+      if (streams.has(id)) continue;
+      const obj = revision.objects.get(id), values = dict(obj.node), cap = CAPS[kind], label = kind === 'Certs' ? 'Certificate' : kind;
+      require(obj.stream?.length > 0 && obj.stream.length <= cap && [...values.keys()].every(k => ['Length', 'Filter'].includes(k)), 'Unsupported validation stream.');
+      require(!values.has('Filter') || name(values.get('Filter')) === 'FlateDecode', 'Unsupported validation filter.');
+      const remaining = Math.min(cap, 24_000_000 - total);
+      const bytes = values.has('Filter') ? await flate(obj.stream, true, remaining, label) : obj.stream;
+      total += bytes.length; require(bytes.length > 0 && total <= 24_000_000, 'Decoded validation budget exceeded.');
+      const hash = hex(await crypto.subtle.digest('SHA-256', bytes)), key = kind + ':' + hash;
+      if (checked.has(key)) require(equal(bytes, checked.get(key)), 'Validation hash collision.');
+      else {
+        require(checked.size < 256, 'Too many distinct validation streams.');
+        evidenceSchema(bytes, kind); checked.set(key, bytes);
+      }
+      streams.set(id, { bytes: checked.get(key), kind, hash });
+    }
+  }
+  ref(dssRef);
+  const dss = fields(dssRef, 'DSS', ['Type', 'Certs', 'CRLs', 'OCSPs', 'VRI']);
+  for (const kind of Object.keys(CAPS)) if (dss.has(kind)) await array(dss.get(kind), kind, true);
+  if (dss.has('VRI')) {
+    const vris = dict(resolve(dss.get('VRI'), 'VRI index'));
+    // SHA-1 here is the standard VRI lookup key over the entire Contents value,
+    // including padding. It is NOT used to accept a SHA-1 signature.
+    const identifier = hex(await crypto.subtle.digest('SHA-1', signature.cms)).toUpperCase();
+    require(vris.size === 1 && vris.has(identifier), 'VRI does not match the signature.');
+    const vri = fields(vris.get(identifier), 'VRI', ['Type', 'Cert', 'CRL', 'OCSP', 'TU']);
+    for (const [key, kind] of [['Cert', 'Certs'], ['CRL', 'CRLs'], ['OCSP', 'OCSPs']]) {
+      if (vri.has(key)) {
+        await array(vri.get(key), kind);
+        const globalIds = new Set(dss.get(kind)?.v.map(ref) || []);
+        require(vri.get(key).v.every(entry => globalIds.has(ref(entry))), 'VRI evidence is absent from the DSS array.');
+      }
+    }
+    if (vri.has('TU')) require(vri.get('TU').t === 'string', 'Unsupported validation time.');
+  }
+  require(streams.size, 'The validation store is empty.');
+  function snapshot(n, depth = 0) {
+    require(depth < 12, 'Validation graph is too deep.');
+    if (n.t === 'ref') {
+      const id = ref(n), stream = streams.get(id);
+      return stream ? ['stream', stream.kind, stream.bytes.length, stream.hash] : snapshot(revision.objects.get(id).node, depth + 1);
+    }
+    if (n.t === 'dict') return ['dict', [...n.v].sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [k, snapshot(v, depth + 1)])];
+    if (n.t === 'array') return ['array', n.v.map(v => snapshot(v, depth + 1))];
+    return canonical(n);
+  }
+  return { streams, allowed: new Set(roles.keys()), arrays, snapshot: JSON.stringify(snapshot(dssRef)) };
+}
+
+function stopWithBudget(code, message, bytes, limit, signature) {
+  const error = new Error(message);
+  error.code = code;
+  error.diagnosis = { signedBytes: signature.end, unsignedBytes: bytes.length - signature.end, limit, integrityChecked: true };
+  throw error;
+}
+
+// Throws on unsupported features. A fitting original may be offered unchanged;
+// ordinary PDF rewriting is never a fallback for a signed input.
 export async function compactSignedPDF(bytes, limit, progress = () => {}) {
   require(bytes instanceof Uint8Array && bytes.length > 0 && bytes.length <= 40_000_000);
   require(Number.isSafeInteger(limit) && limit > 0);
   progress('Checking signed revisions…');
   const reader = new Reader(bytes), document = reader.document(), signature = signatureIn(document);
-  const revisions = document.revisions, latest = revisions.at(-1), signedRev = revisions.at(-2);
-  require(signature.end < bytes.length, 'There is no unsigned certificate data to compress.');
-  require(signature.end < limit, 'The signed portion alone reaches the size limit.');
-  require(signedRev && signature.end === signedRev.end, 'Only one certificate update after signing is supported.');
+  const revisions = document.revisions, latest = revisions.at(-1);
+  require(revisions.some(r => r.end === signature.end), 'The signature does not cover a complete revision.');
+  progress('Checking signature integrity…'); await verifySignature(bytes, signature);
+  if (signature.end >= limit) stopWithBudget('SIGNED_PREFIX_LIMIT',
+    `The signature protects ${signature.end.toLocaleString('en-US')} bytes, already at or above your limit. Prepare the unsigned original and sign it again to make a smaller PDF.`, bytes, limit, signature);
+  if (signature.end === latest.end) stopWithBudget('NO_UNSIGNED_UPDATE',
+    'There is no unsigned validation data to compress. To reduce this PDF, prepare the unsigned original and sign it again.', bytes, limit, signature);
+  const signedRev = revisions.at(-2);
+  require(signedRev && signature.end === signedRev.end, 'Only one validation update after signing is supported.');
   const prefixObjects = new Map(); for (const rev of revisions.slice(0, -1)) for (const [id, o] of rev.objects) prefixObjects.set(id, o);
   const td = dict(latest.trailer), oldTd = dict(signedRev.trailer);
   if (td.has('ID')) { const id = td.get('ID'); require(id.t === 'array' && id.v.length === 2 && id.v.every(n => n.t === 'string')); }
@@ -229,13 +355,9 @@ export async function compactSignedPDF(bytes, limit, progress = () => {}) {
   require(!document.objects.get(rootId)?.stream && !prefixObjects.get(rootId)?.stream);
   const root = dict(document.objects.get(rootId)?.node), oldRoot = dict(prefixObjects.get(rootId)?.node);
   require(name(root.get('Type')) === 'Catalog');
-  require(!oldRoot.has('DSS') && root.size === oldRoot.size + 1 && root.has('DSS'), 'Only a newly added certificate store is supported.');
+  require(!oldRoot.has('DSS') && root.size === oldRoot.size + 1 && root.has('DSS'), 'Only a newly added validation store is supported.');
   for (const [k, v] of oldRoot) require(equivalent(v, root.get(k)), 'The unsigned revision changes document content.');
-  const dssId = ref(root.get('DSS')); require(dssId >= signedRev.size);
-  require(!latest.objects.get(dssId)?.stream);
-  const dss = dict(latest.objects.get(dssId)?.node); require(dss.size === 1 && dss.has('Certs'), 'Only certificate data can be compressed. OCSP, CRL and VRI updates are not supported.');
-  const entries = dss.get('Certs'); require(entries.t === 'array' && entries.v.length > 0 && entries.v.length <= 20_000);
-  const allowed = new Set([rootId, dssId]);
+  const allowed = new Set([rootId]);
   let info;
   require(td.has('Info') === oldTd.has('Info'));
   if (td.has('Info')) {
@@ -244,57 +366,51 @@ export async function compactSignedPDF(bytes, limit, progress = () => {}) {
     require(!info?.stream && [...dict(prefixObjects.get(infoId)?.node).values()].every(v => ['number', 'string', 'literal', 'name'].includes(v.t)));
     require([...dict(info?.node).values()].every(v => ['number', 'string', 'literal', 'name'].includes(v.t)), 'Only plain metadata is supported.');
   }
-  for (const entry of entries.v) { const id = ref(entry); require(id >= signedRev.size && id !== dssId); allowed.add(id); }
-  require([...latest.objects.keys()].every(id => allowed.has(id)), 'The unsigned revision changes other document objects.');
-  require(latest.objects.has(rootId));
-  // All references in the signed revisions must already resolve within them.
-  // This rules out a suffix resolving a dangling signed page/resource reference.
+  // A suffix must never resolve a dangling signed content/resource reference.
   const checkRefs = n => {
     if (n.t === 'ref') {
       require(prefixObjects.has(ref(n)), 'Unresolved reference in the signed document.');
       require(!info || ref(n) !== info.id, 'Shared metadata objects are not supported.');
-    }
-    else if (n.t === 'array') n.v.forEach(checkRefs);
+    } else if (n.t === 'array') n.v.forEach(checkRefs);
     else if (n.t === 'dict') for (const v of n.v.values()) checkRefs(v);
   };
   for (const o of prefixObjects.values()) checkRefs(o.node);
-  progress('Checking signature integrity…'); await verifySignature(bytes, signature);
-  progress('Compressing extra certificate data…');
-  const byObject = new Map(), byBytes = new Map(), unique = [], indexes = []; let decodedTotal = 0;
-  for (const entry of entries.v) {
-    const id = ref(entry);
-    if (!byObject.has(id)) {
-      const obj = latest.objects.get(id), fields = dict(obj?.node);
-      require(obj.stream && [...fields.keys()].every(k => ['Length', 'Filter'].includes(k)) && (!fields.has('Filter') || name(fields.get('Filter')) === 'FlateDecode'));
-      require(obj.stream.length > 0 && obj.stream.length <= 65_536);
-      const der = fields.has('Filter') ? await flate(obj.stream, true) : obj.stream;
-      decodedTotal += der.length; require(decodedTotal <= 40_000_000 && der.length > 0, 'Certificate data exceeds the processing limit.');
-      const key = binary(der);
-      if (!byBytes.has(key)) { require(unique.length < 256, 'Too many distinct certificates.'); certificate(der); byBytes.set(key, unique.length); unique.push(der); }
-      byObject.set(id, byBytes.get(key));
-    }
-    indexes.push(byObject.get(id));
+  progress('Checking validation records…');
+  const graph = await evidenceGraph(document, latest, signedRev.size, root.get('DSS'), signature);
+  for (const id of graph.allowed) allowed.add(id);
+  require([...latest.objects.keys()].every(id => allowed.has(id)), 'The unsigned revision changes other document objects.');
+  require(latest.objects.has(rootId));
+  progress('Compressing validation records…');
+  const outputObjects = new Map(), mapped = new Map(), unique = new Map();
+  // Remap only byte-identical streams of the same kind. Arrays and VRI mappings
+  // keep every entry and its order. New object IDs may be sparse, as in input.
+  for (const [id, entry] of graph.streams) {
+    const key = entry.kind + ':' + entry.hash, previous = unique.get(key);
+    if (previous) { require(equal(entry.bytes, previous.bytes), 'Validation hash collision.'); mapped.set(id, previous.id); continue; }
+    unique.set(key, { id, bytes: entry.bytes }); mapped.set(id, id);
+    const compressed = await flate(entry.bytes, false, CAPS[entry.kind] + 65_536);
+    const useFlate = compressed.length + 21 < entry.bytes.length, stream = useFlate ? compressed : entry.bytes;
+    outputObjects.set(id, join([encode(`<< /Length ${stream.length}${useFlate ? ' /Filter /FlateDecode' : ''} >>\nstream\n`), stream, encode('\nendstream')]));
   }
-  const first = signedRev.size, newDssId = first + unique.length;
-  const outputObjects = new Map();
-  for (let i = 0; i < unique.length; i++) {
-    const compressed = await flate(unique[i], false), useFlate = compressed.length < unique[i].length;
-    const stream = useFlate ? compressed : unique[i];
-    outputObjects.set(first + i, join([encode(`<< /Length ${stream.length}${useFlate ? ' /Filter /FlateDecode' : ''} >>\nstream\n`), stream, encode('\nendstream')]));
+  function serialize(n) {
+    if (n.t === 'ref') return `${mapped.get(ref(n)) ?? ref(n)} 0 R`;
+    if (n.t === 'dict') return serializeDict(new Map([...n.v].map(([k, v]) => [k, rawNode(serialize(v))])));
+    if (n.t === 'array') return `[${n.v.map(serialize).join(' ')}]`;
+    return n.raw;
   }
-  outputObjects.set(newDssId, encode(`<< /Certs [${indexes.map(i => `${first + i} 0 R`).join(' ')}] >>`));
-  const newRoot = new Map(root); newRoot.set('DSS', rawNode(`${newDssId} 0 R`)); outputObjects.set(rootId, encode(serializeDict(newRoot)));
+  for (const id of graph.allowed) if (!graph.streams.has(id)) outputObjects.set(id, encode(serialize(latest.objects.get(id).node)));
+  outputObjects.set(rootId, encode(serializeDict(root)));
   if (info && latest.objects.has(info.id)) outputObjects.set(info.id, encode(info.node.raw));
   const parts = [bytes.subarray(0, signature.end), encode('\n')]; let at = signature.end + 1;
   const offsets = [];
   for (const [id, body] of [...outputObjects].sort((a, b) => a[0] - b[0])) {
     offsets.push([id, at]); const part = join([encode(`${id} 0 obj\n`), body, encode('\nendobj\n')]); parts.push(part); at += part.length;
   }
-  const trailer = new Map(td); trailer.set('Prev', rawNode(String(signedRev.offset))); trailer.set('Size', rawNode(String(newDssId + 1)));
+  const trailer = new Map(td); trailer.set('Prev', rawNode(String(signedRev.offset)));
   const xref = `xref\n0 1\n0000000000 65535 f \n${offsets.map(([id, pos]) => `${id} 1\n${String(pos).padStart(10, '0')} 00000 n \n`).join('')}trailer\n${serializeDict(trailer)}\nstartxref\n${at}\n%%EOF\n`;
   parts.push(encode(xref)); const candidate = join(parts);
   require(candidate.length < bytes.length, 'There is no smaller result within the supported signature rules.');
-  require(candidate.length < limit, 'The compressed result still reaches the chosen size limit.');
+  if (candidate.length >= limit) stopWithBudget('TARGET_NOT_MET', 'The compressed result still reaches the chosen size limit. Use a higher limit if allowed, or prepare the unsigned original and sign it again.', bytes, limit, signature);
   require(equal(candidate.subarray(0, signature.end), bytes.subarray(0, signature.end)), 'Signed bytes changed. Download blocked.');
   progress('Checking the compressed PDF…');
   const output = new Reader(candidate).document(), outSig = signatureIn(output);
@@ -303,13 +419,8 @@ export async function compactSignedPDF(bytes, limit, progress = () => {}) {
   for (const [k, v] of root) if (k !== 'DSS') require(equivalent(v, outRoot.get(k)));
   if (info) require(equivalent(info.node, output.objects.get(info.id)?.node));
   require(equivalent(td.get('ID'), dict(output.revisions.at(-1).trailer).get('ID')));
-  const outCerts = dict(output.objects.get(ref(outRoot.get('DSS')))?.node).get('Certs'); require(outCerts.t === 'array' && outCerts.v.length === indexes.length);
-  const decoded = new Map();
-  for (let i = 0; i < indexes.length; i++) {
-    const id = ref(outCerts.v[i]);
-    if (!decoded.has(id)) { const o = output.objects.get(id); decoded.set(id, dict(o.node).has('Filter') ? await flate(o.stream, true) : o.stream); }
-    require(equal(unique[indexes[i]], decoded.get(id)), 'Certificate contents changed. Download blocked.');
-  }
+  const outputGraph = await evidenceGraph(output, output.revisions.at(-1), signedRev.size, outRoot.get('DSS'), outSig);
+  require(outputGraph.snapshot === graph.snapshot, 'Validation records changed. Download blocked.');
   await verifySignature(candidate, outSig);
-  return { bytes: candidate, signedBytes: signature.end, certificates: indexes.length, saved: bytes.length - candidate.length };
+  return { bytes: candidate, signedBytes: signature.end, certificates: graph.arrays.Certs, evidence: graph.arrays, saved: bytes.length - candidate.length };
 }

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "start": "node scripts/serve.mjs",
-    "test": "node --test tests/core.test.mjs tests/signed.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/signed.test.mjs tests/revocation.test.mjs",
     "test:browser": "playwright test",
     "check": "npm test && npm run build && npm run test:browser"
   },
