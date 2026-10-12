@@ -1,0 +1,17 @@
+{
+  "name": "under10",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Private, browser-only PDF preparation with signature guardrails.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/core.test.mjs",
+    "test:browser": "playwright test",
+    "check": "npm test && npm run build && npm run test:browser"
+  },
+  "dependencies": {"pdf-lib": "1.17.1", "pdfjs-dist": "6.4.299"},
+  "devDependencies": {"esbuild": "0.28.2", "@playwright/test": "1.64.0"},
+  "engines": {"node": ">=22"}
+}
