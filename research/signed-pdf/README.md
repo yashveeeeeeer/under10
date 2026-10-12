@@ -107,7 +107,7 @@ The best browser implementation path is:
 
 The restricted browser implementation now has parser/decompression limits, malformed-file tests, and genuine multiple-signature and timestamp rejection fixtures. General DSS/OCSP/CRL support, independent Acrobat/DSS validation, and an authorised representative corpus remain future work. Those unsupported formats are rejected, not rewritten. MCA upload acceptance has not been tested. No result here establishes legal validity or portal compatibility.
 
-**Current status: researched, implemented and verified for a constructed eligible case locally. General signed-PDF compression and public deployment remain unresolved.**
+**Current status: the restricted certificate-only implementation is deployed and tested on GitHub Pages. General signed-PDF compression remains unresolved.**
 
 ## Browser implementation
 
@@ -116,3 +116,11 @@ The browser port is in `src/signed.js`, with a dedicated terminable worker and P
 Both Node and the browser produced a 106,820-byte output from the 12,095,873-byte certificate fixture. All 14,000 decoded certificate entries, Info metadata, ID, signature CMS and signed bytes matched. Independent pyHanko validation reported `LTA_UPDATES`, valid cryptographic integrity and permitted modifications; OpenSSL verified the original CMS against the retained signed content. Poppler renders matched pixel for pixel. Certificate trust in the local test uses an explicitly supplied test root, not a claim about real-world trust.
 
 Run `npm run check`, then `python scripts/verify-signed-output.py` with the research Python dependencies, OpenSSL and Poppler installed. `scripts/signed-compression-fixtures.py` regenerates the extra-revision, genuine second-signature and genuine document-timestamp rejection fixtures. No private key is persisted. The committed [browser validation evidence](browser-validation.json) records the independently checked output.
+
+## DSC compatibility check
+
+Eleven additional cases ran against the deployed app at commit `6ca6738`. Three generated RSA/ECDSA certificate-chain cases with eligible certificate-only additions saved just 106 to 115 bytes. Their signed bytes, decoded certificate chains, metadata and rendered pages remained identical. Ordinary fully signed, certified and multiply signed cases remained unchanged; the fully signed file above 10 MB was blocked at that limit.
+
+We also tested the public [eMudhra CPS PDF](https://emudhradigital.com/Downloads/e-Mudhra_CPS.pdf). Its embedded signing certificate is issued by Capricorn. The 1,688,159-byte file remained byte-identical and did not shrink. Independent OpenSSL and pyHanko checks confirmed signature integrity before and after; public certificate trust and current revocation status were not established.
+
+These results do not establish general DSC-signed PDF compression. They confirm the current preservation rules and small savings for supported unsigned certificate additions. See [the verification record and reproduction steps](../../TESTING.md#dsc-compatibility-check) and [machine-readable evidence](dsc-validation.json).

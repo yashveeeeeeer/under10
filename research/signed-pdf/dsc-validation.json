@@ -1,0 +1,704 @@
+{
+  "url": "https://yashveeeeeeer.github.io/under10/?v=6ca6738",
+  "cases": [
+    {
+      "name": "rsa2048-cms",
+      "input_bytes": 14988,
+      "expected": "unchanged",
+      "subfilter": "/adbe.pkcs7.detached",
+      "certificates_in_chain": 3,
+      "local": {
+        "outcome": "unchanged",
+        "reason": "There is no unsigned certificate data to compress."
+      },
+      "outcome": "unchanged",
+      "output_bytes": 14988,
+      "saved": 0,
+      "output_sha256": "0c21683b2a44a5eaa933f367523c6f7f5eef02248207e49654a51599344e7097",
+      "message": "There is no unsigned certificate data to compress. Original unchanged; signature validity and trust have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+          "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+          "byte_range": [
+            0,
+            3932,
+            14400,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+          "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+          "byte_range": [
+            0,
+            3932,
+            14400,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "signature_identities_preserved": true,
+      "byte_identical": true
+    },
+    {
+      "name": "rsa2048-cms-certs",
+      "input_bytes": 18325,
+      "expected": "compressed",
+      "prefix_file": "rsa2048-cms.pdf",
+      "subfilter": "/adbe.pkcs7.detached",
+      "certificates_in_chain": 3,
+      "local": {
+        "outcome": "compressed",
+        "bytes": 18210
+      },
+      "outcome": "compressed",
+      "output_bytes": 18210,
+      "saved": 115,
+      "output_sha256": "89027a2616c88bf94dd59f73c783d0c15915b248d94452f0bafc1162743a592b",
+      "message": "Signature integrity checked. Certificate trust, expiry and revocation have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+          "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+          "byte_range": [
+            0,
+            3932,
+            14400,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "LTA_UPDATES",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+          "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+          "byte_range": [
+            0,
+            3932,
+            14400,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "LTA_UPDATES",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "signature_identities_preserved": true,
+      "signed_prefix_identical": true,
+      "visible_signature_pixels_identical": true,
+      "certificate_chain_and_metadata_preserved": true
+    },
+    {
+      "name": "rsa2048-oversized",
+      "input_bytes": 10115017,
+      "expected": "blocked",
+      "local": {
+        "outcome": "blocked",
+        "reason": "There is no unsigned certificate data to compress."
+      },
+      "outcome": "blocked",
+      "message": "This original is 10.12 MB, so it is not strictly below 10.00 MB. It was not changed. There is no unsigned certificate data to compress.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "d07a090dab358eb37b818132811e4fc1a145cf775c41a4411e52e4c95d68071e",
+          "signed_bytes_sha256": "713ea8c1ddfb83f063f5129cb01cbdb2c83b1d6257b64e2e2f4425faba5edec8",
+          "byte_range": [
+            0,
+            10103954,
+            10114422,
+            595
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ]
+    },
+    {
+      "name": "rsa2048-certified",
+      "input_bytes": 15135,
+      "expected": "unchanged",
+      "local": {
+        "outcome": "unchanged",
+        "reason": "Certification permissions, scripts or embedded files are not supported for signed compression."
+      },
+      "outcome": "unchanged",
+      "output_bytes": 15135,
+      "saved": 0,
+      "output_sha256": "500a08a2eef550cfed7e702b91f4ea4fffab68f23c9ce6d86223eb05f7103fc5",
+      "message": "Certification permissions, scripts or embedded files are not supported for signed compression. Original unchanged; signature validity and trust have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "42e54afbd76129c2974c93928ba83179e7441cdee207d1f8cb4498d856da6fe7",
+          "signed_bytes_sha256": "2099bec9e5a649f7e9995bd41a0444dfa16eff5f05dad87b63a72be6bb8abf97",
+          "byte_range": [
+            0,
+            3960,
+            14428,
+            707
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "42e54afbd76129c2974c93928ba83179e7441cdee207d1f8cb4498d856da6fe7",
+          "signed_bytes_sha256": "2099bec9e5a649f7e9995bd41a0444dfa16eff5f05dad87b63a72be6bb8abf97",
+          "byte_range": [
+            0,
+            3960,
+            14428,
+            707
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "signature_identities_preserved": true,
+      "byte_identical": true
+    },
+    {
+      "name": "rsa2048-two-signatures",
+      "input_bytes": 28361,
+      "expected": "unchanged",
+      "local": {
+        "outcome": "unchanged",
+        "reason": "Signed compression currently requires exactly one supported signature."
+      },
+      "outcome": "unchanged",
+      "output_bytes": 28361,
+      "saved": 0,
+      "output_sha256": "64b7bafa2133f4e14840cda008fb628b38ade07390ebc2a60fd4d1292d4b8250",
+      "message": "Signed compression currently requires exactly one supported signature. Original unchanged; signature validity and trust have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+          "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+          "byte_range": [
+            0,
+            3932,
+            14400,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "FORM_FILLING",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        },
+        {
+          "cms_sha256": "c703e511e5a43bea525652342c24f519b78a69d526ccd00f98d1c75ea9f85273",
+          "signed_bytes_sha256": "0e6e113f4860826402a897335df136438dc7173ebcbf0a38fef6f1339e8f587e",
+          "byte_range": [
+            0,
+            17315,
+            27783,
+            578
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "7516f0eea14f4b8c890d1fcf0dfda09691b7ac65d0eab793a263ad820ea7ea3c",
+          "signed_bytes_sha256": "3b8983f1d6ec8e89d903c98a51d46307abc78706abb0365563f99ce1c3843ad4",
+          "byte_range": [
+            0,
+            3932,
+            14400,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "FORM_FILLING",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        },
+        {
+          "cms_sha256": "c703e511e5a43bea525652342c24f519b78a69d526ccd00f98d1c75ea9f85273",
+          "signed_bytes_sha256": "0e6e113f4860826402a897335df136438dc7173ebcbf0a38fef6f1339e8f587e",
+          "byte_range": [
+            0,
+            17315,
+            27783,
+            578
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "signature_identities_preserved": true,
+      "byte_identical": true
+    },
+    {
+      "name": "rsa3072-pades",
+      "input_bytes": 15623,
+      "expected": "unchanged",
+      "subfilter": "/ETSI.CAdES.detached",
+      "certificates_in_chain": 3,
+      "local": {
+        "outcome": "unchanged",
+        "reason": "There is no unsigned certificate data to compress."
+      },
+      "outcome": "unchanged",
+      "output_bytes": 15623,
+      "saved": 0,
+      "output_sha256": "f017ca3e4bda90881f27801de49da42288dd96790548854a81706afbc337847a",
+      "message": "There is no unsigned certificate data to compress. Original unchanged; signature validity and trust have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "baf7e994d01f447161d5477d4a473ddcb23073ab8070684401171732841cc3ed",
+          "signed_bytes_sha256": "c189f04302f28f6cc2d2c96b16b62db947cca7589b1714b8728f6d264c315751",
+          "byte_range": [
+            0,
+            4027,
+            15035,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 3072
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "baf7e994d01f447161d5477d4a473ddcb23073ab8070684401171732841cc3ed",
+          "signed_bytes_sha256": "c189f04302f28f6cc2d2c96b16b62db947cca7589b1714b8728f6d264c315751",
+          "byte_range": [
+            0,
+            4027,
+            15035,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 3072
+        }
+      ],
+      "signature_identities_preserved": true,
+      "byte_identical": true
+    },
+    {
+      "name": "rsa3072-pades-certs",
+      "input_bytes": 19184,
+      "expected": "compressed",
+      "prefix_file": "rsa3072-pades.pdf",
+      "subfilter": "/ETSI.CAdES.detached",
+      "certificates_in_chain": 3,
+      "local": {
+        "outcome": "compressed",
+        "bytes": 19078
+      },
+      "outcome": "compressed",
+      "output_bytes": 19078,
+      "saved": 106,
+      "output_sha256": "2e1a89c95de0162912ccc58364b08b4d0cdeaf9652f9e579c0038060c6a91cad",
+      "message": "Signature integrity checked. Certificate trust, expiry and revocation have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "baf7e994d01f447161d5477d4a473ddcb23073ab8070684401171732841cc3ed",
+          "signed_bytes_sha256": "c189f04302f28f6cc2d2c96b16b62db947cca7589b1714b8728f6d264c315751",
+          "byte_range": [
+            0,
+            4027,
+            15035,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "LTA_UPDATES",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 3072
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "baf7e994d01f447161d5477d4a473ddcb23073ab8070684401171732841cc3ed",
+          "signed_bytes_sha256": "c189f04302f28f6cc2d2c96b16b62db947cca7589b1714b8728f6d264c315751",
+          "byte_range": [
+            0,
+            4027,
+            15035,
+            588
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "LTA_UPDATES",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 3072
+        }
+      ],
+      "signature_identities_preserved": true,
+      "signed_prefix_identical": true,
+      "visible_signature_pixels_identical": true,
+      "certificate_chain_and_metadata_preserved": true
+    },
+    {
+      "name": "ecdsa-p256-pades",
+      "input_bytes": 14466,
+      "expected": "unchanged",
+      "subfilter": "/ETSI.CAdES.detached",
+      "certificates_in_chain": 3,
+      "local": {
+        "outcome": "unchanged",
+        "reason": "There is no unsigned certificate data to compress."
+      },
+      "outcome": "unchanged",
+      "output_bytes": 14466,
+      "saved": 0,
+      "output_sha256": "e819d15f2f14f5ac769cb9621f56cfac7ce5a25b6d9cc16b6669426b1e68558a",
+      "message": "There is no unsigned certificate data to compress. Original unchanged; signature validity and trust have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+          "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+          "byte_range": [
+            0,
+            4234,
+            13308,
+            1158
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "ec",
+          "public_key_bits": 256
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+          "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+          "byte_range": [
+            0,
+            4234,
+            13308,
+            1158
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "ec",
+          "public_key_bits": 256
+        }
+      ],
+      "signature_identities_preserved": true,
+      "byte_identical": true
+    },
+    {
+      "name": "ecdsa-p256-pades-certs",
+      "input_bytes": 17899,
+      "expected": "compressed",
+      "prefix_file": "ecdsa-p256-pades.pdf",
+      "subfilter": "/ETSI.CAdES.detached",
+      "certificates_in_chain": 3,
+      "local": {
+        "outcome": "compressed",
+        "bytes": 17786
+      },
+      "outcome": "compressed",
+      "output_bytes": 17786,
+      "saved": 113,
+      "output_sha256": "ff15d10a348b8c90486783df6dfd973cb82cb2ef778824310a0f279a3cba85b3",
+      "message": "Signature integrity checked. Certificate trust, expiry and revocation have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+          "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+          "byte_range": [
+            0,
+            4234,
+            13308,
+            1158
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "LTA_UPDATES",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "ec",
+          "public_key_bits": 256
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+          "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+          "byte_range": [
+            0,
+            4234,
+            13308,
+            1158
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "LTA_UPDATES",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "ec",
+          "public_key_bits": 256
+        }
+      ],
+      "signature_identities_preserved": true,
+      "signed_prefix_identical": true,
+      "visible_signature_pixels_identical": true,
+      "certificate_chain_and_metadata_preserved": true
+    },
+    {
+      "name": "ecdsa-p256-pades-certs-and-xmp",
+      "input_bytes": 18844,
+      "expected": "unchanged",
+      "local": {
+        "outcome": "unchanged",
+        "reason": "The unsigned revision changes other document objects."
+      },
+      "outcome": "unchanged",
+      "output_bytes": 18844,
+      "saved": 0,
+      "output_sha256": "b5083fc1b64439875f8cc07ff15e6c9720fa6dd18db01463c16703eb9a6ff560",
+      "message": "The unsigned revision changes other document objects. Original unchanged; signature validity and trust have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+          "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+          "byte_range": [
+            0,
+            4234,
+            13308,
+            1158
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "LTA_UPDATES",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "ec",
+          "public_key_bits": 256
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "d6c196d5fd108425887e34f70efc5994065cdd04bde95ea2cee4ad1559aa74a9",
+          "signed_bytes_sha256": "16225bf1bb748affbfe7e6428973f89362376629ef86cb4a1df71d71e1706913",
+          "byte_range": [
+            0,
+            4234,
+            13308,
+            1158
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": true,
+          "public_certificate_trust_checked": false,
+          "modification_level": "LTA_UPDATES",
+          "issuer": "Under10 TEST ISSUING CA",
+          "subfilter": "/ETSI.CAdES.detached",
+          "public_key_algorithm": "ec",
+          "public_key_bits": 256
+        }
+      ],
+      "signature_identities_preserved": true,
+      "byte_identical": true
+    },
+    {
+      "name": "emudhra-public-cps",
+      "input_bytes": 1688159,
+      "expected": "unchanged",
+      "source": "https://emudhradigital.com/Downloads/e-Mudhra_CPS.pdf",
+      "local": {
+        "outcome": "unchanged",
+        "reason": "This PDF structure is not supported for signed compression."
+      },
+      "outcome": "unchanged",
+      "output_bytes": 1688159,
+      "saved": 0,
+      "output_sha256": "2051506f400fc6ad5aeee5f7fe1ee7738769e2bd715c502fb6687fc4b4784d46",
+      "message": "This PDF structure is not supported for signed compression. Original unchanged; signature validity and trust have not been verified.",
+      "input_signature_checks": [
+        {
+          "cms_sha256": "b46fcb415f9d346c8fcde9b0622b39f8a00eb966b4fa87ce13d3f9f9accb3db5",
+          "signed_bytes_sha256": "001ab1743a79670f13d2a34658c3ce571dc5f164236ba5bd326d0a5ac9a59c30",
+          "byte_range": [
+            0,
+            245540,
+            1163734,
+            524425
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": null,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Common Name: Capricorn Sub CA for Organisation DSC 2022, Organizational Unit: Certifying Authority, Organization: Capricorn Identity Services Pvt Ltd., Country: IN",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "output_signature_checks": [
+        {
+          "cms_sha256": "b46fcb415f9d346c8fcde9b0622b39f8a00eb966b4fa87ce13d3f9f9accb3db5",
+          "signed_bytes_sha256": "001ab1743a79670f13d2a34658c3ce571dc5f164236ba5bd326d0a5ac9a59c30",
+          "byte_range": [
+            0,
+            245540,
+            1163734,
+            524425
+          ],
+          "openssl_verified": true,
+          "intact": true,
+          "valid": true,
+          "test_root_chain_valid": null,
+          "public_certificate_trust_checked": false,
+          "modification_level": "NONE",
+          "issuer": "Common Name: Capricorn Sub CA for Organisation DSC 2022, Organizational Unit: Certifying Authority, Organization: Capricorn Identity Services Pvt Ltd., Country: IN",
+          "subfilter": "/adbe.pkcs7.detached",
+          "public_key_algorithm": "rsa",
+          "public_key_bits": 2048
+        }
+      ],
+      "signature_identities_preserved": true,
+      "byte_identical": true
+    }
+  ],
+  "document_network_requests": 0,
+  "storage_writes": 0,
+  "page_errors": 0,
+  "scope": "Test CA chains plus 1 public signed PDF(s). No USB token, private DSC, fresh revocation or MCA submission was tested."
+}

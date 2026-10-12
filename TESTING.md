@@ -1,6 +1,6 @@
 # Verification record
 
-Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edge via Playwright 1.64.0. All document fixtures are synthetic.
+Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edge via Playwright 1.64.0. The standard suite uses synthetic fixtures. The separate DSC check below also uses one public signed document.
 
 ## Automated checks
 
@@ -28,6 +28,38 @@ Seven new browser scenarios cover actual signed compression and download offline
 The exaggerated certificate fixture is 12,095,873 bytes before and 106,820 after. This is not representative savings. Both the actual Node output and browser download were independently checked with pyHanko and OpenSSL. Signed bytes and CMS hashes, all 14,000 certificate entries, Info and ID matched. pyHanko classified the update as `LTA_UPDATES`, with integrity and modification-policy checks passing against the explicit test root. Poppler page pixels matched exactly. Reproduce with `python scripts/verify-signed-output.py` after the standard checks; this independent check additionally needs the research Python dependencies, OpenSSL and Poppler.
 
 A strict subset parser rejects unsupported structure rather than repairing it. This is not a general PAdES validator or proof of acceptance by Acrobat, DSS or MCA. OCSP/CRL/VRI, multiple signatures, document timestamps and certification permissions are deliberately outside the compression profile. Their presence prevents compression. No certificate trust, expiry or fresh revocation check is claimed by the app.
+
+## DSC compatibility check
+
+Eleven additional cases passed against the live app at commit `6ca6738`, with the browser offline after loading the app. This separate lab does not change the standard suite's 81-check count. Ten generated files exercise RSA-2048 CMS, RSA-3072 PAdES and ECDSA P-256 PAdES signatures with a three-certificate test chain, plus certification, multiple signatures, an extra XMP update and an oversized signed document. Private test keys exist only in memory.
+
+| Case | Result |
+| --- | --- |
+| RSA-2048 with eligible unsigned certificates | 18,325 to 18,210 bytes; 115 bytes saved |
+| RSA-3072 with eligible unsigned certificates | 19,184 to 19,078 bytes; 106 bytes saved |
+| ECDSA P-256 with eligible unsigned certificates | 17,899 to 17,786 bytes; 113 bytes saved |
+| Six other generated files under the limit | Byte-identical originals |
+| Fully signed 10,115,017-byte file | Blocked at the 10 MB limit |
+| Public Capricorn-issued DSC in the [eMudhra CPS PDF](https://emudhradigital.com/Downloads/e-Mudhra_CPS.pdf) | All 1,688,159 bytes unchanged; no compression |
+
+OpenSSL and pyHanko independently checked every input signature and every downloaded output, including both signatures in the multiple-signature case. All cryptographic integrity checks passed. Compressed outputs retained identical signed prefixes, CMS values, decoded certificates, Info and ID metadata, and Poppler page pixels. The browser recorded zero document-time requests, attempted localStorage/IndexedDB writes or JavaScript errors. Renders were also inspected visually.
+
+The generated certificates are not licensed DSCs. Their chains validate only against the explicitly supplied test root. The public sample's certificate issuer was inspected, but its public trust chain, current revocation status, USB token workflows and MCA submission were not tested. Ordinary fully signed PDFs did not shrink. Machine-readable results are in [dsc-validation.json](research/signed-pdf/dsc-validation.json); the third-party PDF is not committed.
+
+To reproduce, install the Node dependencies and, in a Python environment, `pip install -r research/signed-pdf/dsc-requirements.txt`. OpenSSL and Poppler's `pdftoppm` must be available. Run from the repository root:
+
+```sh
+python scripts/dsc-fixtures.py
+```
+
+Optionally download the linked public CPS file to `tmp/qa/dsc/emudhra-public-cps.pdf`. Then run:
+
+```sh
+node scripts/test-dsc-live.mjs https://yashveeeeeeer.github.io/under10/
+python scripts/verify-dsc-results.py
+```
+
+Without the optional public sample there are ten cases. Generated files and verification buffers stay in ignored `tmp/qa/dsc/`. Certificate keys and timestamps change on regeneration, so byte counts can vary. The live site and public sample may also change; the committed report records the tested URL and output hashes.
 
 ## Responsive layout
 
