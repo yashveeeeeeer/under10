@@ -3,3 +3,4 @@
 *.der binary
 *.png binary
 *.jpg binary
+docs/assets/* linguist-generated=true -whitespace

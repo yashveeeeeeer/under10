@@ -9,6 +9,7 @@ Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edg
 - Generated a test-only RSA certificate and signed PDF with pyHanko 0.37.0. Confirmed signature integrity, cryptographic validity and trust against the explicitly supplied synthetic test root. Downloaded through check mode and confirmed byte equality and the same cryptographic results independently with pyHanko. This does not establish real-world certificate trust.
 - Reopened exported PDFs with pdf-lib and independently rendered with Poppler. Inspected the desktop, mobile and result screenshots plus rendered output for clipping and missing text.
 - Production dependency audit: zero reported vulnerabilities at test time. This is not a comprehensive security audit.
+- Live GitHub Pages smoke test: HTTP 200; assets load correctly under `/under10/`; signed input is blocked from merging; unchanged download is byte-identical; unsigned preparation works; zero document-time network requests and zero JavaScript page errors. Reproduce with `node scripts/smoke-live.mjs https://yashveeeeeeer.github.io/under10/`.
 
 `npm run check` runs the reproducible Node and browser suite. Committed synthetic signed/encrypted fixtures remove Python from the normal test dependency chain. `scripts/signed-fixture.py` documents generation; its private test key is generated in process memory and is never written to disk.
 
@@ -26,3 +27,5 @@ Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edg
 ## Release gate
 
 Run `npm ci`, `npm run check`, and `npm audit`. Review source and `docs/` together. Publish only static assets and synthetic tests. Do not attach client documents to GitHub issues or test reports. After deployment, verify asset loading under the repository path and the unchanged signature workflow using the synthetic fixture.
+
+The GitHub Actions CI file is supplied as a template rather than installed: the authenticated publishing credential has repository permission but does not have the `workflow` scope. Current publication uses GitHub Pages' built-in `main /docs` deployment. Local checks and the deployed-site smoke test were run; future pushes are not automatically gated by the template until it is installed as `.github/workflows/check.yml` with suitable permissions.
