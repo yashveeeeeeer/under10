@@ -95,7 +95,7 @@ export async function inspectPDF(bytes) {
 }
 export function transformIssue(info) {
   if (info.oversizedImages) return 'Embedded image exceeds the processing safety limit. This PDF is check-only.';
-  if (info.signature) return 'Signature marker or field found. This PDF is check-only. Choose Already signed, or remove it to prepare unsigned files.';
+  if (info.signature) return 'Signature marker or field found. This PDF is check-only. Choose Signed, or remove it to prepare unsigned files.';
   if (info.interactive) return 'Interactive form detected. This tool does not rewrite forms. Use a static, unsigned source attachment.';
   if (info.active) return 'PDF actions or scripts detected. This file is check-only.';
   if (info.attachments) return 'Portfolio or embedded attachment detected. This file is check-only so enclosed documents are not lost.';

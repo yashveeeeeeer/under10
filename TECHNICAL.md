@@ -11,7 +11,7 @@ This is not an MCA acceptance checker, signature validator, signing service or l
 ## Two workflows
 
 - **Unsigned:** drop PDFs, JPEGs and PNGs; order the files; choose a decimal MB limit from 0.1 to 100; prepare, review every page and download. Native PDF text/vectors are copied first. Colour images use bounded compression. Rasterizing unsigned PDF pages requires the explicit “Allow scan compression” option.
-- **Already signed:** select one PDF, check its exact byte count and download the original bytes unchanged. SHA-256 identifies the original bytes; it does not validate a signature. This mode can also check an unsigned original without changing it. Selecting Unsigned never overrides signature detection.
+- **Signed:** select one PDF, check its exact byte count and download the original bytes unchanged. SHA-256 identifies the original bytes; it does not validate a signature. This mode can also check an unsigned original without changing it. Selecting Unsigned never overrides signature detection.
 
 No tool can promise to merge/compress arbitrary digitally signed PDFs into a smaller ordinary PDF while preserving their original signatures. The safe sequence is **prepare unsigned originals → review → sign → recheck size**. A PDF portfolio can retain original files as embedded documents but is not an equivalent merged PDF, and MCA acceptance is not assumed. This app does not generate portfolios.
 
@@ -34,7 +34,7 @@ Open the printed local URL. On Windows browser tests use installed Microsoft Edg
 | Condition | Behaviour |
 | --- | --- |
 | Output size | Strictly **less than** the chosen decimal-byte limit. 10 MB = 10,000,000 bytes. Equality fails. |
-| Signing headroom | “I’ll sign this PDF later” is visible for unsigned inputs and checked by default. Its target is 90% of the limit (9,000,000 bytes at 10 MB). Unchecked, the target is 98%. It is hidden in Already signed mode, where only the exact chosen limit applies. This cannot guarantee the eventual signed file size. |
+| Signing headroom | “I’ll sign this PDF later” is visible for unsigned inputs and checked by default. Its target is 90% of the limit (9,000,000 bytes at 10 MB). Unchecked, the target is 98%. It is hidden in Signed mode, where only the exact chosen limit applies. This cannot guarantee the eventual signed file size. |
 | Cannot fit | Stop with no downloadable result. Never omit a page or secretly reduce quality below the configured floor. |
 | Existing signature | Inspect decoded PDF objects and conservative raw/historical/escaped-name markers. Signature fields, including blank ones, are check-only. No cryptographic trust decision is made. |
 | Ambiguous/unsupported PDF | Encrypted, damaged or unreadable inputs fail. Forms, annotations, scripts/actions, portfolios and embedded attachments cannot be transformed. |

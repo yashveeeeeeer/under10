@@ -15,7 +15,7 @@ Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edg
 
 ## Focused signed-PDF recheck
 
-Three signature-focused browser tests passed. Scan compression remained blocked for a genuinely signed PDF, including when mixed with an unsigned PDF. Already signed mode returned an eligible original byte for byte. A second genuinely signed fixture of 10,107,250 bytes was blocked at a 10 MB limit, returned unchanged at a 12 MB limit, and remained blocked from compression when switching to Unsigned. Its signature was independently verified before testing. The large fixture is stored as gzip in the test repository and restored to ordinary PDF bytes before the browser test; gzip is not offered as a PDF compression feature.
+Three signature-focused browser tests passed. Scan compression remained blocked for a genuinely signed PDF, including when mixed with an unsigned PDF. Signed mode returned an eligible original byte for byte. A second genuinely signed fixture of 10,107,250 bytes was blocked at a 10 MB limit, returned unchanged at a 12 MB limit, and remained blocked from compression when switching to Unsigned. Its signature was independently verified before testing. The large fixture is stored as gzip in the test repository and restored to ordinary PDF bytes before the browser test; gzip is not offered as a PDF compression feature.
 
 Run `npx playwright test --grep 'signature|signed'` to repeat these checks.
 
