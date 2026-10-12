@@ -1,0 +1,760 @@
+{
+  "date": "2026-10-12T13:36:52+00:00",
+  "scope": "Offline generated fixtures, not licensed DSCs or MCA submissions. Not deployed.",
+  "crl_entries": 60000,
+  "revocation_stream_bytes": [
+    425,
+    1287530
+  ],
+  "cases": [
+    {
+      "name": "large-rsa-crl-ocsp-vri",
+      "input_bytes": 10508159,
+      "output_bytes": 9378697,
+      "saved_bytes": 1129462,
+      "signed_prefix_bytes": 9214497,
+      "input": {
+        "bytes": 10508159,
+        "sha256": "46717fa7e8cf8c60a0e9d878f93c405dd8fb7736cade25c31a10f8386f8851da",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              9204041,
+              9213945,
+              552
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "5ec4c360e616e346c070ccb1027e985c21971b9c2102d5926407701eeeb5a40c",
+            "signed_bytes_sha256": "69085ffdfe5080e803578c6e1a0def888a6fcc3f19de112fd1d942254f78f015",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 9378697,
+        "sha256": "b025f051f2ba2e9e19fe21f14ef5a62a6663f8a4454a1d04212f3f0c9b3a8097",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              9204041,
+              9213945,
+              552
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "5ec4c360e616e346c070ccb1027e985c21971b9c2102d5926407701eeeb5a40c",
+            "signed_bytes_sha256": "69085ffdfe5080e803578c6e1a0def888a6fcc3f19de112fd1d942254f78f015",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "all_page_pixels_identical": true,
+      "all_dss_values_preserved": true,
+      "test_chain_revocation_required_passed": true,
+      "dss": {
+        "/CRLs": [
+          [
+            "stream",
+            "5d422dc90219a20e349e3889dc5d6cca9e378adada3e73118b7a9cc24e41c939",
+            425
+          ],
+          [
+            "stream",
+            "e42805a9610c7f0b7e21f3628caf1049fee9df2ab0ff94d8088a7d99c5e5999c",
+            1287530
+          ]
+        ],
+        "/Certs": [
+          [
+            "stream",
+            "fa6e8502a42ef66413276b0e1bc62028cb8baee195e331226e2da687ed775217",
+            903
+          ],
+          [
+            "stream",
+            "1d01b188b12b93f4cdfcc95acad02604d86063798e95c9eeccb56128f1db3759",
+            895
+          ],
+          [
+            "stream",
+            "269cc3569fdc44663a7a8caa5af823291a74ca81dcbfa0b7a9158c24ea6f8707",
+            883
+          ],
+          [
+            "stream",
+            "6d44f1a57c14b365593dc2a40c811fd93a8fccf901069908825b6f59bf304d43",
+            682
+          ]
+        ],
+        "/OCSPs": [
+          [
+            "stream",
+            "6ed3dceb7efff1df5981b4cb1a6fefe4532ad36279e2db8f102639371ea8c4e0",
+            505
+          ],
+          [
+            "stream",
+            "7736cd71de212d36db864ad19a075891a089b6a7712f976bb041cae5e57e6708",
+            505
+          ]
+        ],
+        "/VRI": {
+          "/B6CD3829475DE2CD098A0FD4416A503B8C537266": {
+            "/CRL": [
+              [
+                "stream",
+                "5d422dc90219a20e349e3889dc5d6cca9e378adada3e73118b7a9cc24e41c939",
+                425
+              ],
+              [
+                "stream",
+                "e42805a9610c7f0b7e21f3628caf1049fee9df2ab0ff94d8088a7d99c5e5999c",
+                1287530
+              ]
+            ],
+            "/Cert": [
+              [
+                "stream",
+                "269cc3569fdc44663a7a8caa5af823291a74ca81dcbfa0b7a9158c24ea6f8707",
+                883
+              ],
+              [
+                "stream",
+                "fa6e8502a42ef66413276b0e1bc62028cb8baee195e331226e2da687ed775217",
+                903
+              ],
+              [
+                "stream",
+                "6d44f1a57c14b365593dc2a40c811fd93a8fccf901069908825b6f59bf304d43",
+                682
+              ],
+              [
+                "stream",
+                "1d01b188b12b93f4cdfcc95acad02604d86063798e95c9eeccb56128f1db3759",
+                895
+              ]
+            ],
+            "/OCSP": [
+              [
+                "stream",
+                "7736cd71de212d36db864ad19a075891a089b6a7712f976bb041cae5e57e6708",
+                505
+              ],
+              [
+                "stream",
+                "6ed3dceb7efff1df5981b4cb1a6fefe4532ad36279e2db8f102639371ea8c4e0",
+                505
+              ]
+            ],
+            "/Type": "2f565249"
+          }
+        }
+      }
+    },
+    {
+      "name": "rsa-ocsp-vri",
+      "input_bytes": 19989,
+      "output_bytes": 19921,
+      "saved_bytes": 68,
+      "signed_prefix_bytes": 14483,
+      "input": {
+        "bytes": 19989,
+        "sha256": "2c3d1c1fe35f7274875642d634d28b5472c42e47111db1cb4716861d0480a2ed",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13936,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "93689afa247b703127808941658da3a9f47cc8cd9908bc8e37dcf43f77265138",
+            "signed_bytes_sha256": "e17b05b3f73eb70df2b6b25d66ed74a2d1171c2257694e5203c09ab3db1f877c",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 19921,
+        "sha256": "14d3cd443a828ac0cd77149b533f706f3dd35d367a2635de71c93fef4dd08ef6",
+        "revisions": 3,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13936,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "93689afa247b703127808941658da3a9f47cc8cd9908bc8e37dcf43f77265138",
+            "signed_bytes_sha256": "e17b05b3f73eb70df2b6b25d66ed74a2d1171c2257694e5203c09ab3db1f877c",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "all_page_pixels_identical": true,
+      "all_dss_values_preserved": true,
+      "test_chain_revocation_required_passed": true,
+      "dss": {
+        "/Certs": [
+          [
+            "stream",
+            "fa6e8502a42ef66413276b0e1bc62028cb8baee195e331226e2da687ed775217",
+            903
+          ],
+          [
+            "stream",
+            "1d01b188b12b93f4cdfcc95acad02604d86063798e95c9eeccb56128f1db3759",
+            895
+          ],
+          [
+            "stream",
+            "269cc3569fdc44663a7a8caa5af823291a74ca81dcbfa0b7a9158c24ea6f8707",
+            883
+          ],
+          [
+            "stream",
+            "6d44f1a57c14b365593dc2a40c811fd93a8fccf901069908825b6f59bf304d43",
+            682
+          ]
+        ],
+        "/OCSPs": [
+          [
+            "stream",
+            "6ed3dceb7efff1df5981b4cb1a6fefe4532ad36279e2db8f102639371ea8c4e0",
+            505
+          ],
+          [
+            "stream",
+            "7736cd71de212d36db864ad19a075891a089b6a7712f976bb041cae5e57e6708",
+            505
+          ]
+        ],
+        "/VRI": {
+          "/8854ABBC9A94C441991BA6435331E86A7055467B": {
+            "/Cert": [
+              [
+                "stream",
+                "269cc3569fdc44663a7a8caa5af823291a74ca81dcbfa0b7a9158c24ea6f8707",
+                883
+              ],
+              [
+                "stream",
+                "fa6e8502a42ef66413276b0e1bc62028cb8baee195e331226e2da687ed775217",
+                903
+              ],
+              [
+                "stream",
+                "6d44f1a57c14b365593dc2a40c811fd93a8fccf901069908825b6f59bf304d43",
+                682
+              ],
+              [
+                "stream",
+                "1d01b188b12b93f4cdfcc95acad02604d86063798e95c9eeccb56128f1db3759",
+                895
+              ]
+            ],
+            "/OCSP": [
+              [
+                "stream",
+                "7736cd71de212d36db864ad19a075891a089b6a7712f976bb041cae5e57e6708",
+                505
+              ],
+              [
+                "stream",
+                "6ed3dceb7efff1df5981b4cb1a6fefe4532ad36279e2db8f102639371ea8c4e0",
+                505
+              ]
+            ],
+            "/Type": "2f565249"
+          }
+        }
+      }
+    },
+    {
+      "name": "two-signatures-crl-ocsp-vri",
+      "input_bytes": 1321701,
+      "output_bytes": 192259,
+      "saved_bytes": 1129442,
+      "signed_prefix_bytes": 27056,
+      "input": {
+        "bytes": 1321701,
+        "sha256": "b89ad99306d289d89a3c35b0ecc82b82d71feb3bfa14eefc961a27fe2c1bc131",
+        "revisions": 4,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13936,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "93689afa247b703127808941658da3a9f47cc8cd9908bc8e37dcf43f77265138",
+            "signed_bytes_sha256": "e17b05b3f73eb70df2b6b25d66ed74a2d1171c2257694e5203c09ab3db1f877c",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "FORM_FILLING",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          },
+          {
+            "field": "SecondSignature",
+            "byte_range": [
+              0,
+              17199,
+              25933,
+              1123
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "7d1b21fd377fae08a134492691b323b5ce4b543afb520f4ff1c316d381d14284",
+            "signed_bytes_sha256": "c6db3c07588800de01298c7f35cd7bcc5fbe1960b9f5db3977580acb55361737",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "output": {
+        "bytes": 192259,
+        "sha256": "97456d5826e5dfd515449639af8b92f794700858db937db4d3af9b3beb023088",
+        "revisions": 4,
+        "signatures": [
+          {
+            "field": "FirstSignature",
+            "byte_range": [
+              0,
+              4032,
+              13936,
+              547
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "93689afa247b703127808941658da3a9f47cc8cd9908bc8e37dcf43f77265138",
+            "signed_bytes_sha256": "e17b05b3f73eb70df2b6b25d66ed74a2d1171c2257694e5203c09ab3db1f877c",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "FORM_FILLING",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          },
+          {
+            "field": "SecondSignature",
+            "byte_range": [
+              0,
+              17199,
+              25933,
+              1123
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "7d1b21fd377fae08a134492691b323b5ce4b543afb520f4ff1c316d381d14284",
+            "signed_bytes_sha256": "c6db3c07588800de01298c7f35cd7bcc5fbe1960b9f5db3977580acb55361737",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_REVISION",
+            "modification_level": "LTA_UPDATES",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "all_page_pixels_identical": true,
+      "all_dss_values_preserved": true,
+      "test_chain_revocation_required_passed": true,
+      "dss": {
+        "/CRLs": [
+          [
+            "stream",
+            "5d422dc90219a20e349e3889dc5d6cca9e378adada3e73118b7a9cc24e41c939",
+            425
+          ],
+          [
+            "stream",
+            "e42805a9610c7f0b7e21f3628caf1049fee9df2ab0ff94d8088a7d99c5e5999c",
+            1287530
+          ]
+        ],
+        "/Certs": [
+          [
+            "stream",
+            "fa6e8502a42ef66413276b0e1bc62028cb8baee195e331226e2da687ed775217",
+            903
+          ],
+          [
+            "stream",
+            "1d01b188b12b93f4cdfcc95acad02604d86063798e95c9eeccb56128f1db3759",
+            895
+          ],
+          [
+            "stream",
+            "269cc3569fdc44663a7a8caa5af823291a74ca81dcbfa0b7a9158c24ea6f8707",
+            883
+          ],
+          [
+            "stream",
+            "6d44f1a57c14b365593dc2a40c811fd93a8fccf901069908825b6f59bf304d43",
+            682
+          ]
+        ],
+        "/OCSPs": [
+          [
+            "stream",
+            "6ed3dceb7efff1df5981b4cb1a6fefe4532ad36279e2db8f102639371ea8c4e0",
+            505
+          ],
+          [
+            "stream",
+            "7736cd71de212d36db864ad19a075891a089b6a7712f976bb041cae5e57e6708",
+            505
+          ],
+          [
+            "stream",
+            "9f03364a7f29ba3d547b223916b6516c77d5b13b4894c5d0faae00d92de5ca9c",
+            505
+          ]
+        ],
+        "/VRI": {
+          "/04CBECFF4AB64EAAB11192ACA5966BA5228BDB45": {
+            "/CRL": [
+              [
+                "stream",
+                "5d422dc90219a20e349e3889dc5d6cca9e378adada3e73118b7a9cc24e41c939",
+                425
+              ],
+              [
+                "stream",
+                "e42805a9610c7f0b7e21f3628caf1049fee9df2ab0ff94d8088a7d99c5e5999c",
+                1287530
+              ]
+            ],
+            "/Cert": [
+              [
+                "stream",
+                "6d44f1a57c14b365593dc2a40c811fd93a8fccf901069908825b6f59bf304d43",
+                682
+              ],
+              [
+                "stream",
+                "269cc3569fdc44663a7a8caa5af823291a74ca81dcbfa0b7a9158c24ea6f8707",
+                883
+              ],
+              [
+                "stream",
+                "fa6e8502a42ef66413276b0e1bc62028cb8baee195e331226e2da687ed775217",
+                903
+              ],
+              [
+                "stream",
+                "1d01b188b12b93f4cdfcc95acad02604d86063798e95c9eeccb56128f1db3759",
+                895
+              ]
+            ],
+            "/OCSP": [
+              [
+                "stream",
+                "6ed3dceb7efff1df5981b4cb1a6fefe4532ad36279e2db8f102639371ea8c4e0",
+                505
+              ],
+              [
+                "stream",
+                "7736cd71de212d36db864ad19a075891a089b6a7712f976bb041cae5e57e6708",
+                505
+              ],
+              [
+                "stream",
+                "9f03364a7f29ba3d547b223916b6516c77d5b13b4894c5d0faae00d92de5ca9c",
+                505
+              ]
+            ],
+            "/Type": "2f565249"
+          },
+          "/8854ABBC9A94C441991BA6435331E86A7055467B": {
+            "/CRL": [
+              [
+                "stream",
+                "5d422dc90219a20e349e3889dc5d6cca9e378adada3e73118b7a9cc24e41c939",
+                425
+              ],
+              [
+                "stream",
+                "e42805a9610c7f0b7e21f3628caf1049fee9df2ab0ff94d8088a7d99c5e5999c",
+                1287530
+              ]
+            ],
+            "/Cert": [
+              [
+                "stream",
+                "6d44f1a57c14b365593dc2a40c811fd93a8fccf901069908825b6f59bf304d43",
+                682
+              ],
+              [
+                "stream",
+                "269cc3569fdc44663a7a8caa5af823291a74ca81dcbfa0b7a9158c24ea6f8707",
+                883
+              ],
+              [
+                "stream",
+                "fa6e8502a42ef66413276b0e1bc62028cb8baee195e331226e2da687ed775217",
+                903
+              ],
+              [
+                "stream",
+                "1d01b188b12b93f4cdfcc95acad02604d86063798e95c9eeccb56128f1db3759",
+                895
+              ]
+            ],
+            "/OCSP": [
+              [
+                "stream",
+                "6ed3dceb7efff1df5981b4cb1a6fefe4532ad36279e2db8f102639371ea8c4e0",
+                505
+              ],
+              [
+                "stream",
+                "7736cd71de212d36db864ad19a075891a089b6a7712f976bb041cae5e57e6708",
+                505
+              ],
+              [
+                "stream",
+                "9f03364a7f29ba3d547b223916b6516c77d5b13b4894c5d0faae00d92de5ca9c",
+                505
+              ]
+            ],
+            "/Type": "2f565249"
+          }
+        }
+      }
+    }
+  ],
+  "rejections": [
+    {
+      "name": "no-unsigned-suffix",
+      "reason": "No unsigned update"
+    },
+    {
+      "name": "target-below-protected-prefix",
+      "reason": "Protected signed prefix reaches the limit"
+    },
+    {
+      "name": "signed-prefix-over-10mb",
+      "reason": "Protected signed prefix reaches the limit"
+    },
+    {
+      "name": "signed-page-tampered",
+      "reason": "Input signature or modification check failed"
+    },
+    {
+      "name": "unsigned-page-change",
+      "reason": "Input signature or modification check failed"
+    },
+    {
+      "name": "unknown-dss-key",
+      "reason": "Input signature or modification check failed"
+    },
+    {
+      "name": "extra-unsigned-revision",
+      "reason": "More than one unsigned revision"
+    },
+    {
+      "name": "document-timestamp",
+      "reason": "Document timestamps are outside this experiment"
+    },
+    {
+      "name": "already-compacted-update",
+      "reason": "No smaller output below target (192259 to 192259 bytes)"
+    },
+    {
+      "name": "revocation-covered-by-later-signature",
+      "reason": "No unsigned update"
+    }
+  ],
+  "budget_checks": [
+    {
+      "name": "fully-signed",
+      "input_bytes": 14483,
+      "strict_target_bytes": 10000000,
+      "signatures": [
+        {
+          "kind": "approval_or_certification",
+          "signed_revision_end": 14483,
+          "content_digest_intact": true,
+          "signature_math_valid": true,
+          "coverage": "ENTIRE_FILE",
+          "modification_policy_ok": true
+        }
+      ],
+      "preserved_prefix_floor_bytes": 14483,
+      "unsigned_tail_bytes": 0,
+      "verdict": "no_unsigned_tail_to_compress",
+      "certificate_trust_checked": false,
+      "note": "The prefix floor applies to preserving existing signed revisions byte for byte. Unsigned bytes may still be essential and cannot be discarded without inspection."
+    },
+    {
+      "name": "large-unsigned-revocation-update",
+      "input_bytes": 10508159,
+      "strict_target_bytes": 10000000,
+      "signatures": [
+        {
+          "kind": "approval_or_certification",
+          "signed_revision_end": 9214497,
+          "content_digest_intact": true,
+          "signature_math_valid": true,
+          "coverage": "ENTIRE_REVISION",
+          "modification_policy_ok": true
+        }
+      ],
+      "preserved_prefix_floor_bytes": 9214497,
+      "unsigned_tail_bytes": 1293662,
+      "verdict": "unsigned_tail_needs_structural_inspection",
+      "certificate_trust_checked": false,
+      "note": "The prefix floor applies to preserving existing signed revisions byte for byte. Unsigned bytes may still be essential and cannot be discarded without inspection."
+    },
+    {
+      "name": "signed-prefix-over-limit",
+      "input_bytes": 10107250,
+      "strict_target_bytes": 10000000,
+      "signatures": [
+        {
+          "kind": "approval_or_certification",
+          "signed_revision_end": 10107250,
+          "content_digest_intact": true,
+          "signature_math_valid": true,
+          "coverage": "ENTIRE_FILE",
+          "modification_policy_ok": true
+        }
+      ],
+      "preserved_prefix_floor_bytes": 10107250,
+      "unsigned_tail_bytes": 0,
+      "verdict": "preserving_the_signed_prefix_cannot_meet_this_limit",
+      "certificate_trust_checked": false,
+      "note": "The prefix floor applies to preserving existing signed revisions byte for byte. Unsigned bytes may still be essential and cannot be discarded without inspection."
+    },
+    {
+      "name": "tampered-signature",
+      "input_bytes": 10508159,
+      "strict_target_bytes": 10000000,
+      "signatures": [
+        {
+          "kind": "approval_or_certification",
+          "signed_revision_end": 9214497,
+          "content_digest_intact": false,
+          "signature_math_valid": true,
+          "coverage": "ENTIRE_REVISION",
+          "modification_policy_ok": true
+        }
+      ],
+      "preserved_prefix_floor_bytes": 9214497,
+      "unsigned_tail_bytes": 1293662,
+      "verdict": "signature_or_coverage_check_failed",
+      "certificate_trust_checked": false,
+      "note": "The prefix floor applies to preserving existing signed revisions byte for byte. Unsigned bytes may still be essential and cannot be discarded without inspection."
+    },
+    {
+      "name": "timestamp-covered",
+      "input_bytes": 13548,
+      "strict_target_bytes": 10000000,
+      "signatures": [
+        {
+          "kind": "approval_or_certification",
+          "signed_revision_end": 7266,
+          "content_digest_intact": true,
+          "signature_math_valid": true,
+          "coverage": "ENTIRE_REVISION",
+          "modification_policy_ok": true
+        },
+        {
+          "kind": "document_timestamp",
+          "signed_revision_end": 13548,
+          "content_digest_intact": true,
+          "signature_math_valid": true,
+          "coverage": "ENTIRE_FILE",
+          "modification_policy_ok": null
+        }
+      ],
+      "preserved_prefix_floor_bytes": 13548,
+      "unsigned_tail_bytes": 0,
+      "verdict": "no_unsigned_tail_to_compress",
+      "certificate_trust_checked": false,
+      "note": "The prefix floor applies to preserving existing signed revisions byte for byte. Unsigned bytes may still be essential and cannot be discarded without inspection."
+    },
+    {
+      "name": "unsigned-data-after-timestamp",
+      "input_bytes": 15354,
+      "strict_target_bytes": 10000000,
+      "signatures": [
+        {
+          "kind": "approval_or_certification",
+          "signed_revision_end": 7266,
+          "content_digest_intact": true,
+          "signature_math_valid": true,
+          "coverage": "ENTIRE_REVISION",
+          "modification_policy_ok": true
+        },
+        {
+          "kind": "document_timestamp",
+          "signed_revision_end": 13548,
+          "content_digest_intact": true,
+          "signature_math_valid": true,
+          "coverage": "ENTIRE_REVISION",
+          "modification_policy_ok": null
+        }
+      ],
+      "preserved_prefix_floor_bytes": 13548,
+      "unsigned_tail_bytes": 1806,
+      "verdict": "unsigned_tail_needs_structural_inspection",
+      "certificate_trust_checked": false,
+      "note": "The prefix floor applies to preserving existing signed revisions byte for byte. Unsigned bytes may still be essential and cannot be discarded without inspection."
+    }
+  ]
+}

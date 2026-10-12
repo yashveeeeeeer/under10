@@ -61,6 +61,8 @@ python scripts/verify-dsc-results.py
 
 Without the optional public sample there are ten cases. Generated files and verification buffers stay in ignored `tmp/qa/dsc/`. Certificate keys and timestamps change on regeneration, so byte counts can vary. The live site and public sample may also change; the committed report records the tested URL and output hashes.
 
+Additional research, separate from the production suite: the [revocation-data lab](research/signed-pdf/revocation-findings.md) passed three compression cases, ten rejection cases and six offline size diagnoses. One generated signed file with a large unsigned CRL shrank from 10,508,159 to 9,378,697 bytes. The original signatures, decoded validation records and page pixels were preserved. This is an offline prototype, not production support for CRL/OCSP/VRI or multiple-signature compression.
+
 ## Responsive layout
 
 The full suite passed after the screen-fitting layout and signing-choice changes: 37 Node tests and 44 browser scenarios. Layout checks cover widths from 320 to 2560 CSS pixels, enlarged text at 200%, long filenames, and preview resizing between portrait and landscape. An emulated touch workflow chooses two files through the picker, reorders them, prepares the PDF, reviews both pages and downloads a verified two-page output. Phone and desktop screenshots were inspected for clipping and overlap. These are automated browser checks, not tests on physical phones.

@@ -2,6 +2,8 @@
 
 Research and local tests: 12 October 2026.
 
+Follow-up: [revocation-data compression and the offline size inspector](revocation-findings.md). The expanded research prototype handles unsigned CRL/OCSP/VRI additions and passed 19 local checks. It is not deployed.
+
 **There is a working method for a limited class of signed PDFs: reduce an unsigned validation-data update after the last signature while preserving the complete signed prefix. There is still no demonstrated way to shrink arbitrary already-signed page content while preserving its original certificate signature.**
 
 The local prototype reduced a deliberately bloated validation-data case from **12,095,873 bytes to 106,814 bytes**. Its original signature passed pyHanko validation and independent OpenSSL content verification before and after. The signed prefix was identical. Every decoded certificate entry remained in the same order. Page pixels were identical in Poppler.
