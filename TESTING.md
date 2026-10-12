@@ -5,7 +5,7 @@ Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edg
 ## Automated checks
 
 - 17 core tests: strict decimal-byte boundary; invalid limits; file magic; malformed/oversized image headers; static PDF parsing; signature dictionaries in ordinary and compressed object streams; blank fields; escaped historical markers; forms; actions; attachments; annotations; corrupt/truncated/encrypted PDFs; page count/order; signed merge refusal; 200-page cap.
-- 23 browser scenarios: responsive layout and keyboard skip link; actual output page count/order/selectable text; all-page review gate; marker-based signature protection and SHA-256 equality; genuinely signed synthetic PDFs, including one over 10 MB; an actually encrypted PDF; offline mixed-image/PDF preparation; absence of document network requests and storage writes; hostile filenames; invalid files; protected PDF features; over-limit checks; invalidation after settings changes; opt-in rasterization; impossible targets; cancellation and recovery.
+- 24 browser scenarios: responsive layout and keyboard skip link; actual output page count/order/selectable text; all-page review gate; marker-based signature protection and SHA-256 equality; genuinely signed synthetic PDFs, including one over 10 MB; an actually encrypted PDF; offline mixed-image/PDF preparation; absence of document network requests and storage writes; hostile filenames; invalid files; protected PDF features; chosen limits above and below 10 MB; signing intent and invalidation after settings changes; opt-in rasterization; impossible targets; cancellation and recovery.
 - Generated a test-only RSA certificate and signed PDF with pyHanko 0.37.0. Confirmed signature integrity, cryptographic validity and trust against the explicitly supplied synthetic test root. Downloaded through check mode and confirmed byte equality and the same cryptographic results independently with pyHanko. This does not establish real-world certificate trust.
 - Reopened exported PDFs with pdf-lib and independently rendered with Poppler. Inspected the desktop, mobile and result screenshots plus rendered output for clipping and missing text.
 - Production dependency audit: zero reported vulnerabilities at test time. This is not a comprehensive security audit.
@@ -15,13 +15,15 @@ Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edg
 
 ## Focused signed-PDF recheck
 
-Three signature-focused browser tests passed after the README update. Scan compression remained blocked for a genuinely signed PDF, including when mixed with an unsigned PDF. Check mode returned an eligible original byte for byte. A second genuinely signed fixture of 10,107,250 bytes was blocked from compression and from an oversized download. Its signature was independently verified before testing. The large fixture is stored as gzip in the test repository and restored to ordinary PDF bytes before the browser test; gzip is not offered as a PDF compression feature.
+Three signature-focused browser tests passed. Scan compression remained blocked for a genuinely signed PDF, including when mixed with an unsigned PDF. Already signed mode returned an eligible original byte for byte. A second genuinely signed fixture of 10,107,250 bytes was blocked at a 10 MB limit, returned unchanged at a 12 MB limit, and remained blocked from compression when switching to Unsigned. Its signature was independently verified before testing. The large fixture is stored as gzip in the test repository and restored to ordinary PDF bytes before the browser test; gzip is not offered as a PDF compression feature.
 
 Run `npx playwright test --grep 'signature|signed'` to repeat these checks.
 
 ## Responsive redesign
 
-The full suite passed after the layout and copy changes: 17 core tests and 23 browser scenarios. Layout checks cover widths from 320 to 2560 CSS pixels, enlarged text at 200%, long filenames, and preview resizing between portrait and landscape. An emulated touch workflow chooses two files through the picker, reorders them, prepares the PDF, reviews both pages and downloads a verified two-page output. Phone and desktop screenshots were inspected for clipping and overlap. These are automated browser checks, not tests on physical phones.
+The full suite passed after the layout, copy and signing-choice changes: 17 core tests and 24 browser scenarios. Layout checks cover widths from 320 to 2560 CSS pixels, enlarged text at 200%, long filenames, and preview resizing between portrait and landscape. An emulated touch workflow chooses two files through the picker, reorders them, prepares the PDF, reviews both pages and downloads a verified two-page output. Phone and desktop screenshots were inspected for clipping and overlap. These are automated browser checks, not tests on physical phones.
+
+The signing option updates the target at 3, 10 and 25 MB, invalidates an earlier result when changed, and disappears for already signed files. Its state is restored when returning to Unsigned. Core checks cover the strict byte boundary above 10 MB and the 100 MB maximum. Existing file, page and image resource caps are unchanged.
 
 ## Explicit limits
 

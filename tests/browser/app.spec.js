@@ -81,7 +81,7 @@ test('a genuine synthetic digital signature survives unchanged download', async 
   await expect(page.locator('#process')).toBeDisabled();
   await expect(page.locator('#result')).toBeHidden();
 });
-test('over-10-MB genuinely signed PDF stays blocked with compression enabled', async ({ page }) => {
+test('signed PDFs obey the chosen limit and remain protected from compression', async ({ page }) => {
   await ready(page);
   const bytes = gunzipSync(await readFile('tests/data/signed-over-limit-synthetic.pdf.gz'));
   expect(bytes.length).toBeGreaterThan(10_000_000);
@@ -96,6 +96,44 @@ test('over-10-MB genuinely signed PDF stays blocked with compression enabled', a
   await expect(page.locator('#status')).toContainText('It was not changed');
   await expect(page.locator('#result')).toBeHidden();
   await expect(page.locator('#download')).toBeDisabled();
+  await expect(page.locator('#signing-option')).toBeHidden();
+  await page.locator('#size-limit').fill('12');
+  await prepare(page);
+  const d = await download(page);
+  expect(Buffer.compare(await readFile(await d.path()), bytes)).toBe(0);
+  await page.locator('#build-mode').click();
+  await expect(page.locator('#process')).toBeDisabled();
+  await expect(page.locator('#result')).toBeHidden();
+  await expect(page.locator('#raster')).toBeChecked();
+});
+
+test('unsigned signing choice follows the size limit and invalidates old results', async ({ page }) => {
+  await ready(page);
+  await expect(page.locator('#reserve')).toBeVisible();
+  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 9 MB to leave room for signing.');
+  await page.locator('#size-limit').fill('3');
+  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 2.7 MB to leave room for signing.');
+  await page.locator('#reserve').uncheck();
+  await expect(page.locator('#target')).toHaveText('2.94 MB');
+  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 2.94 MB to stay below your 3 MB limit.');
+  await page.locator('#size-limit').fill('25');
+  await upload(page, await pdfFixture());
+  await prepare(page);
+  await expect(page.locator('#target')).toHaveText('24.5 MB');
+  await expect(page.locator('#result-warning')).not.toContainText('after signing');
+  await page.locator('#reserve').check();
+  await expect(page.locator('#result')).toBeHidden();
+  await expect(page.locator('#target')).toHaveText('22.5 MB');
+  await page.locator('#check-mode').click();
+  await expect(page.locator('#signing-option')).toBeHidden();
+  await expect(page.locator('#target')).toHaveText('25 MB');
+  await expect(page.locator('#process')).toHaveText('Check PDF →');
+  await page.locator('#build-mode').click();
+  await expect(page.locator('#reserve')).toBeChecked();
+  await expect(page.locator('#target')).toHaveText('22.5 MB');
+  await page.locator('#size-limit').fill('101');
+  await expect(page.locator('#process')).toBeDisabled();
+  await expect(page.locator('#action-hint')).toContainText('0.1 to 100 MB');
 });
 test('a genuinely encrypted PDF is rejected', async ({ page }) => {
   await ready(page); await upload(page, await readFile('tests/data/encrypted-synthetic.pdf'));

@@ -1,11 +1,11 @@
 import { PDFDocument, PDFDict, PDFArray, PDFName, PDFRawStream, PDFInvalidObject } from 'pdf-lib';
 
-export const LIMITS = Object.freeze({ files: 40, fileBytes: 40_000_000, totalBytes: 100_000_000, pages: 200, imagePixels: 32_000_000, renderPixels: 16_000_000 });
+export const LIMITS = Object.freeze({ files: 40, fileBytes: 40_000_000, totalBytes: 100_000_000, outputMB: 100, pages: 200, imagePixels: 32_000_000, renderPixels: 16_000_000 });
 export const PROFILES = Object.freeze([{ dpi: 220, quality: .90 }, { dpi: 190, quality: .84 }, { dpi: 170, quality: .78 }, { dpi: 150, quality: .72 }]);
 export const mb = bytes => `${(bytes / 1_000_000).toFixed(2)} MB`;
 export function byteLimit(value) {
   const n = Number(value);
-  if (!Number.isFinite(n) || n < 0.1 || n > 10) throw new Error('Choose a limit between 0.1 and 10 MB.');
+  if (!Number.isFinite(n) || n < 0.1 || n > LIMITS.outputMB) throw new Error(`Choose a limit between 0.1 and ${LIMITS.outputMB} MB.`);
   return Math.floor(n * 1_000_000);
 }
 export function fits(bytes, limit) { return Number.isSafeInteger(bytes) && bytes > 0 && bytes < limit; }
@@ -95,7 +95,7 @@ export async function inspectPDF(bytes) {
 }
 export function transformIssue(info) {
   if (info.oversizedImages) return 'Embedded image exceeds the processing safety limit. This PDF is check-only.';
-  if (info.signature) return 'Signature marker or signature field found. This file is check-only; use an unsigned source to build a new PDF.';
+  if (info.signature) return 'Signature marker or field found. This PDF is check-only. Choose Already signed, or remove it to prepare unsigned files.';
   if (info.interactive) return 'Interactive form detected. This tool does not rewrite forms. Use a static, unsigned source attachment.';
   if (info.active) return 'PDF actions or scripts detected. This file is check-only.';
   if (info.attachments) return 'Portfolio or embedded attachment detected. This file is check-only so enclosed documents are not lost.';
@@ -104,7 +104,7 @@ export function transformIssue(info) {
 }
 export async function assemble(items, getImage, onProgress = () => {}, check = () => {}) {
   const out = await PDFDocument.create();
-  out.setProducer('Under10 • browser-only PDF preparation');
+  out.setProducer('Under10');
   out.setCreator('Under10');
   for (let i = 0; i < items.length; i++) {
     check();

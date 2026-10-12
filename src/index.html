@@ -6,7 +6,7 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'none'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="Combine unsigned PDFs and images under a chosen size limit. Process files in your browser, without uploads.">
-  <title>Under10 — Combine and compress PDFs</title>
+  <title>Under10: Prepare a PDF</title>
   <link rel="stylesheet" href="./assets/style.css">
   <script type="module" src="./assets/app.js"></script>
 </head>
@@ -21,47 +21,49 @@
   </header>
   <main class="wrap">
     <section class="intro" aria-labelledby="page-title">
-      <h1 id="page-title">Combine and compress PDFs.</h1>
-      <p>Files are processed on your device.</p>
+      <h1 id="page-title">Prepare a PDF</h1>
+      <p>Choose your size limit. Your files stay in your browser.</p>
     </section>
     <section id="workspace" class="workspace" aria-label="PDF preparation tool">
       <div class="workspace-head">
-        <div class="mode-tabs" role="group" aria-label="Choose a workflow">
-          <button id="build-mode" aria-pressed="true">Make a PDF</button>
-          <button id="check-mode" aria-pressed="false">Check a PDF</button>
+        <div class="signature-choice">
+          <span id="signature-choice-label">Digital signature</span>
+          <div class="mode-tabs" role="group" aria-labelledby="signature-choice-label">
+            <button id="build-mode" aria-pressed="true">Unsigned</button>
+            <button id="check-mode" aria-pressed="false">Already signed</button>
+          </div>
         </div>
         <button id="clear" class="text-button">Clear</button>
       </div>
       <div class="work-grid">
         <div class="files-panel">
           <div class="section-label"><h2 id="input-title">Files</h2><span id="file-count">0 files</span></div>
-          <p id="input-help" class="muted">Use unsigned PDFs, JPGs or PNGs.</p>
+          <p id="input-help" class="muted" hidden>Signature validity is not verified.</p>
           <label id="dropzone" class="dropzone" for="files">
             <svg class="file-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M11 4h12l8 8v22a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M23 4v9h8M20 20v10m-5-5h10"/></svg>
             <strong>Choose files <span aria-hidden="true">+</span></strong>
             <span class="drop-hint">or drop them here</span>
-            <small id="formats">PDF, JPG, PNG · 100 MB total</small>
+            <small id="formats">PDF, JPG or PNG</small>
             <input id="files" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple aria-label="Choose PDFs and images">
           </label>
           <div id="file-list" class="file-list" aria-label="Selected documents"></div>
-          <p id="empty-note" class="empty-note">Files stay on your device.</p>
         </div>
         <aside class="settings-panel" aria-label="Output settings">
           <h2 id="settings-title" class="sr-only">PDF settings</h2>
           <div class="limit-row">
-            <div><label class="field-label" for="size-limit">Size limit</label><p class="hint">Use your form’s limit.</p></div>
-            <div class="limit-input"><input id="size-limit" type="number" min="0.1" max="10" step="0.1" value="10" inputmode="decimal" aria-describedby="limit-help"><span>MB</span></div>
+            <label class="field-label" for="size-limit">Size limit</label>
+            <div class="limit-input"><input id="size-limit" type="number" min="0.1" max="100" step="0.1" value="10" inputmode="decimal" aria-describedby="limit-help"><span>MB</span></div>
           </div>
-          <span id="limit-help" class="sr-only">Between 0.1 and 10 decimal megabytes.</span>
+          <span id="limit-help" class="sr-only">Between 0.1 and 100 decimal megabytes.</span>
+          <label id="signing-option" class="check-row signing-option"><input id="reserve" type="checkbox" checked><span>I’ll sign this PDF later</span></label>
           <details id="build-settings" class="options">
             <summary>Options</summary>
-            <label class="check-row"><input id="reserve" type="checkbox" checked><span>Leave room for signing<small>Target 90% of the limit. Recheck the file after signing.</small></span></label>
             <label class="check-row"><input id="raster" type="checkbox"><span>Allow scan compression<small>If needed, turns unsigned PDF pages into images. Removes selectable text, tags and bookmarks.</small></span></label>
           </details>
         </aside>
         <div class="action-bar">
           <div class="action-main"><div class="target"><span id="target-label">Target</span><strong id="target">9.00 MB</strong></div><button id="process" class="primary" disabled>Prepare PDF <span aria-hidden="true">→</span></button></div>
-          <p id="action-hint" class="hint">Includes room for signing.</p>
+          <p id="action-hint" class="hint">We’re aiming for 9 MB to leave room for signing.</p>
           <button id="cancel" class="text-button cancel" hidden>Cancel</button>
         </div>
       </div>
@@ -78,15 +80,13 @@
         <details id="hash-details"><summary>File fingerprint</summary><code id="hash"></code><p class="hint">SHA-256 identifies these bytes. It does not verify a signature.</p></details>
       </section>
     </section>
-    <p class="signature-note"><button id="check-shortcut" class="inline-button">Already signed?</button> Check its size without changing the file.</p>
     <section class="help" aria-label="Help">
       <details id="privacy"><summary>Privacy</summary><p>Files stay in browser memory. No uploads, tracking or document storage. Clear the session to release them; Download saves a copy. The site host may keep visit logs. Your browser and operating system control memory, caches and downloads.</p></details>
       <details><summary>Signed PDFs</summary><p>Signed files are check-only. Compressing or merging can break a digital signature. Use unsigned originals to prepare a new PDF, then sign it. This tool does not verify signatures.</p></details>
-      <details><summary>Size and quality</summary><p>Some files cannot fit without losing too much detail. The tool stops if that happens; it never drops pages. Check every page before downloading. MCA limits vary by form and attachment.</p></details>
+      <details><summary>Choosing a size</summary><p>Use the limit shown on your upload form. If you plan to sign the PDF later, we aim for 90% of that limit. Check its size again after signing. This tool is not affiliated with MCA.</p></details>
       <details><summary>Supported files</summary><p>Static unsigned PDFs, JPGs and PNGs. Up to 40 files, 40 MB each, 100 MB total and 200 pages. Forms, annotations, portfolios and embedded attachments are check-only. New PDFs do not retain document-level bookmarks, tags or metadata.</p><a href="https://github.com/yashveeeeeeer/under10/blob/main/TECHNICAL.md" target="_blank" rel="noopener noreferrer">Full technical details ↗</a></details>
     </section>
   </main>
-  <footer class="wrap"><span>Free to use · Open source</span><span>Independent tool · Not affiliated with MCA</span></footer>
   <noscript><p class="notice">Enable JavaScript to process files on your device.</p></noscript>
 </body>
 </html>

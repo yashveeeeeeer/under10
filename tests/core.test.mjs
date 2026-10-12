@@ -12,9 +12,15 @@ test('decimal limit is strict at byte boundary', () => {
   assert.equal(fits(0, 10_000_000), false);
   assert.equal(targetBytes(10_000_000, true), 9_000_000);
   assert.equal(targetBytes(10_000_000, false), 9_800_000);
+  assert.equal(byteLimit('25'), 25_000_000);
+  assert.equal(byteLimit('100'), 100_000_000);
+  assert.equal(fits(25_000_000, byteLimit(25)), false);
+  assert.equal(fits(24_999_999, byteLimit(25)), true);
+  assert.equal(targetBytes(byteLimit(25), true), 22_500_000);
+  assert.equal(targetBytes(byteLimit(25), false), 24_500_000);
 });
 test('reject invalid size settings', () => {
-  for (const value of ['', 'x', 0, -1, 11, Infinity, NaN]) assert.throws(() => byteLimit(value));
+  for (const value of ['', 'x', 0, 0.09, -1, 100.1, Infinity, NaN]) assert.throws(() => byteLimit(value));
 });
 test('file recognition uses bytes rather than filenames', async () => {
   assert.equal(sniff(await pdfFixture()), 'pdf');

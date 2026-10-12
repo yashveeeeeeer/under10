@@ -13,6 +13,9 @@ try {
   const response = await page.goto(url);
   assert.equal(response.status(), 200);
   await page.locator('#status').filter({ hasText: 'Ready.' }).waitFor();
+  await page.locator('h1').filter({ hasText: 'Prepare a PDF' }).waitFor();
+  assert.equal(await page.locator('#size-limit').getAttribute('max'), '100');
+  assert.equal(await page.locator('#reserve').isVisible(), true);
   await mkdir('tmp/qa', { recursive: true });
   await page.screenshot({ path: 'tmp/qa/live.png', fullPage: true });
   const requests = [];
@@ -27,11 +30,14 @@ try {
   const download = await waiting;
   assert.deepEqual(await readFile(await download.path()), signed);
   await page.locator('#clear').click(); await page.locator('#build-mode').click();
+  await page.locator('#size-limit').fill('25');
+  await page.locator('#reserve').uncheck();
+  assert.equal(await page.locator('#target').textContent(), '24.5 MB');
   await page.locator('#files').setInputFiles({ name: 'synthetic-unsigned-test.pdf', mimeType: 'application/pdf', buffer: Buffer.from(await pdfFixture()) });
   await page.locator('#process:not(:disabled)').waitFor(); await page.locator('#process').click(); await page.locator('#result').waitFor();
   await page.locator('#reviewed:not(:disabled)').waitFor(); await page.locator('#reviewed').check();
   assert.equal(await page.locator('#download').isDisabled(), false);
   assert.deepEqual(requests, []);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ url, status: 200, signatureBlockedFromMerge: true, signedDownloadByteIdentical: true, unsignedPreparation: true, documentNetworkRequests: 0, pageErrors: 0 }, null, 2));
+  console.log(JSON.stringify({ url, status: 200, signatureBlockedFromMerge: true, signedDownloadByteIdentical: true, chosenLimitAndSigningIntent: true, unsignedPreparation: true, documentNetworkRequests: 0, pageErrors: 0 }, null, 2));
 } finally { await browser.close(); }
