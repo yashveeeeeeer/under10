@@ -1,0 +1,564 @@
+{
+  "versions": {
+    "pikepdf": "10.0.2",
+    "qpdf": "12.2.0",
+    "pypdf": "6.15.0",
+    "pyhanko": "0.37.0",
+    "openssl": "OpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)"
+  },
+  "fixtures": {
+    "small": {
+      "original": {
+        "bytes": 7266,
+        "sha256": "a68cb3c72014cc2d91d7bb97471c4a064a7e0b8d8d44e5a40239eb3dfee7151c",
+        "revisions": 2,
+        "signatures": [
+          {
+            "field": "TestSignature",
+            "byte_range": [
+              0,
+              2256,
+              6760,
+              506
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+            "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_FILE",
+            "modification_level": "NONE",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "attempts": {
+        "pypdf_lossless_rewrite": {
+          "bytes": 6278,
+          "sha256": "7c0bcfd5662a1a32c33a27f4241e4ee1bc8a4feb4bd5289e46bb129bb5ef96c6",
+          "revisions": 1,
+          "signatures": [
+            {
+              "field": "TestSignature",
+              "byte_range": [
+                0,
+                2256,
+                6760,
+                506
+              ],
+              "ranges_in_bounds": false,
+              "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+              "signed_bytes_sha256": null,
+              "openssl_content_verified": false,
+              "intact": false,
+              "cms_valid": true,
+              "trusted_test_certificate": false,
+              "coverage": "CONTIGUOUS_BLOCK_FROM_START",
+              "modification_level": "OTHER",
+              "docmdp_ok": false,
+              "accepted_by_validator": false
+            }
+          ],
+          "smaller": true,
+          "signature_count_preserved": true,
+          "signed_bytes_preserved": false,
+          "cms_preserved": true,
+          "meets_requirement": false
+        },
+        "qpdf_lossless_rewrite": {
+          "bytes": 5822,
+          "sha256": "64809dd994671840be43b3fbfa8337fa07b31dc4850de60fa1b3583e78031233",
+          "revisions": 1,
+          "signatures": [
+            {
+              "field": "TestSignature",
+              "byte_range": [
+                0,
+                2256,
+                6760,
+                506
+              ],
+              "ranges_in_bounds": false,
+              "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+              "signed_bytes_sha256": null,
+              "openssl_content_verified": false,
+              "intact": false,
+              "cms_valid": true,
+              "trusted_test_certificate": false,
+              "coverage": "CONTIGUOUS_BLOCK_FROM_START",
+              "modification_level": "OTHER",
+              "docmdp_ok": false,
+              "accepted_by_validator": false
+            }
+          ],
+          "smaller": true,
+          "signature_count_preserved": true,
+          "signed_bytes_preserved": false,
+          "cms_preserved": true,
+          "meets_requirement": false
+        },
+        "incremental_recompression": {
+          "bytes": 8275,
+          "sha256": "5db8e7f200850546c6e7276ccefaa8a4fb76d319b5619d71808d02fc72734a4f",
+          "revisions": 3,
+          "signatures": [
+            {
+              "field": "TestSignature",
+              "byte_range": [
+                0,
+                2256,
+                6760,
+                506
+              ],
+              "ranges_in_bounds": true,
+              "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+              "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+              "openssl_content_verified": true,
+              "intact": true,
+              "cms_valid": true,
+              "trusted_test_certificate": true,
+              "coverage": "ENTIRE_REVISION",
+              "modification_level": "OTHER",
+              "docmdp_ok": false,
+              "accepted_by_validator": false
+            }
+          ],
+          "smaller": false,
+          "signature_count_preserved": true,
+          "signed_bytes_preserved": true,
+          "cms_preserved": true,
+          "meets_requirement": false
+        },
+        "attachment_container": {
+          "bytes": 3759,
+          "sha256": "91431fab0ff70cf51d6740007049f37047e08b43905c6b6a5a9e909e01015a74",
+          "revisions": 1,
+          "signatures": [],
+          "extracted_original_identical": true,
+          "extracted_original_validation": {
+            "bytes": 7266,
+            "sha256": "a68cb3c72014cc2d91d7bb97471c4a064a7e0b8d8d44e5a40239eb3dfee7151c",
+            "revisions": 2,
+            "signatures": [
+              {
+                "field": "TestSignature",
+                "byte_range": [
+                  0,
+                  2256,
+                  6760,
+                  506
+                ],
+                "ranges_in_bounds": true,
+                "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+                "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+                "openssl_content_verified": true,
+                "intact": true,
+                "cms_valid": true,
+                "trusted_test_certificate": true,
+                "coverage": "ENTIRE_FILE",
+                "modification_level": "NONE",
+                "docmdp_ok": true,
+                "accepted_by_validator": true
+              }
+            ]
+          },
+          "meets_requirement": false,
+          "reason": "The container is unsigned. The signature belongs to the extracted original, not its cover."
+        },
+        "zip_container": {
+          "bytes": 2778,
+          "original_identical_after_extraction": true,
+          "meets_requirement": false,
+          "reason": "Output is ZIP, not an uploadable signed PDF."
+        },
+        "remove_unsigned_whitespace": {
+          "before_bytes": 7866,
+          "after_bytes": 7266,
+          "removed_bytes": 600,
+          "restores_exact_original": true,
+          "validation": {
+            "bytes": 7266,
+            "sha256": "a68cb3c72014cc2d91d7bb97471c4a064a7e0b8d8d44e5a40239eb3dfee7151c",
+            "revisions": 2,
+            "signatures": [
+              {
+                "field": "TestSignature",
+                "byte_range": [
+                  0,
+                  2256,
+                  6760,
+                  506
+                ],
+                "ranges_in_bounds": true,
+                "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+                "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+                "openssl_content_verified": true,
+                "intact": true,
+                "cms_valid": true,
+                "trusted_test_certificate": true,
+                "coverage": "ENTIRE_FILE",
+                "modification_level": "NONE",
+                "docmdp_ok": true,
+                "accepted_by_validator": true
+              }
+            ]
+          },
+          "ordinary_input_removable_bytes": 0,
+          "reason": "Only contrived whitespace beyond the last signed EOF; no signed content is reduced."
+        }
+      },
+      "signed_byte_deletion_rejected": true
+    },
+    "large": {
+      "original": {
+        "bytes": 10107250,
+        "sha256": "799433678d0e20ee40a8fe6d58a84f081d4f845e4ba42828a64cd2e8ac21626c",
+        "revisions": 2,
+        "signatures": [
+          {
+            "field": "TestSignature",
+            "byte_range": [
+              0,
+              10102232,
+              10106736,
+              514
+            ],
+            "ranges_in_bounds": true,
+            "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+            "signed_bytes_sha256": "eca6d2e871b278de576b72164832e13de5c1a82c2bc1861364048f38becb55aa",
+            "openssl_content_verified": true,
+            "intact": true,
+            "cms_valid": true,
+            "trusted_test_certificate": true,
+            "coverage": "ENTIRE_FILE",
+            "modification_level": "NONE",
+            "docmdp_ok": true,
+            "accepted_by_validator": true
+          }
+        ]
+      },
+      "attempts": {
+        "pypdf_lossless_rewrite": {
+          "bytes": 25927,
+          "sha256": "ab037eaa006106995b1fe8adbcb989522ff2a98d86720780caf712086d2ba9da",
+          "revisions": 1,
+          "signatures": [
+            {
+              "field": "TestSignature",
+              "byte_range": [
+                0,
+                10102232,
+                10106736,
+                514
+              ],
+              "ranges_in_bounds": false,
+              "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+              "signed_bytes_sha256": null,
+              "openssl_content_verified": false,
+              "intact": false,
+              "cms_valid": true,
+              "trusted_test_certificate": false,
+              "coverage": "CONTIGUOUS_BLOCK_FROM_START",
+              "modification_level": "OTHER",
+              "docmdp_ok": false,
+              "accepted_by_validator": false
+            }
+          ],
+          "smaller": true,
+          "signature_count_preserved": true,
+          "signed_bytes_preserved": false,
+          "cms_preserved": true,
+          "meets_requirement": false
+        },
+        "qpdf_lossless_rewrite": {
+          "bytes": 25472,
+          "sha256": "8e6c1dedf1535001fef2517724e1a68e7b76477a5a1e453f6a8d5a75a8de9f64",
+          "revisions": 1,
+          "signatures": [
+            {
+              "field": "TestSignature",
+              "byte_range": [
+                0,
+                10102232,
+                10106736,
+                514
+              ],
+              "ranges_in_bounds": false,
+              "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+              "signed_bytes_sha256": null,
+              "openssl_content_verified": false,
+              "intact": false,
+              "cms_valid": true,
+              "trusted_test_certificate": false,
+              "coverage": "CONTIGUOUS_BLOCK_FROM_START",
+              "modification_level": "OTHER",
+              "docmdp_ok": false,
+              "accepted_by_validator": false
+            }
+          ],
+          "smaller": true,
+          "signature_count_preserved": true,
+          "signed_bytes_preserved": false,
+          "cms_preserved": true,
+          "meets_requirement": false
+        },
+        "incremental_recompression": {
+          "bytes": 10127909,
+          "sha256": "67c63f8f27e0c1abe1bf564286f36d734a453013b9ff5539e514cb007eda0334",
+          "revisions": 3,
+          "signatures": [
+            {
+              "field": "TestSignature",
+              "byte_range": [
+                0,
+                10102232,
+                10106736,
+                514
+              ],
+              "ranges_in_bounds": true,
+              "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+              "signed_bytes_sha256": "eca6d2e871b278de576b72164832e13de5c1a82c2bc1861364048f38becb55aa",
+              "openssl_content_verified": true,
+              "intact": true,
+              "cms_valid": true,
+              "trusted_test_certificate": true,
+              "coverage": "ENTIRE_REVISION",
+              "modification_level": "OTHER",
+              "docmdp_ok": false,
+              "accepted_by_validator": false
+            }
+          ],
+          "smaller": false,
+          "signature_count_preserved": true,
+          "signed_bytes_preserved": true,
+          "cms_preserved": true,
+          "meets_requirement": false
+        },
+        "attachment_container": {
+          "bytes": 23926,
+          "sha256": "709f0815ad41be78d1b741906731e876a1586b4bcda3d6eafc6aed4eba2917be",
+          "revisions": 1,
+          "signatures": [],
+          "extracted_original_identical": true,
+          "extracted_original_validation": {
+            "bytes": 10107250,
+            "sha256": "799433678d0e20ee40a8fe6d58a84f081d4f845e4ba42828a64cd2e8ac21626c",
+            "revisions": 2,
+            "signatures": [
+              {
+                "field": "TestSignature",
+                "byte_range": [
+                  0,
+                  10102232,
+                  10106736,
+                  514
+                ],
+                "ranges_in_bounds": true,
+                "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+                "signed_bytes_sha256": "eca6d2e871b278de576b72164832e13de5c1a82c2bc1861364048f38becb55aa",
+                "openssl_content_verified": true,
+                "intact": true,
+                "cms_valid": true,
+                "trusted_test_certificate": true,
+                "coverage": "ENTIRE_FILE",
+                "modification_level": "NONE",
+                "docmdp_ok": true,
+                "accepted_by_validator": true
+              }
+            ]
+          },
+          "meets_requirement": false,
+          "reason": "The container is unsigned. The signature belongs to the extracted original, not its cover."
+        },
+        "zip_container": {
+          "bytes": 22937,
+          "original_identical_after_extraction": true,
+          "meets_requirement": false,
+          "reason": "Output is ZIP, not an uploadable signed PDF."
+        },
+        "remove_unsigned_whitespace": {
+          "before_bytes": 10107850,
+          "after_bytes": 10107250,
+          "removed_bytes": 600,
+          "restores_exact_original": true,
+          "validation": {
+            "bytes": 10107250,
+            "sha256": "799433678d0e20ee40a8fe6d58a84f081d4f845e4ba42828a64cd2e8ac21626c",
+            "revisions": 2,
+            "signatures": [
+              {
+                "field": "TestSignature",
+                "byte_range": [
+                  0,
+                  10102232,
+                  10106736,
+                  514
+                ],
+                "ranges_in_bounds": true,
+                "cms_sha256": "54c637bb158f84d3adfea1672b463e8f1f1c83c7d648e0fe48d0af0ab692e7f5",
+                "signed_bytes_sha256": "eca6d2e871b278de576b72164832e13de5c1a82c2bc1861364048f38becb55aa",
+                "openssl_content_verified": true,
+                "intact": true,
+                "cms_valid": true,
+                "trusted_test_certificate": true,
+                "coverage": "ENTIRE_FILE",
+                "modification_level": "NONE",
+                "docmdp_ok": true,
+                "accepted_by_validator": true
+              }
+            ]
+          },
+          "ordinary_input_removable_bytes": 0,
+          "reason": "Only contrived whitespace beyond the last signed EOF; no signed content is reduced."
+        }
+      },
+      "signed_byte_deletion_rejected": true
+    }
+  },
+  "unsigned_dss_experiment": {
+    "before": {
+      "bytes": 12095873,
+      "sha256": "d01226e0fb246d4b3a4366dafe12a1cbe7aff987659e3239d7944916218906ba",
+      "revisions": 3,
+      "signatures": [
+        {
+          "field": "TestSignature",
+          "byte_range": [
+            0,
+            2256,
+            6760,
+            506
+          ],
+          "ranges_in_bounds": true,
+          "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+          "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+          "openssl_content_verified": true,
+          "intact": true,
+          "cms_valid": true,
+          "trusted_test_certificate": true,
+          "coverage": "ENTIRE_REVISION",
+          "modification_level": "LTA_UPDATES",
+          "docmdp_ok": true,
+          "accepted_by_validator": true
+        }
+      ]
+    },
+    "after": {
+      "bytes": 106814,
+      "sha256": "ccc3141f7c8758e8809bb0a1f19fd1e236355677223e6f35dc4c29837d0d95bd",
+      "revisions": 3,
+      "signatures": [
+        {
+          "field": "TestSignature",
+          "byte_range": [
+            0,
+            2256,
+            6760,
+            506
+          ],
+          "ranges_in_bounds": true,
+          "cms_sha256": "1fb0e34806c58847a15dc6238731e5f523f8a1728ede90d4841a7cd8ab5b21f1",
+          "signed_bytes_sha256": "7042a205ff59c7d232365a9fed605134409168d7e19497806aae94a0f7b2fb5c",
+          "openssl_content_verified": true,
+          "intact": true,
+          "cms_valid": true,
+          "trusted_test_certificate": true,
+          "coverage": "ENTIRE_REVISION",
+          "modification_level": "LTA_UPDATES",
+          "docmdp_ok": true,
+          "accepted_by_validator": true
+        }
+      ]
+    },
+    "signed_prefix_bytes": 7266,
+    "decoded_certificate_entries_preserved": 14000,
+    "same_original_cms_and_signed_bytes": true,
+    "fixture_requirement_met": true,
+    "production_ready": false,
+    "scope": "A known, sole, unsigned DSS certificate update after the last signature; no timestamps, page edits or other unsigned revisions."
+  },
+  "dss_rejection_cases": {
+    "no_unsigned_update": "No unsigned suffix to reduce",
+    "signed_prefix_at_limit": "Signed bytes already meet or exceed the requested limit",
+    "signed_prefix_over_limit": "Signed bytes already meet or exceed the requested limit",
+    "unachievable_limit": "Candidate does not meet the size requirement",
+    "unsigned_page_change": "Input signature validation failed",
+    "second_unsigned_revision": "Only one unsigned revision is supported",
+    "tampered_signed_metadata": "Input signature validation failed"
+  },
+  "render_comparisons": {
+    "small-original": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "small-pypdf_lossless_rewrite": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "small-qpdf_lossless_rewrite": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "small-incremental_recompression": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "large-original": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "large-pypdf_lossless_rewrite": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "large-qpdf_lossless_rewrite": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "large-incremental_recompression": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "unsigned-dss-before": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    },
+    "unsigned-dss-after": {
+      "dimensions": [
+        708,
+        1000
+      ],
+      "pixel_sha256": "67202ba7ebd2052e0e0bde330492ef46a365f232989416d8619905769f854db2"
+    }
+  }
+}
