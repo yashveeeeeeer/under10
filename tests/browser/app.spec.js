@@ -9,6 +9,10 @@ const upload = (page, bytes, name = 'synthetic.pdf') => page.locator('#files').s
 async function ready(page) { await page.goto('/'); await expect(page.locator('#status')).toContainText('Ready.'); }
 async function prepare(page) { await expect(page.locator('#process')).toBeEnabled(); await page.locator('#process').click(); await expect(page.locator('#result')).toBeVisible(); }
 async function download(page) { const waiting = page.waitForEvent('download'); await page.locator('#download').click(); return waiting; }
+async function allowScans(page) {
+  if (await page.locator('#build-settings').getAttribute('open') === null) await page.locator('#build-settings > summary').click();
+  await page.locator('#raster').check();
+}
 async function image(page, noisy = false) {
   const data = await page.evaluate(noisy => {
     const c = document.createElement('canvas'); c.width = 1600; c.height = 2200; const ctx = c.getContext('2d');
@@ -65,7 +69,7 @@ test('signature markers block merge and unchanged mode preserves SHA-256', async
 });
 test('a genuine synthetic digital signature survives unchanged download', async ({ page }) => {
   await ready(page); const bytes = await readFile('tests/data/signed-synthetic.pdf');
-  await page.locator('#raster').check();
+  await allowScans(page);
   await upload(page, bytes, 'signed-synthetic.pdf'); await expect(page.locator('.file-issue')).toContainText('check-only'); await expect(page.locator('#process')).toBeDisabled();
   await page.locator('#check-mode').click(); await prepare(page); const d = await download(page); await d.saveAs('tmp/qa/signed-returned.pdf');
   const returned = await readFile(await d.path()); expect(Buffer.compare(returned, bytes)).toBe(0);
@@ -81,7 +85,7 @@ test('over-10-MB genuinely signed PDF stays blocked with compression enabled', a
   await ready(page);
   const bytes = gunzipSync(await readFile('tests/data/signed-over-limit-synthetic.pdf.gz'));
   expect(bytes.length).toBeGreaterThan(10_000_000);
-  await page.locator('#raster').check();
+  await allowScans(page);
   await upload(page, bytes, 'signed-over-10mb.pdf');
   await expect(page.locator('.file-issue')).toContainText('check-only');
   await expect(page.locator('#process')).toBeDisabled();
@@ -131,11 +135,11 @@ test('over-limit original cannot be downloaded; changing settings invalidates ou
 test('scan compression is explicit and stops at quality floor', async ({ page }) => {
   await ready(page); const png = await image(page, true); const pdf = await PDFDocument.create(); const img = await pdf.embedPng(png); pdf.addPage([595, 842]).drawImage(img, { x: 0, y: 0, width: 595, height: 842 });
   await upload(page, await pdf.save()); await page.locator('#size-limit').fill('3'); await page.locator('#process').click(); await expect(page.locator('#status')).toContainText('Cannot meet'); await expect(page.locator('#result')).toBeHidden();
-  await page.locator('#raster').check(); await prepare(page); await expect(page.locator('#result-detail')).toContainText('converted to colour images');
+  await allowScans(page); await prepare(page); await expect(page.locator('#result-detail')).toContainText('converted to colour images');
   await page.locator('#reviewed').check(); const d = await download(page); expect((await readFile(await d.path())).length).toBeLessThanOrEqual(2700000);
   await page.locator('#size-limit').fill('0.1'); await page.locator('#process').click(); await expect(page.locator('#status')).toContainText('Cannot meet'); await expect(page.locator('#result')).toBeHidden();
 });
 test('clear while processing prevents stale output', async ({ page }) => {
   await ready(page); await upload(page, await pdfFixture({ pages: 30 })); await page.locator('#process').click(); await page.locator('#clear').click(); await expect(page.locator('#file-list')).toBeEmpty(); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#status')).toContainText('Session cleared');
-  await upload(page, await pdfFixture()); await prepare(page); await expect(page.locator('#result-detail')).toContainText('1 pages');
+  await upload(page, await pdfFixture()); await prepare(page); await expect(page.locator('#result-detail')).toContainText('1 page');
 });

@@ -26,9 +26,12 @@ function updateControls() {
   const pages = items.reduce((sum, i) => sum + (i.info?.pages || 0), 0);
   $('process').disabled = busy || !engineReady || !limit || !valid || issues || pages > LIMITS.pages || (mode === 'check' && (items.length !== 1 || items[0].kind !== 'pdf'));
   $('target').textContent = limit ? mb(mode === 'check' ? limit : targetBytes(limit, $('reserve').checked)) : 'Choose a limit';
-  $('target-label').textContent = mode === 'check' ? 'Strictly smaller than' : 'Working target';
+  $('target-label').textContent = mode === 'check' ? 'Must be under' : 'Target';
+  $('action-hint').textContent = mode === 'check' ? 'Size check only. No changes to the file.' : $('reserve').checked ? 'Includes room for signing.' : 'Includes a small size margin.';
   $('file-count').textContent = `${items.length} ${items.length === 1 ? 'file' : 'files'}${pages ? ` · ${pages} pages` : ''}`;
   $('empty-note').hidden = items.length > 0;
+  $('workspace').classList.toggle('has-files', items.length > 0);
+  $('workspace').classList.toggle('has-result', Boolean(result));
 }
 function renderList() {
   const list = $('file-list'); list.replaceChildren();
@@ -45,7 +48,7 @@ function renderList() {
     const actions = document.createElement('div'); actions.className = 'file-actions';
     for (const [label, symbol, move, disabled] of [['Move up', '↑', -1, index === 0], ['Move down', '↓', 1, index === items.length - 1], ['Remove', '×', 0, false]]) {
       const button = document.createElement('button'); button.className = 'small-button'; button.textContent = symbol; button.setAttribute('aria-label', `${label} ${item.file.name}`); button.disabled = busy || disabled;
-      button.addEventListener('click', () => { clearResult(); if (move) [items[index], items[index + move]] = [items[index + move], items[index]]; else items.splice(index, 1); renderList(); status('Workspace updated. Prepare the files again to create a new result.'); });
+      button.addEventListener('click', () => { clearResult(); if (move) [items[index], items[index + move]] = [items[index + move], items[index]]; else items.splice(index, 1); renderList(); status('Files updated. Prepare again to use this order.'); });
       actions.append(button);
     }
     row.append(icon, body, actions); list.append(row);
@@ -59,7 +62,9 @@ async function loadPDF(bytes) {
   catch (e) { tasks.delete(task); await task.destroy().catch(() => {}); throw e; }
 }
 async function clearResult() {
+  previewSerial++;
   result = null;
+  $('workspace').classList.remove('has-result');
   $('result').hidden = true; $('reviewed').checked = false; $('download').disabled = true;
   $('hash').textContent = ''; $('result-detail').textContent = ''; $('result-warning').textContent = '';
   if (renderTask) { renderTask.cancel(); renderTask = null; }
@@ -76,24 +81,23 @@ async function reset() {
   $('files').value = '';
   await clearResult();
   await Promise.allSettled([...tasks].map(t => t.destroy())); tasks.clear();
-  setBusy(false); renderList(); status('Session cleared. The app has released its document references and previews.');
+  setBusy(false); renderList(); status('Session cleared.');
 }
 function setMode(next) {
   if (busy) return;
   mode = next; generation++; clearResult();
   const check = mode === 'check';
   $('build-mode').setAttribute('aria-pressed', String(!check)); $('check-mode').setAttribute('aria-pressed', String(check));
-  $('input-title').textContent = check ? 'Add one original PDF' : 'Add your documents';
-  $('input-help').textContent = check ? 'Check its size. Keep its exact bytes and existing signatures unchanged.' : 'Unsigned PDFs and images, in the order you want them.';
-  $('formats').textContent = check ? 'One PDF · up to 40 MB · no rewriting' : 'PDF, JPG, PNG · up to 40 files · 100 MB total';
+  $('input-title').textContent = check ? 'Original PDF' : 'Files';
+  $('input-help').textContent = check ? 'The original stays unchanged. Signatures are not verified.' : 'Use unsigned PDFs, JPGs or PNGs.';
+  $('formats').textContent = check ? 'One PDF · up to 40 MB' : 'PDF, JPG, PNG · 100 MB total';
   $('files').accept = check ? '.pdf,application/pdf' : '.pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png';
   $('files').multiple = !check;
   $('build-settings').hidden = check;
-  $('settings-title').textContent = check ? 'Your size check' : 'Your output';
-  $('process').textContent = check ? 'Check PDF ↗' : 'Prepare PDF ↗';
-  $('action-hint').textContent = check ? 'No compression or signature validation. A passing file is returned byte for byte.' : 'We stop if the file cannot fit within the quality floor. No pages are dropped.';
+  $('settings-title').textContent = check ? 'Size check settings' : 'PDF settings';
+  $('process').textContent = check ? 'Check PDF →' : 'Prepare PDF →';
   renderList();
-  status(check ? 'Select exactly one PDF. Remove extra files if needed. No document will be rewritten.' : 'Add unsigned documents to begin.');
+  status(check ? 'Choose one PDF to check its size.' : 'Choose files to begin.');
 }
 async function addFiles(list) {
   if (busy || !engineReady || !list.length) return;
@@ -117,7 +121,7 @@ async function addFiles(list) {
     }
     const count = items.reduce((s, i) => s + (i.info?.pages || 0), 0);
     const blocked = items.some(i => i.error || (mode === 'build' && i.kind === 'pdf' && transformIssue(i.info)));
-    status(count > LIMITS.pages ? 'The 200-page safety limit has been exceeded. Remove files to continue.' : blocked ? 'Some files need attention. Remove them or use Check an existing PDF where available.' : 'Files checked. Confirm the order and size limit, then continue.', blocked || count > LIMITS.pages ? 'error' : '');
+    status(count > LIMITS.pages ? 'Over 200 pages. Remove files to continue.' : blocked ? 'Check the messages beside your files.' : 'Files ready. Check the order, then prepare.', blocked || count > LIMITS.pages ? 'error' : '');
   } catch (e) { if (g === generation) status(e.message, 'error'); }
   finally { if (g === generation) { setBusy(false); renderList(); } $('files').value = ''; }
 }
@@ -190,8 +194,8 @@ async function processFiles() {
     if (unchanged) {
       bytes = new Uint8Array(await items[0].file.arrayBuffer());
       if (!fits(bytes.length, limit)) throw new Error(`This original is ${mb(bytes.length)} (${bytes.length.toLocaleString()} bytes), so it is not strictly below ${mb(limit)}. It was not changed. Obtain a smaller unsigned source before signing.`);
-      detail = `${pages} pages · ${bytes.length.toLocaleString()} bytes · Original bytes unchanged`;
-      warning = items[0].info.signature ? 'Signature marker / field detected. The original file is unchanged; signature validity and certificate trust have not been verified. Validate it in your trusted PDF reader.' : 'Size check only. No signature markers were detected by these checks; that is not a certificate validation. The original file is unchanged.';
+      detail = `${pages} ${pages === 1 ? 'page' : 'pages'} · ${bytes.length.toLocaleString()} bytes · Original unchanged`;
+      warning = items[0].info.signature ? 'Signature marker or field detected. The file is unchanged; signature validity and trust have not been verified.' : 'No signature markers detected. This is a size check, not signature validation.';
     } else {
       const target = targetBytes(limit, $('reserve').checked);
       let used, raster = false;
@@ -210,20 +214,20 @@ async function processFiles() {
       }
       if (bytes.length > target || !fits(bytes.length, limit)) throw new Error(`Cannot meet the ${mb(target)} working target within the quality floor. No download created. ${!$('raster').checked ? 'You can explicitly allow scan compression for unsigned PDFs, or ' : ''}use smaller source scans or prepare separate attachments where your filing permits. No pages were removed.`);
       await validateRendering(bytes, pages, g);
-      detail = `${pages} pages · ${bytes.length.toLocaleString()} bytes · ${raster ? 'PDF pages converted to colour images' : 'PDF text and vectors retained'}${raster || items.some(i => i.kind !== 'pdf') ? ` · Images: ${used.dpi} DPI, JPEG ${Math.round(used.quality * 100)}%` : ''}`;
-      warning = raster ? 'Scan compression used. Selectable text, tags and bookmarks are removed. Check small text, stamps and seals on every page. Sign only after the final review, then recheck the signed file’s size.' : 'Check every page for completeness and readability. Document-level bookmarks, tags and metadata are not retained in the combined PDF. Sign afterwards if needed, then recheck the signed file’s size.';
+      detail = `${pages} ${pages === 1 ? 'page' : 'pages'} · ${bytes.length.toLocaleString()} bytes · ${raster ? 'PDF pages converted to colour images' : 'PDF text and vectors retained'}${raster || items.some(i => i.kind !== 'pdf') ? ` · Images: ${used.dpi} DPI, JPEG ${Math.round(used.quality * 100)}%` : ''}`;
+      warning = raster ? 'Scan compression removed selectable text, tags and bookmarks. Check every page before signing, then recheck the signed file’s size.' : 'Check every page. Document-level bookmarks, tags and metadata are not retained. If you sign this file, recheck its size afterwards.';
     }
     checkGeneration(g);
     const hashBytes = await crypto.subtle.digest('SHA-256', bytes); checkGeneration(g);
     result = { bytes, limit, pages, unchanged, hash: Array.from(new Uint8Array(hashBytes), b => b.toString(16).padStart(2, '0')).join(''), name: unchanged ? items[0].file.name : 'prepared-document.pdf', visited: new Set() };
-    $('result-title').textContent = unchanged ? 'Your original fits the size limit.' : 'Your PDF is ready to review.';
-    $('result-kicker').textContent = unchanged ? 'SIZE CHECK · ORIGINAL UNCHANGED' : 'PREPARED ON YOUR DEVICE';
+    $('result-title').textContent = unchanged ? 'The original fits.' : 'Review your PDF';
+    $('result-kicker').textContent = unchanged ? 'SIZE CHECK' : 'PREPARED';
     $('result-size').textContent = mb(bytes.length); $('result-detail').textContent = detail; $('result-warning').textContent = warning; $('hash').textContent = result.hash;
     $('preview-area').hidden = unchanged; $('review-row').hidden = unchanged; $('download').textContent = unchanged ? 'Download unchanged original ↓' : 'Download PDF ↓';
     $('result').hidden = false;
     if (!unchanged) { previewDoc = await loadPDF(bytes); checkGeneration(g); previewPage = 1; $('zoom').value = '1'; await showPage(g); }
     refreshDownload();
-    status(unchanged ? 'Size check passed. Original bytes preserved; signature validity is unverified.' : 'Size and page-count checks passed. Review every page before downloading.', 'success');
+    status(unchanged ? 'Size check passed. Original unchanged.' : 'Size and page count checked. Review before downloading.', 'success');
     $('result').scrollIntoView({ behavior: 'instant', block: 'start' });
   } catch (e) { if (g === generation) { await clearResult(); status(e.message || 'The file could not be safely prepared. No download created.', 'error'); } }
   finally { if (g === generation) { setBusy(false); renderList(); } }
@@ -237,7 +241,9 @@ async function showPage(g = generation) {
   if (serial !== previewSerial) return;
   const base = page.getViewport({ scale: 1 });
   const container = document.querySelector('.canvas-wrap');
-  const desiredScale = Math.min(1.1, (container.clientWidth - 42) / base.width) * Number($('zoom').value);
+  const style = getComputedStyle(container);
+  const available = Math.max(1, container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
+  const desiredScale = Math.min(1.1, available / base.width) * Number($('zoom').value);
   const scale = Math.min(desiredScale, Math.sqrt(LIMITS.renderPixels / (base.width * base.height)), 16000 / Math.max(base.width, base.height));
   const viewport = page.getViewport({ scale });
   const canvas = $('preview'); canvas.width = Math.ceil(viewport.width); canvas.height = Math.ceil(viewport.height);
@@ -253,7 +259,7 @@ function refreshDownload() {
   const ready = result && (result.unchanged || (result.visited.size === result.pages && $('reviewed').checked));
   $('download').disabled = !ready;
   $('reviewed').disabled = !result || result.visited.size !== result.pages;
-  $('download-note').textContent = !result ? '' : result.unchanged ? 'Byte for byte. No changes to your original.' : ready ? 'Saved only when you choose to download.' : `${result.visited.size} of ${result.pages} pages opened. Review all pages and confirm.`;
+  $('download-note').textContent = !result ? '' : result.unchanged ? 'Original file, unchanged.' : ready ? 'Ready to save.' : `${result.visited.size} of ${result.pages} pages opened. Review all, then confirm.`;
 }
 function download() {
   if (!result || $('download').disabled || !fits(result.bytes.length, result.limit)) return;
@@ -272,12 +278,23 @@ $('cancel').addEventListener('click', reset);
 $('build-mode').addEventListener('click', () => setMode('build'));
 $('check-mode').addEventListener('click', () => setMode('check'));
 $('check-shortcut').addEventListener('click', () => { setMode('check'); $('workspace').scrollIntoView(); });
+$('privacy-link').addEventListener('click', () => { $('privacy').open = true; });
 for (const id of ['size-limit', 'reserve', 'raster']) $(id).addEventListener('input', () => { generation++; clearResult(); updateControls(); });
 $('reviewed').addEventListener('change', refreshDownload); $('download').addEventListener('click', download);
 for (const [id, delta] of [['previous', -1], ['next', 1]]) $(id).addEventListener('click', () => { if (!result) return; previewPage = Math.min(result.pages, Math.max(1, previewPage + delta)); showPage().catch(() => { clearResult(); status('Preview failed. Download blocked; prepare the document again.', 'error'); }); });
 $('zoom').addEventListener('change', () => showPage().catch(() => { clearResult(); status('Preview failed. Download blocked.', 'error'); }));
+let resizeTimer, previewWidth = 0;
+new ResizeObserver(([entry]) => {
+  const width = Math.round(entry.contentRect.width);
+  if (width === previewWidth) return;
+  previewWidth = width;
+  clearTimeout(resizeTimer);
+  if (width > 0 && previewDoc && result && !busy) resizeTimer = setTimeout(() => {
+    showPage().catch(() => { clearResult(); status('Preview failed. Download blocked.', 'error'); });
+  }, 100);
+}).observe(document.querySelector('.canvas-wrap'));
 window.addEventListener('pagehide', () => { generation++; items = []; clearResult(); for (const task of tasks) task.destroy().catch(() => {}); tasks.clear(); });
 try {
   worker = new PDFWorker(); await worker.promise;
-  engineReady = true; status('Ready. Your documents will be processed on this device.'); updateControls();
+  engineReady = true; status('Ready. Choose files to begin.'); updateControls();
 } catch { status('The PDF engine could not load. Use a current Chromium browser, allow this site’s scripts, and reload.', 'error'); }

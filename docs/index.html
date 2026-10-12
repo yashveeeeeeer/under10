@@ -2,73 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'none'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
-  <meta name="description" content="Combine unsigned PDFs and images under your chosen size limit, privately in your browser. Existing digital signatures stay check-only.">
-  <title>Under10 — Less file. Less friction.</title>
+  <meta name="description" content="Combine unsigned PDFs and images under a chosen size limit. Process files in your browser, without uploads.">
+  <title>Under10 — Combine and compress PDFs</title>
   <link rel="stylesheet" href="./assets/style.css">
   <script type="module" src="./assets/app.js"></script>
 </head>
 <body>
   <a class="skip" href="#workspace">Skip to PDF tool</a>
   <header class="topbar wrap">
-    <a class="brand" href="./" aria-label="Under10 home"><span class="brand-mark" aria-hidden="true">u<span>↓</span></span>under<span class="brand-ten">10</span><span class="beta">BETA</span></a>
-    <nav aria-label="Main navigation"><a href="#how-it-works">How it works</a><a href="#privacy">Privacy</a><a href="https://github.com/yashveeeeeeer/under10" target="_blank" rel="noopener noreferrer">Source ↗</a></nav>
+    <a class="brand" href="./" aria-label="Under10 home">under<span>10</span><span class="beta">beta</span></a>
+    <nav aria-label="Main navigation">
+      <a id="privacy-link" href="#privacy">Privacy</a>
+      <a href="https://github.com/yashveeeeeeer/under10" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    </nav>
   </header>
   <main class="wrap">
-    <section class="hero">
-      <div><p class="eyebrow"><span class="dot"></span> THE SMALLER-PDF WORKSPACE</p><h1>A smaller file.<br>A smoother filing.</h1><p class="intro">Bring your documents together. Fit the size limit.<br>Keep the sensitive details on your device.</p></div>
-      <div class="hero-note"><span class="note-symbol" aria-hidden="true">↘</span><p>Made for the last mile<br>of document preparation.</p><span class="mini-label">FREE TO USE · NO ACCOUNT</span></div>
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">Combine and compress PDFs.</h1>
+      <p>Files are processed on your device.</p>
     </section>
-    <div class="trust-strip"><span><span aria-hidden="true">◉</span> Processed in your browser</span><span><span aria-hidden="true">◇</span> Signed files stay unchanged</span><span><span aria-hidden="true">↓</span> Download only when it fits</span></div>
     <section id="workspace" class="workspace" aria-label="PDF preparation tool">
-      <div class="workspace-head"><div><span class="eyebrow">YOUR WORKSPACE</span><h2>Let’s get your files ready.</h2></div><button id="clear" class="text-button">Clear session ↗</button></div>
-      <div class="mode-tabs" role="group" aria-label="Choose a workflow"><button id="build-mode" aria-pressed="true">01 <span>Build a PDF</span></button><button id="check-mode" aria-pressed="false">02 <span>Check an existing PDF</span></button></div>
+      <div class="workspace-head">
+        <div class="mode-tabs" role="group" aria-label="Choose a workflow">
+          <button id="build-mode" aria-pressed="true">Make a PDF</button>
+          <button id="check-mode" aria-pressed="false">Check a PDF</button>
+        </div>
+        <button id="clear" class="text-button">Clear</button>
+      </div>
       <div class="work-grid">
         <div class="files-panel">
-          <div class="section-label"><h3 id="input-title">Add your documents</h3><span id="file-count">0 files</span></div>
-          <p id="input-help" class="muted">Unsigned PDFs and images, in the order you want them.</p>
-          <label id="dropzone" class="dropzone" for="files"><span class="drop-art" aria-hidden="true"><span>PDF</span><span>+</span></span><strong>Drop your files here</strong><span>or <span class="browse">browse files</span></span><small id="formats">PDF, JPG, PNG · up to 40 files · 100 MB total</small><input id="files" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple aria-label="Choose PDFs and images"></label>
+          <div class="section-label"><h2 id="input-title">Files</h2><span id="file-count">0 files</span></div>
+          <p id="input-help" class="muted">Use unsigned PDFs, JPGs or PNGs.</p>
+          <label id="dropzone" class="dropzone" for="files">
+            <svg class="file-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M11 4h12l8 8v22a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M23 4v9h8M20 20v10m-5-5h10"/></svg>
+            <strong>Choose files <span aria-hidden="true">+</span></strong>
+            <span class="drop-hint">or drop them here</span>
+            <small id="formats">PDF, JPG, PNG · 100 MB total</small>
+            <input id="files" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple aria-label="Choose PDFs and images">
+          </label>
           <div id="file-list" class="file-list" aria-label="Selected documents"></div>
-          <p id="empty-note" class="empty-note">Your files are read on this device. They are never uploaded.</p>
+          <p id="empty-note" class="empty-note">Files stay on your device.</p>
         </div>
         <aside class="settings-panel" aria-label="Output settings">
-          <p class="eyebrow">MAKE ROOM FOR WHAT MATTERS</p><h3 id="settings-title">Your output</h3>
-          <label class="field-label" for="size-limit">Upload limit <span>MB, decimal</span></label>
-          <div class="limit-input"><input id="size-limit" type="number" min="0.1" max="10" step="0.1" value="10" inputmode="decimal"><span>MB</span></div>
-          <p class="hint">Maximum 10 MB. Check the limit for your specific attachment field.</p>
-          <div id="build-settings">
-            <label class="check-row"><input id="reserve" type="checkbox" checked><span>Leave room for signing<small>Target 90% of the limit. Signing may add more; check the final signed file.</small></span></label>
-            <label class="check-row"><input id="raster" type="checkbox"><span>Allow scan compression<small>Only if needed. Converts unsigned PDF pages to images; removes selectable text, tags and bookmarks. Colour is retained.</small></span></label>
+          <h2 id="settings-title" class="sr-only">PDF settings</h2>
+          <div class="limit-row">
+            <div><label class="field-label" for="size-limit">Size limit</label><p class="hint">Use your form’s limit.</p></div>
+            <div class="limit-input"><input id="size-limit" type="number" min="0.1" max="10" step="0.1" value="10" inputmode="decimal" aria-describedby="limit-help"><span>MB</span></div>
           </div>
-          <div class="target-row"><span id="target-label">Working target</span><strong id="target">9.00 MB</strong></div>
-          <button id="process" class="primary" disabled>Prepare PDF <span aria-hidden="true">↗</span></button>
-          <button id="cancel" class="text-button cancel" hidden>Cancel preparation</button>
-          <p class="hint bottom-hint" id="action-hint">We stop if the file cannot fit within the quality floor. No pages are dropped.</p>
+          <span id="limit-help" class="sr-only">Between 0.1 and 10 decimal megabytes.</span>
+          <details id="build-settings" class="options">
+            <summary>Options</summary>
+            <label class="check-row"><input id="reserve" type="checkbox" checked><span>Leave room for signing<small>Target 90% of the limit. Recheck the file after signing.</small></span></label>
+            <label class="check-row"><input id="raster" type="checkbox"><span>Allow scan compression<small>If needed, turns unsigned PDF pages into images. Removes selectable text, tags and bookmarks.</small></span></label>
+          </details>
         </aside>
+        <div class="action-bar">
+          <div class="action-main"><div class="target"><span id="target-label">Target</span><strong id="target">9.00 MB</strong></div><button id="process" class="primary" disabled>Prepare PDF <span aria-hidden="true">→</span></button></div>
+          <p id="action-hint" class="hint">Includes room for signing.</p>
+          <button id="cancel" class="text-button cancel" hidden>Cancel</button>
+        </div>
       </div>
-      <div id="status" class="status" role="status" aria-live="polite">Loading the local PDF engine…</div>
+      <div id="status" class="status" role="status" aria-live="polite">Loading PDF tools…</div>
       <section id="result" class="result" hidden aria-labelledby="result-title">
-        <div class="result-heading"><div><p class="eyebrow" id="result-kicker">PREPARED ON YOUR DEVICE</p><h2 id="result-title">Your PDF is ready to review.</h2></div><strong id="result-size"></strong></div>
+        <div class="result-heading"><div><p id="result-kicker" class="eyebrow">PREPARED</p><h2 id="result-title">Review your PDF</h2></div><strong id="result-size"></strong></div>
         <p id="result-detail"></p><p id="result-warning" class="notice"></p>
-        <div id="preview-area"><div class="preview-controls"><span>Review every page at a readable zoom.</span><div><button id="previous" class="small-button" aria-label="Previous page">←</button><span id="page-label"></span><button id="next" class="small-button" aria-label="Next page">→</button><select id="zoom" aria-label="Preview zoom"><option value="1">Fit page</option><option value="1.5">150%</option><option value="2">200%</option></select></div></div><div class="canvas-wrap"><canvas id="preview" aria-label="PDF page preview"></canvas></div></div>
-        <label id="review-row" class="check-row"><input id="reviewed" type="checkbox"><span>I have checked every page for readability, seals and completeness.</span></label>
-        <div class="download-row"><button id="download" class="primary" disabled>Download PDF ↓</button><span id="download-note">Review required before download.</span></div>
-        <details id="hash-details"><summary>File integrity · SHA-256</summary><code id="hash"></code><p class="hint">This identifies these exact bytes. It does not validate a digital signature or certify MCA acceptance.</p></details>
+        <div id="preview-area">
+          <div class="preview-controls"><span>Check text, stamps and seals.</span><div><button id="previous" class="small-button" aria-label="Previous page">←</button><span id="page-label"></span><button id="next" class="small-button" aria-label="Next page">→</button><select id="zoom" aria-label="Preview zoom"><option value="1">Fit page</option><option value="1.5">150%</option><option value="2">200%</option></select></div></div>
+          <div class="canvas-wrap" tabindex="0" role="region" aria-label="PDF preview; scroll to view a zoomed page"><canvas id="preview" aria-label="PDF page preview"></canvas></div>
+        </div>
+        <label id="review-row" class="check-row"><input id="reviewed" type="checkbox"><span>Every page is complete and readable.</span></label>
+        <div class="download-row"><button id="download" class="primary" disabled>Download PDF ↓</button><span id="download-note">Review all pages first.</span></div>
+        <details id="hash-details"><summary>File fingerprint</summary><code id="hash"></code><p class="hint">SHA-256 identifies these bytes. It does not verify a signature.</p></details>
       </section>
     </section>
-    <section class="signature-note"><span aria-hidden="true">↳</span><div><h3>Already digitally signed? Check it. Keep it intact.</h3><p>Merging or compressing a signed PDF can invalidate its signature. Use <button id="check-shortcut" class="inline-button">Check an existing PDF</button> for a size check and unchanged download. To combine files, start with unsigned originals and sign the finished document.</p></div></section>
-    <section id="how-it-works" class="how-section"><p class="eyebrow">A LITTLE LESS BACK-AND-FORTH</p><h2>Three steps. One considered PDF.</h2><div class="step-grid"><article><span class="step-no">01 /</span><h3>Bring the pieces</h3><p>Add unsigned PDFs and images. Reorder the files; every page stays in the package.</p></article><article><span class="step-no">02 /</span><h3>Find the right fit</h3><p>Set your field’s limit. We keep PDF text and vectors first, and compress images within a fixed quality floor.</p></article><article><span class="step-no">03 /</span><h3>Review, then download</h3><p>Check the output before saving it. Sign afterwards if needed, then recheck the signed file’s size.</p></article></div></section>
-    <section class="faq-section" aria-label="Important details"><h2>Clear limits.<br>Clear expectations.</h2><div>
-      <details><summary>Can every document be made smaller than 10 MB?</summary><p>No. Some documents cannot fit without losing too much detail. Under10 tries a bounded set of colour image settings, down to 150 DPI and JPEG quality 72%, then stops. These settings are a product floor, not an MCA standard. The tool never silently removes pages or offers an oversized result.</p></details>
-      <details><summary>Is 10 MB the rule for every MCA attachment?</summary><p>No universal limit is assumed. Limits can differ by form, individual attachment and total package. An older SPICe+ FAQ says 6 MB per PDF form; a URC-1 kit says 10 MB total; the RD-1 kit specifies 2 MB per attachment and 10 MB total. Confirm the current requirement in your live filing workflow. This independent utility checks size, not filing eligibility.</p><p><a href="https://www.mca.gov.in/Ministry/pdf/SpicePlusFAQS_20112020.pdf" target="_blank" rel="noopener noreferrer">MCA SPICe+ FAQ (2020) ↗</a> · <a href="https://www.mca.gov.in/content/dam/mca-aem-forms/instructionkits/Instruction_Kit_RD-1_v3.pdf" target="_blank" rel="noopener noreferrer">MCA RD-1 kit ↗</a> · <a href="https://www.mca.gov.in/content/dam/mca-aem-forms/instructionkits/Instruction%20Kit_URC-1.pdf" target="_blank" rel="noopener noreferrer">MCA URC-1 kit ↗</a></p></details>
-      <details id="privacy"><summary>What happens to my documents?</summary><p>File bytes, names and previews stay in this browser session. There is no upload endpoint, analytics, cookies, localStorage, IndexedDB or service worker in the app. Clear session releases its file references and previews; closing or reloading also resets the workspace. Download saves a file only when you choose it.</p><p>The site host still receives normal page requests and may keep access logs, such as IP addresses. Browsers and operating systems manage memory, swap, extensions and downloads; this website cannot guarantee secure erasure or control them. Website code may be cached, but the app does not persist your documents.</p></details>
-      <details><summary>Does this validate my digital signature?</summary><p>No. A signature field or marker triggers a conservative check-only restriction. It is not proof that a signature exists or is valid. In check mode, the original bytes are used without rewriting them. Use your trusted signature validator to check identity, trust, revocation and validity. No certificate, signing key or DSC token is requested.</p><p><a href="https://helpx.adobe.com/acrobat/desktop/e-sign-documents/learn-about-signatures/signed-pdf-limitations.html" target="_blank" rel="noopener noreferrer">Adobe’s guidance on signed PDFs ↗</a></p></details>
-      <details><summary>Which files can I prepare?</summary><p>Static unsigned PDFs, JPEGs and PNGs. Images become full-page colour images on A4 pages, without cropping. PDFs retain their page dimensions. Password-protected, malformed and oversized inputs are rejected. Forms, signature fields, annotations, PDF scripts, portfolios and embedded files are check-only. PDF document-level bookmarks, tags and metadata are not retained in a new combined file. No OCR, editing, signing or legal validation is performed.</p><p>Safety limits: 40 files, 40 MB each, 100 MB total, 200 pages, and images up to 32 megapixels. Modern Chromium browsers are the initial supported target; other browsers need separate validation.</p></details>
-    </div></section>
+    <p class="signature-note"><button id="check-shortcut" class="inline-button">Already signed?</button> Check its size without changing the file.</p>
+    <section class="help" aria-label="Help">
+      <details id="privacy"><summary>Privacy</summary><p>Files stay in browser memory. No uploads, tracking or document storage. Clear the session to release them; Download saves a copy. The site host may keep visit logs. Your browser and operating system control memory, caches and downloads.</p></details>
+      <details><summary>Signed PDFs</summary><p>Signed files are check-only. Compressing or merging can break a digital signature. Use unsigned originals to prepare a new PDF, then sign it. This tool does not verify signatures.</p></details>
+      <details><summary>Size and quality</summary><p>Some files cannot fit without losing too much detail. The tool stops if that happens; it never drops pages. Check every page before downloading. MCA limits vary by form and attachment.</p></details>
+      <details><summary>Supported files</summary><p>Static unsigned PDFs, JPGs and PNGs. Up to 40 files, 40 MB each, 100 MB total and 200 pages. Forms, annotations, portfolios and embedded attachments are check-only. New PDFs do not retain document-level bookmarks, tags or metadata.</p><a href="https://github.com/yashveeeeeeer/under10/blob/main/TECHNICAL.md" target="_blank" rel="noopener noreferrer">Full technical details ↗</a></details>
+    </section>
   </main>
-  <footer class="wrap"><a class="brand" href="./">under<span class="brand-ten">10</span></a><p>A small tool for a less frustrating filing day.</p><span>Independent utility · Not affiliated with MCA</span></footer>
-  <noscript><p class="notice">JavaScript is required to process PDFs on your device. No files are uploaded.</p></noscript>
+  <footer class="wrap"><span>Free to use · Open source</span><span>Independent tool · Not affiliated with MCA</span></footer>
+  <noscript><p class="notice">Enable JavaScript to process files on your device.</p></noscript>
 </body>
 </html>
