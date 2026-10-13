@@ -10,7 +10,7 @@ This is not an MCA acceptance checker, signature validator, signing service or l
 
 ## Two workflows
 
-- **Unsigned:** drop PDFs, JPEGs and PNGs; order the files; choose a decimal MB limit from 0.1 to 100; prepare, review every page and download. Native PDF text/vectors are copied first. Colour images use bounded compression. Rasterizing unsigned PDF pages requires the explicit “Allow scan compression” option.
+- **Unsigned:** drop PDFs, JPEGs and PNGs; order the files; choose a decimal MB limit from 0.1 to 100; prepare, review every page and download. Native PDF text/vectors are copied first. Colour images use bounded compression. In Options, explicitly choose which unsigned PDFs may be converted to images if the first pass cannot meet the target. Choices start unchecked, with larger files listed first. Other PDFs keep their native text and vectors. Selection applies to every page in the chosen file and does not enable signature or protected-feature bypasses.
 - **Signed:** select one PDF and try the validation-record compression profile below. Eligible outputs preserve the signed bytes and decoded records, with CMS integrity checked before and after. Unsupported files remain unchanged and can only be downloaded if they fit. A file fingerprint identifies bytes; it does not validate a signature. Selecting Unsigned never overrides signature detection.
 
 No tool can promise to merge/compress arbitrary digitally signed PDFs into a smaller ordinary PDF while preserving their original signatures. The safe sequence is **prepare unsigned originals → review → sign → recheck size**. A PDF portfolio can retain original files as embedded documents but is not an equivalent merged PDF, and MCA acceptance is not assumed. This app does not generate portfolios.

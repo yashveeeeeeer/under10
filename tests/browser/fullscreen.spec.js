@@ -23,7 +23,7 @@ for (const [width, height] of [[320, 480], [320, 568], [360, 640], [390, 844], [
     expect(await page.locator('#action-hint').evaluate(el => innerHeight - el.getBoundingClientRect().bottom)).toBeLessThan(40);
     for (const id of ['dropzone', 'process', 'size-limit', 'reserve', 'options-open']) await inScreen(page, `#${id}`);
     await page.locator('#options-open').click();
-    await inScreen(page, '#options-close'); await page.locator('#raster').check();
+    await inScreen(page, '#options-close'); await expect(page.locator('#scan-empty')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.locator('#options-open')).toBeFocused();
     await page.locator('#files').setInputFiles({ name: 'pages.pdf', mimeType: 'application/pdf', buffer: Buffer.from(await pdfFixture({ pages: 2 })) });
@@ -63,7 +63,7 @@ test('a shorter viewport and enlarged text keep controls reachable', async ({ pa
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto('./'); await expect(page.locator('#status')).toHaveText('Ready.');
   await page.evaluate(() => { document.documentElement.style.fontSize = '32px'; });
-  await page.locator('#options-open').click(); await page.locator('#raster').check();
+  await page.locator('#options-open').click(); await expect(page.locator('#scan-empty')).toBeVisible();
   await page.locator('#options-close').click(); await noPageScroll(page); await inScreen(page, '#process');
   await page.evaluate(() => { document.documentElement.style.fontSize = ''; });
   await page.setViewportSize({ width: 390, height: 420 });

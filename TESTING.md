@@ -2,6 +2,14 @@
 
 Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edge via Playwright 1.64.0. The standard suite uses synthetic fixtures. The separate DSC check below also uses one public signed document.
 
+## Selective scan compression, 13 October 2026
+
+The latest release passed all 60 Node tests and 52 browser scenarios. Four new browser cases verify file-specific opt-in, larger-files-first choices, page order and selectable text in unselected PDFs, no rasterization when the native output fits, selection changes invalidating downloads, new files starting unchecked, reorder/remove/clear behavior, exclusion of signed and protected PDFs, and long filenames at 320px with 200% text. Existing impossible-target and quality-floor checks still pass. Enlarged text on short screens can scroll the workspace internally to keep controls reachable; normal phone and desktop layouts retain their screen-fitting behavior.
+
+The mixed test bundle was about 5.76 MB before processing and 65,687 bytes afterward, below its 900,000-byte target. Its selected scan became an image; both unselected text pages kept their extracted text and order. This fixture intentionally contains an uncompressed image and does not represent expected savings on real documents. The workflow completed offline with zero document-time requests, storage writes or JavaScript errors. Poppler independently rendered all three output pages, which were visually inspected, and extracted the two native text pages. Desktop and phone screenshots were also inspected. `npm audit` reported no vulnerabilities at test time.
+
+Run `npx playwright test tests/browser/selective-scans.spec.js` to repeat the new cases. Set `UNDER10_TEST_URL` to the published site URL to run those same cases against GitHub Pages. The signed compression method and its existing limitations are unchanged.
+
 ## Automated checks
 
 - 17 unsigned/core tests: strict decimal-byte boundary; invalid limits; file magic; malformed/oversized image headers; static PDF parsing; signature dictionaries in ordinary and compressed object streams; blank fields; escaped historical markers; forms; actions; attachments; annotations; corrupt/truncated/encrypted PDFs; page count/order; signed merge refusal; 200-page cap.
@@ -65,7 +73,7 @@ Additional research, separate from the production suite: the [revocation-data la
 
 ## Production revocation-record compression
 
-The current suite has 60 Node tests and 48 browser scenarios. The 23 new Node checks cover RSA/ECDSA revocation fixtures, independent graph and metadata comparisons, strict byte boundaries, verified protected-prefix diagnosis, conflicting references, VRI hash/global-array mismatches, cycles, invalid CRL/OCSP encodings, decompression bombs, deep ASN.1, indefinite lengths, filters, duplicate keys, unrelated changes and multiple-signature refusal. The four new browser scenarios exercise three real worker downloads offline and the fully signed oversized refusal/retry path.
+After this expansion, the suite had 60 Node tests and 48 browser scenarios. The 23 new Node checks cover RSA/ECDSA revocation fixtures, independent graph and metadata comparisons, strict byte boundaries, verified protected-prefix diagnosis, conflicting references, VRI hash/global-array mismatches, cycles, invalid CRL/OCSP encodings, decompression bombs, deep ASN.1, indefinite lengths, filters, duplicate keys, unrelated changes and multiple-signature refusal. The four new browser scenarios exercise three real worker downloads offline and the fully signed oversized refusal/retry path.
 
 The four new scenarios also passed against GitHub Pages at implementation commit `5782db1`. Its deployed assets matched the tested build. The 11 existing DSC compatibility cases were rerun successfully, including independent verification; the public DSC sample stayed unchanged. The production output is additionally verified with OpenSSL CMS, pyHanko modification analysis and revocation-required validation against an explicit test root. Every decoded DSS record and VRI mapping, Info/ID, signature identity and signed prefix is compared. Poppler renders every page before and after and compares all pixels. The test validation moment comes from fixture generation, not a claim about current certificate status.
 

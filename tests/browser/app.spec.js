@@ -11,7 +11,7 @@ async function prepare(page) { await expect(page.locator('#process')).toBeEnable
 async function download(page) { const waiting = page.waitForEvent('download'); await page.locator('#download').click(); return waiting; }
 async function allowScans(page) {
   await page.locator('#options-open').click();
-  await page.locator('#raster').check();
+  for (const checkbox of await page.locator('#scan-files input').all()) await checkbox.check();
   await page.locator('#options-close').click();
 }
 async function image(page, noisy = false) {
@@ -80,7 +80,8 @@ test('a genuine synthetic digital signature survives unchanged download', async 
   await page.locator('#build-mode').click();
   await upload(page, await pdfFixture(), 'unsigned.pdf');
   await expect(page.locator('#file-count')).toContainText('2 files');
-  await expect(page.locator('#raster')).toBeChecked();
+  await expect(page.locator('#scan-files input')).toHaveCount(1);
+  await expect(page.locator('#scan-files input')).not.toBeChecked();
   await expect(page.locator('#process')).toBeDisabled();
   await expect(page.locator('#result')).toBeHidden();
 });
@@ -108,7 +109,7 @@ test('signed PDFs obey the chosen limit and remain protected from compression', 
   await page.locator('#build-mode').click();
   await expect(page.locator('#process')).toBeDisabled();
   await expect(page.locator('#result')).toBeHidden();
-  await expect(page.locator('#raster')).toBeChecked();
+  await expect(page.locator('#scan-files input')).toHaveCount(0);
 });
 
 test('unsigned signing choice follows the size limit and invalidates old results', async ({ page }) => {

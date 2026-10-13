@@ -69,8 +69,10 @@
     </section>
   </main>
   <dialog id="options-dialog" class="sheet" aria-labelledby="options-title">
-    <div class="dialog-head"><h2 id="options-title">PDF options</h2><button id="options-close" class="small-button" autofocus aria-label="Close options">×</button></div>
-    <label class="check-row"><input id="raster" type="checkbox"><span>Allow scan compression<small>If needed, turns unsigned PDF pages into images. Removes selectable text, tags and bookmarks.</small></span></label>
+    <div class="dialog-head"><h2 id="options-title">Scan compression</h2><button id="options-close" class="small-button" autofocus aria-label="Close options">×</button></div>
+    <p id="scan-help">Choose scanned PDFs to compress if needed. Their pages become images and lose selectable text.</p>
+    <div id="scan-files" role="group" aria-label="PDFs available for scan compression"></div>
+    <p id="scan-empty" class="muted">Add an unsigned PDF without forms or annotations to choose it here.</p>
   </dialog>
   <dialog id="result" class="result" hidden aria-labelledby="result-title">
     <div class="result-heading"><button id="back-to-files" class="text-button" autofocus aria-label="Back to files">← Back</button><h2 id="result-title">Review your PDF</h2><strong id="result-size"></strong><p id="result-kicker" class="sr-only">PREPARED</p></div>

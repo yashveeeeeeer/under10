@@ -4,7 +4,7 @@ Combine PDFs and images into one PDF under your chosen size limit. Free, with no
 
 **[Open Under10](https://yashveeeeeeer.github.io/under10/)**
 
-Add PDFs, JPGs or PNGs, put them in order and choose a limit from 0.1 to 100 MB. Click **Prepare PDF**, review the pages and download.
+Add PDFs, JPGs or PNGs, put them in order and choose a limit from 0.1 to 100 MB. Use **Options** to choose scans that need extra compression. Click **Prepare PDF**, review the pages and download.
 
 If you’ll sign it later, leave that option checked. A 10 MB limit then targets 9 MB to leave space for signing. Recheck the size afterwards.
 

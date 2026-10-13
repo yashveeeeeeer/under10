@@ -16,7 +16,8 @@ function checkGeneration(g) { if (g !== generation) throw new Error('Cancelled. 
 function setBusy(value) {
   busy = value;
   document.querySelector('.work-grid').setAttribute('aria-busy', String(value));
-  for (const id of ['files', 'size-limit', 'reserve', 'raster', 'options-open', 'build-mode', 'check-mode']) $(id).disabled = value;
+  for (const id of ['files', 'size-limit', 'reserve', 'options-open', 'build-mode', 'check-mode']) $(id).disabled = value;
+  document.querySelectorAll('#scan-files input').forEach(el => el.disabled = value);
   document.querySelectorAll('.file-actions button').forEach(el => el.disabled = value);
   $('cancel').hidden = !value;
   updateControls();
@@ -36,6 +37,27 @@ function updateControls() {
   $('workspace').classList.toggle('has-files', items.length > 0);
   $('workspace').classList.toggle('has-result', Boolean(result));
   $('choose-label').textContent = items.length ? 'Add files' : 'Choose files';
+  const selected = items.filter(i => i.compressScans).length;
+  $('options-open').textContent = selected ? `Options (${selected})` : 'Options';
+}
+function renderScanOptions() {
+  const list = $('scan-files'); list.replaceChildren();
+  const eligible = items.filter(i => i.kind === 'pdf' && !i.error && i.info && !transformIssue(i.info));
+  $('scan-empty').hidden = eligible.length > 0;
+  for (const item of eligible.sort((a, b) => b.file.size - a.file.size)) {
+    const label = document.createElement('label'); label.className = 'check-row scan-choice';
+    const input = document.createElement('input'); input.type = 'checkbox'; input.checked = Boolean(item.compressScans); input.disabled = busy;
+    input.setAttribute('aria-label', `Compress ${item.file.name}`);
+    input.setAttribute('aria-describedby', 'scan-help');
+    const body = document.createElement('span'); body.textContent = item.file.name;
+    const meta = document.createElement('small'); meta.textContent = `${mb(item.file.size)}, ${item.info.pages} ${item.info.pages === 1 ? 'page' : 'pages'}`;
+    body.append(meta); label.append(input, body); list.append(label);
+    input.addEventListener('change', () => {
+      item.compressScans = input.checked;
+      generation++; clearResult(); updateControls();
+      status('Compression choice updated. Prepare again to apply it.');
+    });
+  }
 }
 function renderList() {
   const list = $('file-list'); list.replaceChildren();
@@ -57,7 +79,7 @@ function renderList() {
     }
     row.append(icon, body, actions); list.append(row);
   });
-  updateControls();
+  renderScanOptions(); updateControls();
 }
 async function loadPDF(bytes) {
   const task = getDocument({ data: bytes.slice(), worker, isEvalSupported: false, useWasm: false, useSystemFonts: true, disableFontFace: true, stopAtErrors: true, maxImageSize: LIMITS.imagePixels, verbosity: 0 });
@@ -118,7 +140,7 @@ async function addFiles(list) {
   try {
     for (const file of selected) {
       checkGeneration(g); status(`Checking ${items.length + 1} selected file(s)…`);
-      const item = { file };
+      const item = { file, compressScans: false };
       try {
         if (!file.size || file.size > LIMITS.fileBytes) throw new Error('Use a non-empty file smaller than or equal to 40 MB.');
         const bytes = new Uint8Array(await file.arrayBuffer()); checkGeneration(g);
@@ -220,24 +242,25 @@ async function processFiles() {
       }
     } else {
       const target = targetBytes(limit, $('reserve').checked);
+      const selected = items.filter(i => i.kind === 'pdf' && i.compressScans);
       let used, raster = false;
       const run = async (profile, scans) => {
         checkGeneration(g); status(`Preparing ${scans ? 'scanned pages' : 'files'} with ${profile.dpi} DPI images…`); await nextTick();
-        return assemble(items.map(i => ({ ...i, raster: scans && i.kind === 'pdf' })), (item, accept) => imagePages(item, profile, accept, g), text => status(text), () => checkGeneration(g));
+        return assemble(items.map(i => ({ ...i, raster: scans && i.kind === 'pdf' && i.compressScans })), (item, accept) => imagePages(item, profile, accept, g), text => status(text), () => checkGeneration(g));
       };
       for (const profile of PROFILES) {
         bytes = await run(profile, false); used = profile;
         if (bytes.length <= target) break;
         if (items.every(i => i.kind === 'pdf')) break;
       }
-      if (bytes.length > target && $('raster').checked && items.some(i => i.kind === 'pdf')) {
+      if (bytes.length > target && selected.length) {
         raster = true;
         for (const profile of PROFILES) { bytes = await run(profile, true); used = profile; if (bytes.length <= target) break; }
       }
-      if (bytes.length > target || !fits(bytes.length, limit)) throw new Error(`Cannot meet the ${sizeLabel(target)} target at the available quality settings. ${!$('raster').checked ? 'Try Allow scan compression in Options, or use smaller source images.' : 'Use smaller source images or a higher size limit if your upload form allows it.'}`);
+      if (bytes.length > target || !fits(bytes.length, limit)) throw new Error(`Cannot meet the ${sizeLabel(target)} target at the available quality settings. ${!selected.length && items.some(i => i.kind === 'pdf') ? 'Choose scanned PDFs for compression in Options, or use smaller source images.' : 'Use smaller source images or a higher size limit if your upload form allows it.'}`);
       await validateRendering(bytes, pages, g);
-      detail = `${pages} ${pages === 1 ? 'page' : 'pages'} (${bytes.length.toLocaleString()} bytes). ${raster ? 'PDF pages converted to colour images' : 'PDF text and vectors retained'}.${raster || items.some(i => i.kind !== 'pdf') ? ` Images use ${used.dpi} DPI and ${Math.round(used.quality * 100)}% JPEG quality.` : ''}`;
-      warning = `${raster ? 'Scan compression removed selectable text, tags and bookmarks.' : 'Document-level bookmarks, tags and metadata are not retained.'}${$('reserve').checked ? ' Check the file size again after signing.' : ''}`;
+      detail = `${pages} ${pages === 1 ? 'page' : 'pages'} (${bytes.length.toLocaleString()} bytes). ${raster ? `Pages in ${selected.length} selected PDF ${selected.length === 1 ? 'file' : 'files'} converted to colour images. Text and vectors in other PDFs retained` : 'PDF text and vectors retained'}.${raster || items.some(i => i.kind !== 'pdf') ? ` Images use ${used.dpi} DPI and ${Math.round(used.quality * 100)}% JPEG quality.` : ''}`;
+      warning = `${raster ? 'Scan compression removed selectable text from the selected PDFs. ' : ''}Document-level bookmarks, tags and metadata are not retained.${$('reserve').checked ? ' Check the file size again after signing.' : ''}`;
     }
     checkGeneration(g);
     const hashBytes = await crypto.subtle.digest('SHA-256', bytes); checkGeneration(g);
@@ -310,7 +333,7 @@ $('options-close').addEventListener('click', () => $('options-dialog').close());
 $('back-to-files').addEventListener('click', () => $('result').close());
 $('details-open').addEventListener('click', () => $('file-details-dialog').showModal());
 $('details-close').addEventListener('click', () => $('file-details-dialog').close());
-for (const id of ['size-limit', 'reserve', 'raster']) $(id).addEventListener('input', () => { generation++; clearResult(); updateControls(); });
+for (const id of ['size-limit', 'reserve']) $(id).addEventListener('input', () => { generation++; clearResult(); updateControls(); });
 $('reviewed').addEventListener('change', refreshDownload); $('download').addEventListener('click', download);
 for (const [id, delta] of [['previous', -1], ['next', 1]]) $(id).addEventListener('click', () => { if (!result) return; previewPage = Math.min(result.pages, Math.max(1, previewPage + delta)); showPage().catch(() => { clearResult(); status('Preview failed. Download blocked; prepare the document again.', 'error'); }); });
 $('zoom').addEventListener('change', () => showPage().catch(() => { clearResult(); status('Preview failed. Download blocked.', 'error'); }));
@@ -328,6 +351,8 @@ new ResizeObserver(([entry]) => {
 function fitScreen() {
   const textSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
   document.body.classList.toggle('cramped', innerHeight / textSize < 32);
+  const fixedHeight = document.querySelector('.workspace-head').offsetHeight + document.querySelector('.action-bar').offsetHeight;
+  $('workspace').classList.toggle('needs-scroll', fixedHeight + 44 > $('workspace').clientHeight);
 }
 const screenObserver = new ResizeObserver(fitScreen);
 screenObserver.observe(document.querySelector('.topbar'));

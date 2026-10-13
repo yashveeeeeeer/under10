@@ -41,7 +41,7 @@ test('200 percent text remains usable at a narrow width', async ({ page }) => {
   await page.evaluate(() => { document.documentElement.style.fontSize = '32px'; });
   await noOverflow(page);
   await page.locator('#options-open').click();
-  await page.locator('#raster').check();
+  await expect(page.locator('#scan-empty')).toBeVisible();
   await page.locator('#options-close').click();
   await noOverflow(page);
   await page.locator('#check-mode').click();
