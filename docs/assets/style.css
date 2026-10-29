@@ -104,6 +104,10 @@ summary { cursor: pointer; font-size: .875rem; min-block-size: 44px; padding-blo
 .check-row { display: flex; align-items: center; gap: .6rem; cursor: pointer; font-size: .8125rem; min-block-size: 44px; padding-block: .5rem; margin: 0; }
 .check-row input { flex-shrink: 0; inline-size: 20px; block-size: 20px; accent-color: var(--green); margin: 0; }
 .check-row small { display: block; color: var(--muted); font-size: .8125rem; line-height: 1.6; margin-block-start: .3rem; }
+.signing-group { min-inline-size: 0; }
+.signature-count-row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding-inline-start: 1.85rem; padding-block-end: .5rem; }
+.signature-count-row[hidden] { display: none; }
+.signature-count-row select { flex-shrink: 0; border: 1px solid #cbd6cf; border-radius: .5rem; background: white; color: var(--ink); font-size: .9375rem; padding: .5rem .5rem .5rem .7rem; min-block-size: 44px; }
 .scan-choice { align-items: flex-start; padding-block: .85rem; border-block-start: 1px solid var(--line); }
 .scan-choice > span { min-inline-size: 0; overflow-wrap: anywhere; }
 .action-bar { padding-block-start: .5rem; border-block-start: 1px solid var(--line); min-inline-size: 0; background: var(--paper); }

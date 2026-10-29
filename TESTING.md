@@ -2,6 +2,16 @@
 
 Test date: 12 October 2026. Environment: Windows, Node.js 24.14.0, Microsoft Edge via Playwright 1.64.0. The standard suite uses synthetic fixtures. The separate DSC check below also uses one public signed document.
 
+## Signature count reserve, 29 October 2026
+
+All 62 Node tests and 53 browser scenarios passed. The signing reserve now counts the signatures a file will carry instead of taking a tenth of the limit. Two new Node tests check the reserve per signature, the target falling as the count rises, the 98% ceiling holding above it, and rejected counts. One new browser scenario covers the control: its default of two, the target at one, five and ten signatures, hiding with the signing choice and in Signed mode, the blocked run when the reserve is wider than the limit, and a stale result cleared after a change.
+
+The per-viewport reachability check now includes the new control at all eleven tested sizes. Enlarged text at 320x900 with a 32px root size, and a 390x420 viewport, still keep Prepare on screen without page scroll.
+
+Measured on this repository’s own multi-signature fixtures, each added signature revision costs between 5,648 and 13,750 bytes, the largest carrying CRL and OCSP records. The 100,000-byte reserve per signature sits above that range. It is a reserve, not a prediction about any particular signing tool, and the app still asks for the size to be checked after signing.
+
+Run `npx playwright test tests/browser/app.spec.js` to repeat the new control cases.
+
 ## Selective scan compression, 13 October 2026
 
 The latest release passed all 60 Node tests and 52 browser scenarios. Four new browser cases verify file-specific opt-in, larger-files-first choices, page order and selectable text in unselected PDFs, no rasterization when the native output fits, selection changes invalidating downloads, new files starting unchecked, reorder/remove/clear behavior, exclusion of signed and protected PDFs, and long filenames at 320px with 200% text. Existing impossible-target and quality-floor checks still pass. Enlarged text on short screens can scroll the workspace internally to keep controls reachable; normal phone and desktop layouts retain their screen-fitting behavior.

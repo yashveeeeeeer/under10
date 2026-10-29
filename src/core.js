@@ -1,6 +1,7 @@
 import { PDFDocument, PDFDict, PDFArray, PDFName, PDFRawStream, PDFInvalidObject } from 'pdf-lib';
 
 export const LIMITS = Object.freeze({ files: 40, fileBytes: 40_000_000, totalBytes: 100_000_000, outputMB: 100, pages: 200, imagePixels: 32_000_000, renderPixels: 16_000_000 });
+export const SIGNING = Object.freeze({ maxSignatures: 10, defaultSignatures: 2, perSignatureBytes: 100_000 });
 export const PROFILES = Object.freeze([{ dpi: 220, quality: .90 }, { dpi: 190, quality: .84 }, { dpi: 170, quality: .78 }, { dpi: 150, quality: .72 }]);
 export const mb = bytes => `${(bytes / 1_000_000).toFixed(2)} MB`;
 export function byteLimit(value) {
@@ -9,7 +10,19 @@ export function byteLimit(value) {
   return Math.floor(n * 1_000_000);
 }
 export function fits(bytes, limit) { return Number.isSafeInteger(bytes) && bytes > 0 && bytes < limit; }
-export function targetBytes(limit, reserve = true) { return Math.floor(limit * (reserve ? .90 : .98)); }
+export function signatureCount(value) {
+  const n = Number(value);
+  if (!Number.isInteger(n) || n < 1 || n > SIGNING.maxSignatures) throw new Error(`Choose between 1 and ${SIGNING.maxSignatures} signatures.`);
+  return n;
+}
+// A signature is appended as an incremental revision, so its cost is a flat byte count per
+// signature rather than a share of the document. SIGNING.perSignatureBytes is a reserve, not a
+// measurement of any particular signing tool. See TECHNICAL.md.
+export function signingReserve(count) { return signatureCount(count) * SIGNING.perSignatureBytes; }
+export function targetBytes(limit, reserve = true, count = SIGNING.maxSignatures) {
+  const ceiling = Math.floor(limit * .98);
+  return reserve ? Math.min(ceiling, limit - signingReserve(count)) : ceiling;
+}
 export function sniff(bytes) {
   if (bytes.length < 8) throw new Error('This file is empty or incomplete.');
   const head = new TextDecoder('latin1').decode(bytes.subarray(0, 8));

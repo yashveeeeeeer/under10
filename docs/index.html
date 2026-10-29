@@ -7,8 +7,8 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'none'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="Combine unsigned PDFs and images under a chosen size limit. Process files in your browser, without uploads.">
   <title>Under10: Prepare a PDF</title>
-  <link rel="stylesheet" href="./assets/style.css?v=22d57dc8277b">
-  <script type="module" src="./assets/app.js?v=45d3b5650a34"></script>
+  <link rel="stylesheet" href="./assets/style.css?v=dac7f8a4bba1">
+  <script type="module" src="./assets/app.js?v=d21da63d5241"></script>
 </head>
 <body>
   <a class="skip" href="#workspace">Skip to PDF tool</a>
@@ -56,7 +56,25 @@
           </div>
           <span id="limit-help" class="sr-only">Between 0.1 and 100 decimal megabytes.</span>
           <div class="settings-extra">
-            <label id="signing-option" class="check-row"><input id="reserve" type="checkbox" checked><span>I’ll sign this PDF later</span></label>
+            <div class="signing-group">
+              <label id="signing-option" class="check-row"><input id="reserve" type="checkbox" checked><span>I’ll sign this PDF later</span></label>
+              <div id="signature-count-row" class="signature-count-row">
+                <label class="field-label" for="signature-count">Signatures to attach</label>
+                <select id="signature-count" aria-describedby="signature-count-help">
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+                <span id="signature-count-help" class="sr-only">How many digital signature certificates will be attached after you download. Between 1 and 10.</span>
+              </div>
+            </div>
             <div id="build-settings"><button id="options-open" class="text-button" aria-haspopup="dialog">Options</button></div>
           </div>
         </aside>

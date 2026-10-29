@@ -6,7 +6,7 @@ Combine PDFs and images into one PDF under your chosen size limit. Free, with no
 
 Add PDFs, JPGs or PNGs, put them in order and choose a limit from 0.1 to 100 MB. Use **Options** to choose scans that need extra compression. Click **Prepare PDF**, review the pages and download.
 
-If you’ll sign it later, leave that option checked. A 10 MB limit then targets 9 MB to leave space for signing. Recheck the size afterwards.
+If you’ll sign it later, leave that option checked and choose how many signatures the file will carry. The app keeps room for each one, so a 10 MB limit targets 9.8 MB for two signatures and 9 MB for ten. Recheck the size afterwards.
 
 Choose **Signed** to try compression without changing signed bytes. This works only when supported validation records were added after signing. Other signed files stay unchanged. Certificate trust is not verified.
 

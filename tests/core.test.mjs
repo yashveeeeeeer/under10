@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PDFDocument } from 'pdf-lib';
-import { sniff, inspectPDF, transformIssue, fits, byteLimit, targetBytes, assemble, imageDimensions } from '../src/core.js';
+import { sniff, inspectPDF, transformIssue, fits, byteLimit, targetBytes, signingReserve, signatureCount, SIGNING, assemble, imageDimensions } from '../src/core.js';
 import { pdfFixture, file } from './fixtures.mjs';
 
 test('decimal limit is strict at byte boundary', () => {
@@ -16,8 +16,36 @@ test('decimal limit is strict at byte boundary', () => {
   assert.equal(byteLimit('100'), 100_000_000);
   assert.equal(fits(25_000_000, byteLimit(25)), false);
   assert.equal(fits(24_999_999, byteLimit(25)), true);
-  assert.equal(targetBytes(byteLimit(25), true), 22_500_000);
+  assert.equal(targetBytes(byteLimit(25), true), 24_000_000);
   assert.equal(targetBytes(byteLimit(25), false), 24_500_000);
+});
+test('signing reserve scales with the number of signatures', () => {
+  assert.equal(signingReserve(1), 100_000);
+  assert.equal(signingReserve(10), 1_000_000);
+  // One or two signatures are held at the same ceiling as an unsigned target.
+  assert.equal(targetBytes(10_000_000, true, 1), 9_800_000);
+  assert.equal(targetBytes(10_000_000, true, 2), 9_800_000);
+  assert.equal(targetBytes(10_000_000, true, 3), 9_700_000);
+  assert.equal(targetBytes(10_000_000, true, 10), 9_000_000);
+  // The default matches the widest reserve, so an omitted count is never the loosest choice.
+  assert.equal(targetBytes(10_000_000, true), targetBytes(10_000_000, true, SIGNING.maxSignatures));
+  for (const limit of [byteLimit(0.5), byteLimit(6), byteLimit(10), byteLimit(100)]) {
+    let previous = Infinity;
+    for (let n = 1; n <= SIGNING.maxSignatures; n++) {
+      const target = targetBytes(limit, true, n);
+      assert.ok(target <= previous, `target rose from ${previous} to ${target} at ${n} signatures`);
+      assert.ok(target <= targetBytes(limit, false), 'signing target exceeded the unsigned ceiling');
+      // Where the 98% ceiling binds first the app holds back more than asked, never less.
+      assert.ok(limit - target >= signingReserve(n), 'reserve was narrower than requested');
+      previous = target;
+    }
+  }
+  // A reserve wider than the limit yields no usable target; the app blocks the run.
+  assert.ok(targetBytes(byteLimit(0.1), true, 10) <= 0);
+});
+test('reject invalid signature counts', () => {
+  for (const value of [0, -1, 11, 1.5, '', 'x', null, NaN, Infinity]) assert.throws(() => signatureCount(value));
+  for (const value of [1, 10, '2', '10']) assert.equal(signatureCount(value), Number(value));
 });
 test('reject invalid size settings', () => {
   for (const value of ['', 'x', 0, 0.09, -1, 100.1, Infinity, NaN]) assert.throws(() => byteLimit(value));

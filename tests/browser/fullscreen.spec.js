@@ -21,7 +21,7 @@ for (const [width, height] of [[320, 480], [320, 568], [360, 640], [390, 844], [
     await page.goto('./'); await expect(page.locator('#status')).toHaveText('Ready.');
     await noPageScroll(page);
     expect(await page.locator('#action-hint').evaluate(el => innerHeight - el.getBoundingClientRect().bottom)).toBeLessThan(40);
-    for (const id of ['dropzone', 'process', 'size-limit', 'reserve', 'options-open']) await inScreen(page, `#${id}`);
+    for (const id of ['dropzone', 'process', 'size-limit', 'reserve', 'signature-count', 'options-open']) await inScreen(page, `#${id}`);
     await page.locator('#options-open').click();
     await inScreen(page, '#options-close'); await expect(page.locator('#scan-empty')).toBeVisible();
     await page.keyboard.press('Escape');
@@ -67,6 +67,6 @@ test('a shorter viewport and enlarged text keep controls reachable', async ({ pa
   await page.locator('#options-close').click(); await noPageScroll(page); await inScreen(page, '#process');
   await page.evaluate(() => { document.documentElement.style.fontSize = ''; });
   await page.setViewportSize({ width: 390, height: 420 });
-  await page.locator('#size-limit').fill('3'); await expect(page.locator('#target')).toHaveText('2.7 MB');
+  await page.locator('#size-limit').fill('3'); await expect(page.locator('#target')).toHaveText('2.8 MB');
   await inScreen(page, '#process'); await noPageScroll(page);
 });

@@ -115,9 +115,9 @@ test('signed PDFs obey the chosen limit and remain protected from compression', 
 test('unsigned signing choice follows the size limit and invalidates old results', async ({ page }) => {
   await ready(page);
   await expect(page.locator('#reserve')).toBeVisible();
-  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 9 MB to leave room for signing.');
+  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 9.8 MB to leave room for 2 signatures.');
   await page.locator('#size-limit').fill('3');
-  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 2.7 MB to leave room for signing.');
+  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 2.8 MB to leave room for 2 signatures.');
   await page.locator('#reserve').uncheck();
   await expect(page.locator('#target')).toHaveText('2.94 MB');
   await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 2.94 MB to stay below your 3 MB limit.');
@@ -129,17 +129,61 @@ test('unsigned signing choice follows the size limit and invalidates old results
   await page.locator('#back-to-files').click();
   await page.locator('#reserve').check();
   await expect(page.locator('#result')).toBeHidden();
-  await expect(page.locator('#target')).toHaveText('22.5 MB');
+  await expect(page.locator('#target')).toHaveText('24.5 MB');
   await page.locator('#check-mode').click();
   await expect(page.locator('#signing-option')).toBeHidden();
   await expect(page.locator('#target')).toHaveText('25 MB');
   await expect(page.locator('#process')).toHaveText('Prepare PDF →');
   await page.locator('#build-mode').click();
   await expect(page.locator('#reserve')).toBeChecked();
-  await expect(page.locator('#target')).toHaveText('22.5 MB');
+  await expect(page.locator('#target')).toHaveText('24.5 MB');
   await page.locator('#size-limit').fill('101');
   await expect(page.locator('#process')).toBeDisabled();
   await expect(page.locator('#action-hint')).toContainText('0.1 to 100 MB');
+});
+
+test('signature count sets the reserve, hides with the signing choice and invalidates old results', async ({ page }) => {
+  await ready(page);
+  await expect(page.locator('#signature-count-row')).toBeVisible();
+  await expect(page.locator('#signature-count')).toHaveValue('2');
+  await expect(page.locator('#signature-count option')).toHaveCount(10);
+  // One signature is held at the unsigned ceiling, so the target cannot rise above 9.8 MB.
+  await page.locator('#signature-count').selectOption('1');
+  await expect(page.locator('#target')).toHaveText('9.8 MB');
+  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 9.8 MB to leave room for one signature.');
+  await page.locator('#signature-count').selectOption('5');
+  await expect(page.locator('#target')).toHaveText('9.5 MB');
+  await page.locator('#signature-count').selectOption('10');
+  await expect(page.locator('#target')).toHaveText('9 MB');
+  await expect(page.locator('#action-hint')).toHaveText('We’re aiming for 9 MB to leave room for 10 signatures.');
+  // The count applies only while the signing choice is on, and never in Signed mode.
+  await page.locator('#reserve').uncheck();
+  await expect(page.locator('#signature-count-row')).toBeHidden();
+  await expect(page.locator('#target')).toHaveText('9.8 MB');
+  await page.locator('#reserve').check();
+  await expect(page.locator('#signature-count-row')).toBeVisible();
+  await expect(page.locator('#target')).toHaveText('9 MB');
+  await page.locator('#check-mode').click();
+  await expect(page.locator('#signature-count-row')).toBeHidden();
+  await page.locator('#build-mode').click();
+  await expect(page.locator('#signature-count')).toHaveValue('10');
+  // A reserve wider than the limit blocks the run instead of aiming at nothing.
+  await page.locator('#size-limit').fill('0.5');
+  await expect(page.locator('#target')).toHaveText('Limit too small');
+  await expect(page.locator('#action-hint')).toHaveText('10 signatures need about 1 MB of room. Raise the limit or choose fewer signatures.');
+  await expect(page.locator('#process')).toBeDisabled();
+  await page.locator('#signature-count').selectOption('2');
+  await expect(page.locator('#target')).toHaveText('0.3 MB');
+  // Changing the count after a run clears the stale result and names the reserve it used.
+  await page.locator('#size-limit').fill('10');
+  await upload(page, await pdfFixture());
+  await prepare(page);
+  await expect(page.locator('#result-warning')).toContainText('Room was reserved for 2 signatures.');
+  await expect(page.locator('#result-warning')).toContainText('Check the file size again after signing.');
+  await page.locator('#back-to-files').click();
+  await page.locator('#signature-count').selectOption('7');
+  await expect(page.locator('#result')).toBeHidden();
+  await expect(page.locator('#target')).toHaveText('9.3 MB');
 });
 test('a genuinely encrypted PDF is rejected', async ({ page }) => {
   await ready(page); await upload(page, await readFile('tests/data/encrypted-synthetic.pdf'));
@@ -180,9 +224,10 @@ test('scan compression is explicit and stops at quality floor', async ({ page })
   await ready(page); const png = await image(page, true); const pdf = await PDFDocument.create(); const img = await pdf.embedPng(png); pdf.addPage([595, 842]).drawImage(img, { x: 0, y: 0, width: 595, height: 842 });
   await upload(page, await pdf.save()); await page.locator('#size-limit').fill('3'); await page.locator('#process').click(); await expect(page.locator('#status')).toContainText('Cannot meet'); await expect(page.locator('#result')).toBeHidden();
   await allowScans(page); await prepare(page); await expect(page.locator('#result-detail')).toContainText('converted to colour images');
-  await page.locator('#reviewed').check(); const d = await download(page); expect((await readFile(await d.path())).length).toBeLessThanOrEqual(2700000);
+  await page.locator('#reviewed').check(); const d = await download(page); expect((await readFile(await d.path())).length).toBeLessThanOrEqual(2800000);
   await page.locator('#back-to-files').click();
-  await page.locator('#size-limit').fill('0.1'); await page.locator('#process').click(); await expect(page.locator('#status')).toContainText('Cannot meet'); await expect(page.locator('#result')).toBeHidden();
+  // The signing reserve would block this limit on its own, so test the quality floor without it.
+  await page.locator('#size-limit').fill('0.1'); await page.locator('#reserve').uncheck(); await page.locator('#process').click(); await expect(page.locator('#status')).toContainText('Cannot meet'); await expect(page.locator('#result')).toBeHidden();
 });
 test('clear while processing prevents stale output', async ({ page }) => {
   await ready(page); await upload(page, await pdfFixture({ pages: 30 })); await page.locator('#process').click(); await page.locator('#clear').click(); await expect(page.locator('#file-list')).toBeEmpty(); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#status')).toContainText('Session cleared');

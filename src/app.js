@@ -1,5 +1,5 @@
 import { PDFWorker, GlobalWorkerOptions, getDocument } from 'pdfjs-dist/build/pdf.mjs';
-import { LIMITS, PROFILES, mb, byteLimit, targetBytes, fits, sniff, imageDimensions, inspectPDF, transformIssue, assemble } from './core.js';
+import { LIMITS, PROFILES, SIGNING, mb, byteLimit, targetBytes, signingReserve, signatureCount, fits, sniff, imageDimensions, inspectPDF, transformIssue, assemble } from './core.js';
 import { SignedCompressor } from './signed-client.js';
 
 GlobalWorkerOptions.workerSrc = new URL('./pdf.worker.mjs', import.meta.url).href;
@@ -16,11 +16,14 @@ function checkGeneration(g) { if (g !== generation) throw new Error('Cancelled. 
 function setBusy(value) {
   busy = value;
   document.querySelector('.work-grid').setAttribute('aria-busy', String(value));
-  for (const id of ['files', 'size-limit', 'reserve', 'options-open', 'build-mode', 'check-mode']) $(id).disabled = value;
+  for (const id of ['files', 'size-limit', 'reserve', 'signature-count', 'options-open', 'build-mode', 'check-mode']) $(id).disabled = value;
   document.querySelectorAll('#scan-files input').forEach(el => el.disabled = value);
   document.querySelectorAll('.file-actions button').forEach(el => el.disabled = value);
   $('cancel').hidden = !value;
   updateControls();
+}
+function chosenSignatures() {
+  try { return signatureCount($('signature-count').value); } catch { return SIGNING.defaultSignatures; }
 }
 function updateControls() {
   let limit;
@@ -28,11 +31,16 @@ function updateControls() {
   const valid = items.length > 0 && items.every(i => !i.error && i.info);
   const issues = mode === 'build' && items.some(i => i.kind === 'pdf' && i.info && transformIssue(i.info));
   const pages = items.reduce((sum, i) => sum + (i.info?.pages || 0), 0);
-  $('process').disabled = busy || !engineReady || !limit || !valid || issues || pages > LIMITS.pages || (mode === 'check' && (items.length !== 1 || items[0].kind !== 'pdf'));
-  const target = limit && (mode === 'check' ? limit : targetBytes(limit, $('reserve').checked));
-  $('target').textContent = limit ? sizeLabel(target) : 'Choose a limit';
+  const signing = mode === 'build' && $('reserve').checked;
+  const signatures = chosenSignatures();
+  $('signature-count-row').hidden = !signing;
+  const target = limit && (mode === 'check' ? limit : targetBytes(limit, signing, signatures));
+  // A reserve wider than the limit leaves nothing to aim at, so block the run and say why.
+  const noRoom = Boolean(limit) && signing && target <= 0;
+  $('process').disabled = busy || !engineReady || !limit || !valid || issues || noRoom || pages > LIMITS.pages || (mode === 'check' && (items.length !== 1 || items[0].kind !== 'pdf'));
+  $('target').textContent = !limit ? 'Choose a limit' : noRoom ? 'Limit too small' : sizeLabel(target);
   $('target-label').textContent = mode === 'check' ? 'Must be under' : 'Target';
-  $('action-hint').textContent = !limit ? `Choose a limit from 0.1 to ${LIMITS.outputMB} MB.` : mode === 'check' ? 'Compression depends on how the PDF was signed.' : $('reserve').checked ? `We’re aiming for ${sizeLabel(target)} to leave room for signing.` : `We’re aiming for ${sizeLabel(target)} to stay below your ${sizeLabel(limit)} limit.`;
+  $('action-hint').textContent = !limit ? `Choose a limit from 0.1 to ${LIMITS.outputMB} MB.` : mode === 'check' ? 'Compression depends on how the PDF was signed.' : noRoom ? `${signatures} signatures need about ${sizeLabel(signingReserve(signatures))} of room. Raise the limit or choose fewer signatures.` : signing ? `We’re aiming for ${sizeLabel(target)} to leave room for ${signatures === 1 ? 'one signature' : `${signatures} signatures`}.` : `We’re aiming for ${sizeLabel(target)} to stay below your ${sizeLabel(limit)} limit.`;
   $('file-count').textContent = `${items.length} ${items.length === 1 ? 'file' : 'files'}${pages ? `, ${pages} ${pages === 1 ? 'page' : 'pages'}` : ''}`;
   $('workspace').classList.toggle('has-files', items.length > 0);
   $('workspace').classList.toggle('has-result', Boolean(result));
@@ -241,7 +249,7 @@ async function processFiles() {
         warning = `${reason} Original unchanged; signature validity and trust have not been verified.`;
       }
     } else {
-      const target = targetBytes(limit, $('reserve').checked);
+      const target = targetBytes(limit, $('reserve').checked, chosenSignatures());
       const selected = items.filter(i => i.kind === 'pdf' && i.compressScans);
       let used, raster = false;
       const run = async (profile, scans) => {
@@ -260,7 +268,7 @@ async function processFiles() {
       if (bytes.length > target || !fits(bytes.length, limit)) throw new Error(`Cannot meet the ${sizeLabel(target)} target at the available quality settings. ${!selected.length && items.some(i => i.kind === 'pdf') ? 'Choose scanned PDFs for compression in Options, or use smaller source images.' : 'Use smaller source images or a higher size limit if your upload form allows it.'}`);
       await validateRendering(bytes, pages, g);
       detail = `${pages} ${pages === 1 ? 'page' : 'pages'} (${bytes.length.toLocaleString()} bytes). ${raster ? `Pages in ${selected.length} selected PDF ${selected.length === 1 ? 'file' : 'files'} converted to colour images. Text and vectors in other PDFs retained` : 'PDF text and vectors retained'}.${raster || items.some(i => i.kind !== 'pdf') ? ` Images use ${used.dpi} DPI and ${Math.round(used.quality * 100)}% JPEG quality.` : ''}`;
-      warning = `${raster ? 'Scan compression removed selectable text from the selected PDFs. ' : ''}Document-level bookmarks, tags and metadata are not retained.${$('reserve').checked ? ' Check the file size again after signing.' : ''}`;
+      warning = `${raster ? 'Scan compression removed selectable text from the selected PDFs. ' : ''}Document-level bookmarks, tags and metadata are not retained.${$('reserve').checked ? ` Room was reserved for ${chosenSignatures() === 1 ? 'one signature' : `${chosenSignatures()} signatures`}. Check the file size again after signing.` : ''}`;
     }
     checkGeneration(g);
     const hashBytes = await crypto.subtle.digest('SHA-256', bytes); checkGeneration(g);
@@ -333,7 +341,7 @@ $('options-close').addEventListener('click', () => $('options-dialog').close());
 $('back-to-files').addEventListener('click', () => $('result').close());
 $('details-open').addEventListener('click', () => $('file-details-dialog').showModal());
 $('details-close').addEventListener('click', () => $('file-details-dialog').close());
-for (const id of ['size-limit', 'reserve']) $(id).addEventListener('input', () => { generation++; clearResult(); updateControls(); });
+for (const id of ['size-limit', 'reserve', 'signature-count']) $(id).addEventListener('input', () => { generation++; clearResult(); updateControls(); });
 $('reviewed').addEventListener('change', refreshDownload); $('download').addEventListener('click', download);
 for (const [id, delta] of [['previous', -1], ['next', 1]]) $(id).addEventListener('click', () => { if (!result) return; previewPage = Math.min(result.pages, Math.max(1, previewPage + delta)); showPage().catch(() => { clearResult(); status('Preview failed. Download blocked; prepare the document again.', 'error'); }); });
 $('zoom').addEventListener('change', () => showPage().catch(() => { clearResult(); status('Preview failed. Download blocked.', 'error'); }));

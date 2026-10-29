@@ -34,7 +34,7 @@ Open the printed local URL. On Windows browser tests use installed Microsoft Edg
 | Condition | Behaviour |
 | --- | --- |
 | Output size | Strictly **less than** the chosen decimal-byte limit. 10 MB = 10,000,000 bytes. Equality fails. |
-| Signing headroom | “I’ll sign this PDF later” is visible for unsigned inputs and checked by default. Its target is 90% of the limit (9,000,000 bytes at 10 MB). Unchecked, the target is 98%. It is hidden in Signed mode, where only the exact chosen limit applies. This cannot guarantee the eventual signed file size. |
+| Signing headroom | “I’ll sign this PDF later” is visible for unsigned inputs and checked by default. Below it, choose how many signatures the file will carry, from 1 to 10, with 2 selected to start. The app holds back 100,000 bytes for each signature and aims at whichever is lower: the limit minus that reserve, or 98% of the limit. At a 10 MB limit, one or two signatures target 9,800,000 bytes and ten target 9,000,000. Unchecked, the target is 98%. A reserve wider than the limit blocks the run and names the shortfall. The count is hidden in Signed mode, where only the exact chosen limit applies. This cannot guarantee the eventual signed file size. |
 | Cannot fit | Stop with no downloadable result. Never omit a page or secretly reduce quality below the configured floor. |
 | Existing signature | Inspect decoded PDF objects and conservative raw/historical/escaped-name markers. Signature fields, including blank ones, block the unsigned merge/raster path. Signed mode has the narrow compression profile below, with an unchanged fallback. No cryptographic trust decision is made. |
 | Ambiguous/unsupported PDF | Encrypted, damaged or unreadable inputs fail. Forms, annotations, scripts/actions, portfolios and embedded attachments cannot be transformed. |
@@ -46,6 +46,12 @@ Open the printed local URL. On Windows browser tests use installed Microsoft Edg
 | Reordering/settings change | Discard the old result. The new configuration must be prepared and reviewed again. |
 | Clear/cancel | Invalidate the active job, release file/preview references, destroy document tasks and revoke blob URLs. An active signed-compression worker is terminated. Initial file inspection and unsigned processing still use cooperative cancellation around synchronous parser work. |
 | Signed-file compression | Preserve the entire signed prefix. Only reconstruct a supported unsigned validation suffix. If the eligibility, integrity, rendering or size checks fail, no compressed result is offered. An unchanged original can be downloaded only if it fits. |
+
+### Where the per-signature reserve comes from
+
+A signature is appended as an incremental revision, so its cost is a flat number of bytes rather than a share of the document. That is why the reserve counts signatures instead of taking a fixed percentage.
+
+The 100,000-byte figure is a reserve, not a measurement of any particular signing tool. Each added signature revision in this repository’s own multi-signature fixtures costs between 5,648 and 13,750 bytes, the largest being the one carrying CRL and OCSP records. The reserve sits well above that range so a visible signature appearance, a longer certificate chain and the new cross-reference table also fit. A signing tool that attaches a large CRL can still exceed it. The app therefore asks you to check the size again after signing, and never claims the signed file will fit.
 
 ## Signed compression profile
 
